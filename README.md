@@ -1,6 +1,62 @@
-# AdminDashboard
+# Admin Dashboard
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.0.2.
+A modern admin dashboard built with Angular and Tailwind CSS.
+
+## Project Structure
+
+```
+src/
+├── app/
+│   ├── core/                 # Singleton services and features
+│   │   ├── services/        # Global services
+│   │   ├── guards/          # Route guards
+│   │   ├── interceptors/    # HTTP interceptors
+│   │   └── models/          # Global interfaces and types
+│   │
+│   ├── shared/              # Shared features
+│   │   ├── components/      # Reusable components
+│   │   ├── directives/      # Custom directives
+│   │   └── pipes/           # Custom pipes
+│   │
+│   ├── features/            # Feature modules
+│   │   ├── dashboard/       # Dashboard feature
+│   │   ├── auth/           # Authentication feature
+│   │   ├── users/          # User management
+│   │   └── settings/       # App settings
+│   │
+│   └── layouts/            # Application layouts
+│       ├── admin/          # Admin layout
+│       └── auth/           # Auth layout
+│
+└── assets/                 # Static assets
+    ├── images/            # Images
+    ├── icons/            # Icons
+    └── styles/           # Global styles
+
+```
+
+## Setup
+
+1. Install dependencies:
+```bash
+npm install
+```
+
+2. Start the development server:
+```bash
+ng serve
+```
+
+3. Build for production:
+```bash
+ng build
+```
+
+## Technologies Used
+
+- Angular 17
+- Tailwind CSS
+- TypeScript
 
 ## Development server
 
@@ -25,16 +81,6 @@ For a complete list of available schematics (such as `components`, `directives`,
 ```bash
 ng generate --help
 ```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
 
 ## Running unit tests
 
