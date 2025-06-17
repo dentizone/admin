@@ -1,11 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
 interface MenuItem {
-  icon: string;
-  label: string;
-  route: string;
+  readonly icon: 'squares-2x2' | 'users' | 'document-text' | 'book-open' | 'academic-cap' | 'credit-card' | 'currency-dollar' | 'cog-6-tooth';
+  readonly label: string;
+  readonly route: string;
   active?: boolean;
 }
 
@@ -17,9 +17,9 @@ interface MenuItem {
   styleUrls: ['./layout.component.css']
 })
 export class LayoutComponent {
-  isSidebarOpen = false;
+  isSidebarOpen = signal(false);
 
-  sidebarItems: MenuItem[] = [
+  readonly sidebarItems: MenuItem[] = [
     { icon: 'squares-2x2', label: 'Dashboard', route: '/dashboard', active: true },
     { icon: 'users', label: 'User Management', route: '/users' },
     { icon: 'document-text', label: 'Post Management', route: '/posts' },
@@ -27,27 +27,31 @@ export class LayoutComponent {
     { icon: 'academic-cap', label: 'University Management', route: '/university' }
   ];
 
-  financialItems: MenuItem[] = [
+  readonly financialItems: MenuItem[] = [
     { icon: 'credit-card', label: 'Withdrawal Requests', route: '/withdrawals' },
     { icon: 'currency-dollar', label: 'Transaction History', route: '/transactions' }
   ];
 
-  settingsItems: MenuItem[] = [
+  readonly settingsItems: MenuItem[] = [
     { icon: 'cog-6-tooth', label: 'Platform Settings', route: '/settings' }
   ];
 
-  setActiveItem(item: MenuItem) {
-    this.sidebarItems.forEach(i => i.active = false);
-    this.financialItems.forEach(i => i.active = false);
-    this.settingsItems.forEach(i => i.active = false);
-    item.active = true;
+  setActiveItem(selectedItem: MenuItem): void {
+    // Reset all items
+    [...this.sidebarItems, ...this.financialItems, ...this.settingsItems].forEach(item => {
+      item.active = false;
+    });
+    
+    // Set selected item as active
+    selectedItem.active = true;
 
+    // Close sidebar on mobile after selection
     if (window.innerWidth < 1024) {
-      this.isSidebarOpen = false;
+      this.isSidebarOpen.set(false);
     }
   }
 
-  toggleSidebar() {
-    this.isSidebarOpen = !this.isSidebarOpen;
+  toggleSidebar(): void {
+    this.isSidebarOpen.update(current => !current);
   }
 } 

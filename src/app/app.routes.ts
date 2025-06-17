@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { LayoutComponent } from './components/layout/layout.component';
+import { LayoutComponent } from './shared/components/layout.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { PlaceholderComponent } from './pages/placeholder/placeholder.component';
 
