@@ -1,5 +1,12 @@
 
-<h1>
-  Dashboard
-  Hello Nourleyy! aka (Hello World)
+<h1 class="text-2xl font-bold ">
+  Dashboard Overview
 </h1>
+<h6 class="text-gray-500 mb-4"> Welcome back, Admin! Here's what's happening on Dentizone today!</h6>
+<div class="flex flex-wrap gap-6">
+  <app-card
+    *ngFor="let card of DashboardCards"
+    [card]="card"
+    class="w-full sm:w-[calc(33.333%-1rem)]"
+  />
+</div>
