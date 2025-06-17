@@ -7,4 +7,8 @@ module.exports = {
     extend: {},
   },
   plugins: [],
+  darkMode: 'class',
+  future: {
+    hoverOnlyWhenSupported: true,
+  }
 } 
