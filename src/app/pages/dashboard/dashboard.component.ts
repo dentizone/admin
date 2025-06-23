@@ -2,12 +2,15 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Card } from "../../shared/components/card/card";
 import { CardDetails } from '../../core/models/card.model';
+import { RecentActivityComponent } from './recent-activity.component';
+import { ChartComponent } from './chart.component';
+import { PostCategory } from '../../core/models/post-category.model';
 
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, Card],
+  imports: [CommonModule, Card, ChartComponent, RecentActivityComponent],
   templateUrl: './dashboard.component.html'
 })
 export class DashboardComponent {
@@ -77,4 +80,12 @@ export class DashboardComponent {
 `
     }
   ]
+
+    postCategories: PostCategory[] = [
+    { name: 'Equipment',    value: 45, color: '#3B82F6' },
+    { name: 'Books',        value: 25, color: '#A78BFA' },
+    { name: 'Instruments',  value: 15, color: '#EC4899' },
+    { name: 'Supplies',     value: 10, color: '#F59E0B' },
+    { name: 'Other',        value: 5,  color: '#10B981' },
+  ];
 }
