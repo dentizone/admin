@@ -44,10 +44,32 @@ public doughnutChartType: 'doughnut' = 'doughnut';
     const dataValues: number[] = [];
     const backgroundColors: string[] = [];
 
+    if (!Array.isArray(this.postCategories) || this.postCategories.length === 0) {
+      // No data to display
+      this.doughnutChartDatasets = [
+        {
+          data: [],
+          backgroundColor: [],
+          borderWidth: 0,
+        }
+      ];
+      return;
+    }
+
     this.postCategories.forEach(category => {
-      this.doughnutChartLabels.push(category.name);
-      dataValues.push(category.value);
-      backgroundColors.push(category.color);
+      // Validate category properties
+      const name = typeof category.name === 'string' && category.name.trim() !== '' ? category.name : 'Unknown';
+      const value = typeof category.value === 'number' && !isNaN(category.value) ? category.value : 0;
+      const color = typeof category.color === 'string' && category.color.trim() !== '' ? category.color : '#CCCCCC';
+
+      // Optionally skip categories with missing/invalid name or value
+      if (name === 'Unknown' && value === 0) {
+        return; // skip completely invalid entry
+      }
+
+      this.doughnutChartLabels.push(name);
+      dataValues.push(value);
+      backgroundColors.push(color);
     });
 
     this.doughnutChartDatasets = [

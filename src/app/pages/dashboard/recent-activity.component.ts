@@ -1,8 +1,8 @@
-
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject, DestroyRef } from '@angular/core';
 import { Activity } from '../../core/models/activity.model';
 import { DashboardDataService } from '../../core/services/dashboard-data.service';
 import { CommonModule } from '@angular/common';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-recent-activity',
@@ -12,11 +12,14 @@ import { CommonModule } from '@angular/common';
 })
 export class RecentActivityComponent implements OnInit {
   activities: Activity[] = [];
+  private readonly destroyRef = inject(DestroyRef);
 
-  constructor(private svc: DashboardDataService) {}
+  constructor(private readonly svc: DashboardDataService) {}
 
   ngOnInit() {
-    this.svc.getRecentActivities().subscribe(data => this.activities = data);
+    this.svc.getRecentActivities()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(data => this.activities = data);
   }
 
 

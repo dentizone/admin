@@ -13,7 +13,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 export class Card {
   readonly card = input<CardDetails>();
 
-    private sanitizer = inject(DomSanitizer);
+    private readonly sanitizer = inject(DomSanitizer);
   defaultIconSvg: string | undefined;
 
   get safeIcon(): SafeHtml {
@@ -23,13 +23,10 @@ export class Card {
 
   get isPositiveChange(): boolean {
     const c = this.card();
-    const change = c?.change ?? '';
-    const title = c?.title ?? '';
-
-    return (
-      ((title === 'Total Posts' || title === 'Total Users' || title === 'Total Revenue' || title === 'New Signups') && change.startsWith('+')) ||
-      ((title === 'Pending Posts' || title === 'Pending KYC') && change.startsWith('-'))
-    );
+    if (c?.changeType === 'positive') return true;
+    if (c?.changeType === 'negative') return false;
+    // Treat 'neutral' or undefined as not positive
+    return false;
   }
 
   get isNegativeChange(): boolean {

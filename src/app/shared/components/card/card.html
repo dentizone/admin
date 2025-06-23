@@ -14,39 +14,5 @@
     {{ card()?.value }}
   </div>
 
-  <div class="mt-4 flex items-center text-sm">
-  <span
-  *ngIf="card() as c"
-  class="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full"
-  [ngClass]="{
-    'bg-green-100 text-green-800': isPositiveChange,
-    'bg-red-100 text-red-800': isNegativeChange
-  }"
->
-  <svg
-    *ngIf="isPositiveChange"
-    class="w-3 h-3 mr-1 text-green-600"
-    fill="currentColor"
-    viewBox="0 0 20 20"
-  >
-    <path d="M5 10l5-5 5 5H5z" />
-  </svg>
-
-  <svg
-    *ngIf="isNegativeChange"
-    class="w-3 h-3 mr-1 text-red-600"
-    fill="currentColor"
-    viewBox="0 0 20 20"
-  >
-    <path d="M5 10l5 5 5-5H5z" />
-  </svg>
-
-  {{ c.change }}
-</span>
-
-    <span class="ml-2 text-gray-500">
-      {{ card()?.changeLabel }}
-    </span>
-  </div>
 </div>
 
