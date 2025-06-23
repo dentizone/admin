@@ -21,15 +21,5 @@ export class Card {
     return this.sanitizer.bypassSecurityTrustHtml(rawSvg!);
   }
 
-  get isPositiveChange(): boolean {
-    const c = this.card();
-    if (c?.changeType === 'positive') return true;
-    if (c?.changeType === 'negative') return false;
-    // Treat 'neutral' or undefined as not positive
-    return false;
-  }
 
-  get isNegativeChange(): boolean {
-    return !this.isPositiveChange;
-  }
 }
