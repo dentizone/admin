@@ -8,6 +8,7 @@ export interface AnalyticsPostResponse {
   totalPosts: number;
   averagePostPrice: number;
   postsByCategory: { [category: string]: number };
+  pendingPosts: number;
 }
 
 export interface AnalyticsUserResponse {
