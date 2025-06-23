@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
-import { ChartType, ChartDataset, registerables, Chart, ChartConfiguration } from 'chart.js';
+import { ChartDataset, registerables, Chart, ChartConfiguration } from 'chart.js';
 import { NgChartsModule } from 'ng2-charts'; 
 import { CommonModule } from '@angular/common';
 import { PostCategory } from '../../core/models/post-category.model';
@@ -14,6 +14,9 @@ Chart.register(...registerables);
 })
 export class ChartComponent implements OnInit, OnChanges {
   @Input() postCategories: PostCategory[] = [];
+  @Input() pieChartData: PostCategory[] = [];
+  @Input() chartType: 'doughnut' | 'pie' = 'doughnut';
+  @Input() title: string = '';
 
   public doughnutChartLabels: string[] = [];
   public doughnutChartDatasets: ChartDataset<'doughnut'>[] = [];
@@ -27,7 +30,20 @@ export class ChartComponent implements OnInit, OnChanges {
     },
     cutout: '80%'
   };
-public doughnutChartType: 'doughnut' = 'doughnut';
+  public doughnutChartType = 'doughnut' as const;
+
+  public pieChartLabels: string[] = [];
+  public pieChartDatasets: ChartDataset<'pie'>[] = [];
+  public pieChartOptions: ChartConfiguration<'pie'>['options'] = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: true,
+      }
+    }
+  };
+  public pieChartType = 'pie' as const;
 
   ngOnInit(): void {
     this.updateChartData();
@@ -36,6 +52,9 @@ public doughnutChartType: 'doughnut' = 'doughnut';
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['postCategories']) {
       this.updateChartData();
+    }
+    if (changes['pieChartData']) {
+      this.updatePieChartData();
     }
   }
 
@@ -73,6 +92,40 @@ public doughnutChartType: 'doughnut' = 'doughnut';
     });
 
     this.doughnutChartDatasets = [
+      {
+        data: dataValues,
+        backgroundColor: backgroundColors,
+        borderWidth: 0,
+      }
+    ];
+  }
+
+  private updatePieChartData(): void {
+    this.pieChartLabels = [];
+    const dataValues: number[] = [];
+    const backgroundColors: string[] = [];
+    if (!Array.isArray(this.pieChartData) || this.pieChartData.length === 0) {
+      this.pieChartDatasets = [
+        {
+          data: [],
+          backgroundColor: [],
+          borderWidth: 0,
+        }
+      ];
+      return;
+    }
+    this.pieChartData.forEach(category => {
+      const name = typeof category.name === 'string' && category.name.trim() !== '' ? category.name : 'Unknown';
+      const value = typeof category.value === 'number' && !isNaN(category.value) ? category.value : 0;
+      const color = typeof category.color === 'string' && category.color.trim() !== '' ? category.color : '#CCCCCC';
+      if (name === 'Unknown' && value === 0) {
+        return;
+      }
+      this.pieChartLabels.push(name);
+      dataValues.push(value);
+      backgroundColors.push(color);
+    });
+    this.pieChartDatasets = [
       {
         data: dataValues,
         backgroundColor: backgroundColors,

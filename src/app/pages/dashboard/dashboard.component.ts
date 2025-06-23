@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Card } from "../../shared/components/card/card";
 import { CardDetails } from '../../core/models/card.model';
@@ -6,7 +6,18 @@ import { RecentActivityComponent } from './recent-activity.component';
 import { ChartComponent } from './chart.component';
 import { PostCategory } from '../../core/models/post-category.model';
 import { DASHBOARD_ICONS } from '../../core/constants/dashboard-icons';
+import { DashboardDataService, AnalyticsPostResponse } from '../../core/services/dashboard-data.service';
 
+const CATEGORY_COLORS = [
+  '#3B82F6', // blue
+  '#A78BFA', // purple
+  '#EC4899', // pink
+  '#F59E0B', // yellow
+  '#10B981', // green
+  '#F87171', // red
+  '#6366F1', // indigo
+  '#F472B6', // rose
+];
 
 @Component({
   selector: 'app-dashboard',
@@ -14,7 +25,7 @@ import { DASHBOARD_ICONS } from '../../core/constants/dashboard-icons';
   imports: [CommonModule, Card, ChartComponent, RecentActivityComponent],
   templateUrl: './dashboard.component.html'
 })
-export class DashboardComponent {
+export class DashboardComponent implements OnInit {
   DashboardCards: CardDetails[] = [
     {
       title: 'Total Users',
@@ -42,7 +53,7 @@ export class DashboardComponent {
     },
     {
       title: 'Total Posts',
-      value: 900,
+      value: 0, // will be set from API
       change: '+8%',
       changeLabel: 'vs. previous month',
       icon: DASHBOARD_ICONS.totalPosts,
@@ -64,13 +75,45 @@ export class DashboardComponent {
       icon: DASHBOARD_ICONS.pendingKyc,
       changeType: 'positive'
     }
-  ]
-
-    postCategories: PostCategory[] = [
-    { name: 'Equipment',    value: 45, color: '#3B82F6' },
-    { name: 'Books',        value: 25, color: '#A78BFA' },
-    { name: 'Instruments',  value: 15, color: '#EC4899' },
-    { name: 'Supplies',     value: 10, color: '#F59E0B' },
-    { name: 'Other',        value: 5,  color: '#10B981' },
   ];
+
+  postCategories: PostCategory[] = [];
+  averagePostPrice: number | null = null;
+  usersByUniversity: { [university: string]: number } = {};
+  universityPieData: PostCategory[] = [];
+
+  constructor(private dashboardDataService: DashboardDataService) {}
+
+  ngOnInit(): void {
+    this.dashboardDataService.getAnalyticsPost().subscribe((data: AnalyticsPostResponse) => {
+      // Update Total Posts card
+      const totalPostsCard = this.DashboardCards.find(card => card.title === 'Total Posts');
+      if (totalPostsCard) {
+        totalPostsCard.value = data.totalPosts;
+      }
+      this.averagePostPrice = data.averagePostPrice;
+      // Transform postsByCategory to PostCategory[]
+      const categories = Object.entries(data.postsByCategory);
+      this.postCategories = categories.map(([name, value], idx) => ({
+        name,
+        value,
+        color: CATEGORY_COLORS[idx % CATEGORY_COLORS.length]
+      }));
+    });
+    this.dashboardDataService.getAnalyticsUser().subscribe(userData => {
+      // Update Total Users card
+      const totalUsersCard = this.DashboardCards.find(card => card.title === 'Total Users');
+      if (totalUsersCard) {
+        totalUsersCard.value = userData.totalUsers;
+      }
+      this.usersByUniversity = userData.usersByUniversity;
+      // Transform for pie chart
+      const universities = Object.entries(userData.usersByUniversity);
+      this.universityPieData = universities.map(([name, value], idx) => ({
+        name,
+        value,
+        color: CATEGORY_COLORS[idx % CATEGORY_COLORS.length]
+      }));
+    });
+  }
 }

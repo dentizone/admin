@@ -1,8 +1,7 @@
-
 <h1 class="text-2xl font-bold ">
   Dashboard Overview
 </h1>
-<h6 class="text-gray-500 mb-4"> Welcome back, Admin! Here's what's happening on Dentizone today!</h6>
+<h6 class="mb-4 text-gray-500"> Welcome back, Admin! Here's what's happening on Dentizone today!</h6>
 <div class="flex flex-wrap gap-6">
   <app-card
     *ngFor="let card of DashboardCards"
@@ -10,7 +9,12 @@
     class="w-full sm:w-[calc(33.333%-1rem)]"
   />
 </div>
-<div class="pt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
-    <app-chart [postCategories]="postCategories"></app-chart>
+<div class="grid grid-cols-1 gap-6 pt-6 lg:grid-cols-2">
+    <app-chart [postCategories]="postCategories" [title]="'Posts by Category'"></app-chart>
+  <app-chart [postCategories]="universityPieData" [chartType]="'doughnut'" [title]="'Users Per University'"></app-chart>
+
+</div>
+<div class="mt-8">
   <app-recent-activity></app-recent-activity>
+
 </div>

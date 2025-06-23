@@ -2,10 +2,35 @@ import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { PostCategory } from '../models/post-category.model';
 import { Activity } from '../models/activity.model';
+import { HttpService } from './http.service';
+
+export interface AnalyticsPostResponse {
+  totalPosts: number;
+  averagePostPrice: number;
+  postsByCategory: { [category: string]: number };
+}
+
+export interface AnalyticsUserResponse {
+  totalUsers: number;
+  newUsersLast7Days: number;
+  newUsersLast30Days: number;
+  usersByUniversity: { [university: string]: number };
+}
 
 @Injectable({ providedIn: 'root' })
 export class DashboardDataService {
+  private analyticsUrl = 'https://apit.gitnasr.com/api/Analytics/post';
+  private analyticsUserUrl = 'https://apit.gitnasr.com/api/Analytics/user';
 
+  constructor(private httpService: HttpService) {}
+
+  getAnalyticsPost(): Observable<AnalyticsPostResponse> {
+    return this.httpService.get<AnalyticsPostResponse>(this.analyticsUrl);
+  }
+
+  getAnalyticsUser(): Observable<AnalyticsUserResponse> {
+    return this.httpService.get<AnalyticsUserResponse>(this.analyticsUserUrl);
+  }
 
   getRecentActivities(): Observable<Activity[]> {
     return of([
