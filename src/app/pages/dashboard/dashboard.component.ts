@@ -75,7 +75,7 @@ export class DashboardComponent implements OnInit {
   pendingPosts: number = 0;
   pendingKyc: number = 0;
 
-  constructor(private dashboardDataService: DashboardDataService) {}
+  constructor(private readonly dashboardDataService: DashboardDataService) {}
 
   ngOnInit(): void {
     this.dashboardDataService.getAnalyticsPost().subscribe((data: AnalyticsPostResponse) => {

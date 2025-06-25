@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class HttpService {
-  constructor(private http: HttpClient) {}
+  constructor(private readonly http: HttpClient) {}
 
   get<T>(url: string, params?: HttpParams | {[param: string]: string | string[]}, headers?: HttpHeaders | {[header: string]: string | string[]}): Observable<T> {
     return this.http.get<T>(url, { params, headers });
