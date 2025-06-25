@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { LayoutComponent } from './shared/layout/layout.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { PlaceholderComponent } from './pages/placeholder/placeholder.component';
+import { UniversityComponent } from './pages/university/university.component';
 
 export const routes: Routes = [
   {
@@ -13,7 +14,7 @@ export const routes: Routes = [
       { path: 'users', component: PlaceholderComponent },
       { path: 'posts', component: PlaceholderComponent },
       { path: 'catalog', component: PlaceholderComponent },
-      { path: 'university', component: PlaceholderComponent },
+      { path: 'university', component: UniversityComponent },
       { path: 'withdrawals', component: PlaceholderComponent },
       { path: 'transactions', component: PlaceholderComponent },
       { path: 'settings', component: PlaceholderComponent }
