@@ -1,6 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 
 interface MenuItem {
   readonly icon: 'squares-2x2' | 'users' | 'document-text' | 'book-open' | 'academic-cap' | 'credit-card' | 'currency-dollar' | 'cog-6-tooth';
@@ -20,7 +20,7 @@ export class LayoutComponent {
   isSidebarOpen = signal(false);
 
   readonly sidebarItems: MenuItem[] = [
-    { icon: 'squares-2x2', label: 'Dashboard', route: '/dashboard', active: true },
+    { icon: 'squares-2x2', label: 'Dashboard', route: '/dashboard', active: false },
     { icon: 'users', label: 'User Management', route: '/users' },
     { icon: 'document-text', label: 'Post Management', route: '/posts' },
     { icon: 'book-open', label: 'Catalog Management', route: '/catalog' },
@@ -35,6 +35,20 @@ export class LayoutComponent {
   readonly settingsItems: MenuItem[] = [
     { icon: 'cog-6-tooth', label: 'Platform Settings', route: '/settings' }
   ];
+
+  constructor(private readonly router: Router) {
+    this.setActiveByRoute(this.router.url);
+    this.router.events.subscribe(() => {
+      this.setActiveByRoute(this.router.url);
+    });
+  }
+
+  setActiveByRoute(url: string): void {
+    const allItems = [...this.sidebarItems, ...this.financialItems, ...this.settingsItems];
+    allItems.forEach(item => {
+      item.active = url.startsWith(item.route);
+    });
+  }
 
   setActiveItem(selectedItem: MenuItem): void {
     // Reset all items
