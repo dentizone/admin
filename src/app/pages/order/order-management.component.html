@@ -15,9 +15,35 @@
       (statusChange)="onFilterChange($event)">
     </app-order-tabs>
   </div>
+<div>
+<app-order-list
+  [orders]="filteredOrders"
+  (orderClick)="onOrderHover($event)">
+</app-order-list>
+</div>
 
-  <app-order-list [orders]="filteredOrders"></app-order-list>
+<div *ngIf="hoverOrder" class="fixed top-24 right-10 bg-white border border-gray-300 rounded-lg shadow-xl w-80 z-50 transition-opacity">
+  <div class="p-4">
+    <div class="flex justify-between items-center mb-2">
+      <h2 class="text-lg font-semibold">Order Details</h2>
+      <button (click)="clearHover()" class="text-sm text-red-500">✕</button>
+    </div>
+    <p class="text-sm text-gray-700"><strong>ID:</strong> {{ hoverOrder.id }}</p>
+    <p class="text-sm text-gray-700"><strong>Product:</strong> {{ hoverOrder.product }}</p>
+    <p class="text-sm text-gray-700"><strong>Status:</strong> {{ hoverOrder.status }}</p>
+    <p class="text-sm text-gray-700"><strong>Date:</strong> {{ hoverOrder.date }}</p>
+    <p class="text-sm text-gray-700"><strong>Quantity:</strong> {{ hoverOrder.quantity }}</p>
+    <p class="text-sm text-gray-700"><strong>Price:</strong> {{ hoverOrder.price || 'N/A' }}</p>
+    <p class="text-sm text-gray-700"><strong>Owner:</strong> {{ hoverOrder.owner || 'N/A' }}</p>
+    <div class="mt-4 flex justify-end gap-2">
+      <button (click)="completeHoverOrder()" class="px-3 py-1 rounded bg-blue-600 text-white text-sm">Complete</button>
+      <button (click)="cancelHoverOrder()" class="px-3 py-1 rounded bg-red-600 text-white text-sm">Cancel</button>
+    </div>
+  </div>
+</div>
 
+
+  <!-- Existing confirmation modal -->
   <div *ngIf="showModal" class="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
     <div class="bg-white rounded-lg p-6 shadow-xl w-96">
       <h2 class="text-lg font-semibold mb-4">Confirm action</h2>

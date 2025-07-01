@@ -12,6 +12,6 @@
     Completed {{ orders.completed }}
   </span>
   <span class="cursor-pointer" [ngClass]="{ 'text-blue-900 border-b-2 border-blue-900 pb-1': selectedStatus === 'Cancelled' }" (click)="setStatus('Cancelled')">
-    Cancelled {{ orders.cancelled }}
+    Canceled {{ orders.cancelled }}
   </span>
 </div>

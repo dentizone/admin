@@ -12,6 +12,8 @@ interface Order {
   selected: boolean;
   statusColor: string;
   status: string;
+  price?: string;
+  owner?: string;
 }
 @Component({
   selector: 'app-order-management',
@@ -56,6 +58,7 @@ export class OrderManagementComponent {
 
   showModal = false;
   modalAction: 'delete' | 'pending' | 'processing' = 'delete';
+  hoverOrder: Order | null = null;
   get orders() {
     return {
       all: this.allOrders.length,
@@ -78,7 +81,7 @@ export class OrderManagementComponent {
 
   completeSelectedOrders() {
     this.allOrders.forEach(order => {
-      if (order.selected && (order.status === 'Pending' || order.status === 'Processing')) {
+      if (order.selected && (order.status === 'Pending' || order.status === 'Processing' || order.status === 'Cancelled')) {
         order.status = 'Completed';
         order.statusColor = 'bg-blue-900';
       }
@@ -105,7 +108,13 @@ export class OrderManagementComponent {
   }
 
   deleteSelectedOrders() {
-    this.allOrders = this.allOrders.filter(order => !order.selected);
+    this.allOrders.forEach(order => {
+      if (order.selected) {
+        order.status = 'Cancelled';
+        order.statusColor = 'bg-red-600';
+        order.selected = false;
+      }
+    });
   }
 
   markSelectedAsPending() {
@@ -125,4 +134,28 @@ export class OrderManagementComponent {
       }
     });
   }
+    onOrderHover(order: Order) {
+    this.hoverOrder = order;
+  }
+
+  clearHover() {
+    this.hoverOrder = null;
+  }
+
+completeHoverOrder() {
+  if (this.hoverOrder) {
+    this.hoverOrder.status = 'Completed';
+    this.hoverOrder.statusColor = 'bg-blue-500';
+    this.clearHover();
+  }
+}
+
+cancelHoverOrder() {
+  if (this.hoverOrder) {
+    this.hoverOrder.status = 'Cancelled';
+    this.hoverOrder.statusColor = 'bg-red-600';
+    this.clearHover();
+  }
+}
+
 }

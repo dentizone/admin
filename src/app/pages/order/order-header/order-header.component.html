@@ -7,7 +7,7 @@
   <div class="relative">
     <button class="bg-white border border-gray-300 px-4 py-2 rounded text-sm" (click)="toggleActions()">More actions ▼</button>
     <div *ngIf="showActions" class="absolute right-0 mt-2 bg-white border border-gray-300 rounded shadow-md z-10 w-40">
-      <button class="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100" (click)="onDeleteClick()">Delete selected</button>
+      <button class="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100" (click)="onDeleteClick()">Cancel selected</button>
       <button class="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100" (click)="onMarkPendingClick()">Mark as Pending</button>
       <button class="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100" (click)="onMarkProcessingClick()">Mark as Processing</button>
     </div>
