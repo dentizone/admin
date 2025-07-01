@@ -23,6 +23,7 @@ export class LayoutComponent {
     { icon: 'squares-2x2', label: 'Dashboard', route: '/dashboard', active: false },
     { icon: 'users', label: 'User Management', route: '/users' },
     { icon: 'document-text', label: 'Post Management', route: '/posts' },
+    { icon: 'document-text', label: 'Order Management', route: '/orders'},
     { icon: 'book-open', label: 'Catalog Management', route: '/catalog' },
     { icon: 'academic-cap', label: 'University Management', route: '/university' }
   ];

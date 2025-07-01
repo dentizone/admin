@@ -1,0 +1,17 @@
+<div class="flex space-x-6 text-sm text-gray-700 font-medium">
+  <span class="cursor-pointer" [ngClass]="{ 'text-blue-900 border-b-2 border-blue-900 pb-1': selectedStatus === 'All' }" (click)="setStatus('All')">
+    All Orders {{ orders.all }}
+  </span>
+  <span class="cursor-pointer" [ngClass]="{ 'text-blue-900 border-b-2 border-blue-900 pb-1': selectedStatus === 'Pending' }" (click)="setStatus('Pending')">
+    Pending {{ orders.pending }}
+  </span>
+  <span class="cursor-pointer" [ngClass]="{ 'text-blue-900 border-b-2 border-blue-900 pb-1': selectedStatus === 'Processing' }" (click)="setStatus('Processing')">
+    Processing {{ orders.processing }}
+  </span>
+  <span class="cursor-pointer" [ngClass]="{ 'text-blue-900 border-b-2 border-blue-900 pb-1': selectedStatus === 'Completed' }" (click)="setStatus('Completed')">
+    Completed {{ orders.completed }}
+  </span>
+  <span class="cursor-pointer" [ngClass]="{ 'text-blue-900 border-b-2 border-blue-900 pb-1': selectedStatus === 'Cancelled' }" (click)="setStatus('Cancelled')">
+    Cancelled {{ orders.cancelled }}
+  </span>
+</div>
