@@ -21,6 +21,7 @@ interface Order {
     postTitle: string;
     price: number;
     createdAt: string;
+    pickupLocation?: string;
   }[];
   sellers: Seller[];
 }
@@ -38,12 +39,6 @@ interface Order {
         class="relative w-full max-w-2xl mx-2 bg-white border-l-8 border-indigo-400 rounded-2xl shadow-2xl animate-scale-in overflow-y-auto max-h-[90vh]"
         (click)="$event.stopPropagation()"
       >
-        <button
-          (click)="close.emit()"
-          class="float-right sticky top-0 right-0 z-10 p-2 m-4 text-2xl text-gray-400 bg-white rounded-full shadow-md transition-colors hover:text-rose-500"
-        >
-          <span class="sr-only">Close</span>&times;
-        </button>
         <div class="p-6 md:p-10">
           <div class="flex gap-3 items-center mb-6">
             <svg
@@ -218,24 +213,22 @@ interface Order {
                   </svg>
                   Status Timeline
                 </div>
-                <ul class="relative pl-8 border-l-2 border-indigo-100">
+                <ul class="relative pl-8 border-l border-indigo-100">
                   <ng-container *ngIf="order?.statusTimeline as timeline">
                     <ng-container *ngIf="timeline.length > 0">
                       <li
                         *ngFor="let status of timeline; let i = index"
-                        class="flex relative gap-3 mb-6 last:mb-0"
+                        class="flex items-center gap-3 mb-4 last:mb-0 min-h-[2.5rem]"
                       >
-                        <div
-                          class="absolute left-[-2.1rem] flex flex-col items-center"
-                        >
+                        <div class="flex flex-col items-center w-4">
                           <span
-                            class="w-4 h-4 rounded-full border-2 border-white shadow"
+                            class="w-3 h-3 rounded-full border-2 border-white shadow"
                             [ngClass]="{
-                              'bg-yellow-300': status.status === 'Pending',
-                              'bg-blue-300': status.status === 'Arrived',
-                              'bg-rose-300': status.status === 'Cancelled',
-                              'bg-purple-300': status.status === 'Placed',
-                              'bg-teal-300': status.status === 'Completed',
+                              'bg-blue-400': status.status === 'Arrived',
+                              'bg-yellow-400': status.status === 'Pending',
+                              'bg-rose-400': status.status === 'Cancelled',
+                              'bg-purple-400': status.status === 'Placed',
+                              'bg-teal-400': status.status === 'Completed',
                               'bg-gray-200': !status.status
                             }"
                           ></span>
@@ -292,14 +285,37 @@ interface Order {
                     <ng-container *ngIf="items.length > 0">
                       <li
                         *ngFor="let item of items"
-                        class="flex gap-2 items-center"
+                        class="flex flex-col gap-0.5 mb-2"
                       >
-                        <span class="font-semibold text-gray-800">{{
-                          item?.postTitle
-                        }}</span>
-                        <span class="text-teal-700">{{
-                          item?.price | currency
-                        }}</span>
+                        <div class="flex gap-2 items-center">
+                          <span class="font-semibold text-gray-800">{{
+                            item?.postTitle
+                          }}</span>
+                          <span class="text-teal-700">{{
+                            item?.price | currency
+                          }}</span>
+                        </div>
+                        <div
+                          *ngIf="item?.pickupLocation"
+                          class="flex gap-1 items-center pl-6 text-xs text-gray-500"
+                        >
+                          <!-- Map pin icon -->
+                          <svg
+                            class="w-4 h-4 text-rose-400"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              d="M12 21c-4.418 0-8-4.03-8-9a8 8 0 1116 0c0 4.97-3.582 9-8 9z"
+                            />
+                            <circle cx="12" cy="12" r="3" />
+                          </svg>
+                          <span>{{ item.pickupLocation }}</span>
+                        </div>
                       </li>
                     </ng-container>
                   </ng-container>
