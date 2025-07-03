@@ -1,0 +1,20 @@
+
+<div class="fixed top-12 right-5 px-4 py-2 rounded ">
+    <div class="flex z-10 items-center w-full max-w-xs p-4 mb-4 rounded-lg shadow-sm " role="alert"
+        [ngClass]="{'bg-green-200':isSuccess,'bg-red-200':!isSuccess}"
+    >
+        <div class="inline-flex items-center justify-center shrink-0 w-8 h-8 rounded-lg "
+        [ngClass]="{'text-green-500 bg-green-100 ':isSuccess,'text-red-500 bg-red-100 ':!isSuccess}"
+        >
+            <svg *ngIf="isSuccess" class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/>
+            </svg>
+            <svg *ngIf="!isSuccess" class="w-5 h-5 text-red-600" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm2.12-10.12a1 1 0 0 0-1.41 0L10 8.59 9.29 7.88a1 1 0 1 0-1.41 1.41L8.59 10l-.71.71a1 1 0 1 0 1.41 1.41L10 11.41l.71.71a1 1 0 0 0 1.41-1.41L11.41 10l.71-.71a1 1 0 0 0 0-1.41Z" clip-rule="evenodd"/>
+            </svg>
+
+        </div>
+        <div class="ms-3 text-sm font-normal">{{message}}</div>
+        
+    </div>
+</div>
