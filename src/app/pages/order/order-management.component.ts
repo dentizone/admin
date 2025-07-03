@@ -1,98 +1,156 @@
-import { CommonModule } from "@angular/common";
-import { Component } from "@angular/core";
-import { OrderHeaderComponent } from "./order-header/order-header.compoenent";
-import { OrderTabsComponent } from "./order-tabs/order-tabs.component";
-import { OrderListComponent } from "./order-lists/order-list.component";
+import { CommonModule } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
+import { OrderService } from '../../core/services/order.service';
+import { OrderDetailsModalComponent } from './order-details-modal.component';
+import { OrderHeaderComponent } from './order-header/order-header.compoenent';
+import { OrderListComponent } from './order-lists/order-list.component';
+
+interface Seller {
+  sellerId: string;
+  sellerName: string;
+  sellerEmail: string;
+}
+
 interface Order {
   id: string;
-  date: string;
-  product: string;
-  quantity: number;
-  icon: string;
-  selected: boolean;
-  statusColor: string;
-  status: string;
-  price?: string;
-  owner?: string;
+  buyerId: string;
+  buyerName: string;
+  totalAmount: number;
+  orderShipmentAddress: { street: string; city: string } | null;
+  createdAt: string;
+  statusTimeline: { status: string; timestamp: string }[];
+  orderItems: {
+    id: string;
+    postId: string;
+    postTitle: string;
+    price: number;
+    createdAt: string;
+  }[];
+  sellers: Seller[];
+  selected?: boolean; // Indicates if the order is selected for an action
+  status?: string; // Represents the current status of the order
 }
+
 @Component({
   selector: 'app-order-management',
   standalone: true,
-  imports: [CommonModule,OrderHeaderComponent,OrderTabsComponent,OrderListComponent],
+  imports: [
+    CommonModule,
+    OrderHeaderComponent,
+    OrderListComponent,
+    OrderDetailsModalComponent,
+  ],
   templateUrl: './order-management.component.html',
 })
-export class OrderManagementComponent {
+export class OrderManagementComponent implements OnInit {
+  orders: Order[] = [];
   selectedStatus = 'All';
-  allOrders: Order[] = [
-    {
-      id: '#ORD-2024-001',
-      date: 'June 24, 2024',
-      product: 'Wireless Headphones',
-      quantity: 1,
-      icon: 'bg-purple-200',
-      selected: true,
-      statusColor: 'bg-blue-900',
-      status: 'Completed'
-    },
-    {
-      id: '#ORD-2024-002',
-      date: 'June 23, 2024',
-      product: 'Smartphone Case',
-      quantity: 2,
-      icon: 'bg-yellow-300',
-      selected: false,
-      statusColor: 'bg-yellow-600',
-      status: 'Pending'
-    },
-    {
-      id: '#ORD-2024-003',
-      date: 'June 22, 2024',
-      product: 'Smart Watch',
-      quantity: 1,
-      icon: 'bg-purple-200',
-      selected: false,
-      statusColor: 'bg-blue-500',
-      status: 'Processing'
-    }
-  ];
-
+  page = 1;
+  totalPages = 1;
+  totalCount = 0;
   showModal = false;
   modalAction: 'delete' | 'pending' | 'processing' = 'delete';
-  hoverOrder: Order | null = null;
-  get orders() {
+  hoverOrder: Order | null = null; // Ensure hoverOrder is defined
+  sellerName: string = '';
+  buyerName: string = '';
+  orderDate: Date | null = null;
+
+  get ordersCount() {
     return {
-      all: this.allOrders.length,
-      pending: this.allOrders.filter(o => o.status === 'Pending').length,
-      processing: this.allOrders.filter(o => o.status === 'Processing').length,
-      completed: this.allOrders.filter(o => o.status === 'Completed').length,
-      cancelled: this.allOrders.filter(o => o.status === 'Cancelled').length,
+      all: this.orders.length,
+      pending: this.orders.filter((o) => o.status === 'Pending').length,
+      processing: this.orders.filter((o) => o.status === 'Processing').length,
+      completed: this.orders.filter((o) => o.status === 'Completed').length,
+      cancelled: this.orders.filter((o) => o.status === 'Cancelled').length,
     };
   }
 
-  get filteredOrders() {
+  constructor(private readonly orderService: OrderService) {}
+
+  ngOnInit(): void {
+    this.loadOrders();
+  }
+
+  loadOrders(): void {
+    const statusMap: { [key: string]: number } = {
+      Pending: 1,
+      Arrived: 2,
+      Cancelled: 3,
+      Placed: 4,
+      Completed: 5,
+    };
+
+    const status =
+      this.selectedStatus && this.selectedStatus !== 'All'
+        ? statusMap[this.selectedStatus]
+        : undefined;
+
+    this.orderService
+      .fetchOrders(
+        undefined,
+        this.buyerName,
+        this.sellerName,
+        status,
+        this.page,
+        this.orderDate || undefined
+      )
+      .subscribe({
+        next: (response) => {
+          this.orders = response.items;
+          this.totalPages = response.totalPages;
+          this.totalCount = response.totalCount;
+        },
+        error: (err) => {
+          console.error('Failed to load orders', err);
+        },
+      });
+  }
+
+  onStatusFilterChange(status: string): void {
+    this.selectedStatus = status || 'All';
+    this.page = 1;
+    this.loadOrders();
+  }
+
+  onSellerNameChange(seller: string): void {
+    this.sellerName = seller;
+    this.page = 1;
+    this.loadOrders();
+  }
+
+  onBuyerNameChange(buyer: string): void {
+    this.buyerName = buyer;
+    this.page = 1;
+    this.loadOrders();
+  }
+
+  onPageChange(newPage: number): void {
+    if (newPage > 0 && newPage <= this.totalPages) {
+      this.page = newPage;
+      this.loadOrders();
+    }
+  }
+
+  onOrderDateChange(date: string): void {
+    this.orderDate = date ? new Date(date) : null;
+    this.page = 1;
+    this.loadOrders();
+  }
+
+  get filteredOrders(): Order[] {
     return this.selectedStatus === 'All'
-      ? this.allOrders
-      : this.allOrders.filter(order => order.status === this.selectedStatus);
+      ? this.orders
+      : this.orders.filter((order) =>
+          order.statusTimeline.some((st) => st.status === this.selectedStatus)
+        );
   }
 
-  onFilterChange(status: string) {
-    this.selectedStatus = status;
-  }
-
-  completeSelectedOrders() {
-    this.allOrders.forEach(order => {
-      if (order.selected && (order.status === 'Pending' || order.status === 'Processing' || order.status === 'Cancelled')) {
-        order.status = 'Completed';
-        order.statusColor = 'bg-blue-900';
-      }
-    });
-  }
-     confirmAction(action: 'delete' | 'pending' | 'processing') {
+  confirmAction(action: 'delete' | 'pending' | 'processing'): void {
     this.modalAction = action;
     this.showModal = true;
   }
 
-  performConfirmedAction() {
+  performConfirmedAction(): void {
     switch (this.modalAction) {
       case 'delete':
         this.deleteSelectedOrders();
@@ -107,55 +165,45 @@ export class OrderManagementComponent {
     this.showModal = false;
   }
 
-  deleteSelectedOrders() {
-    this.allOrders.forEach(order => {
-      if (order.selected) {
-        order.status = 'Cancelled';
-        order.statusColor = 'bg-red-600';
-        order.selected = false;
-      }
-    });
+  deleteSelectedOrders(): void {
+    this.orders = this.orders.filter((order) => !order.selected);
   }
 
-  markSelectedAsPending() {
-    this.allOrders.forEach(order => {
+  markSelectedAsPending(): void {
+    this.orders.forEach((order) => {
       if (order.selected) {
         order.status = 'Pending';
-        order.statusColor = 'bg-yellow-600';
       }
     });
   }
 
-  markSelectedAsProcessing() {
-    this.allOrders.forEach(order => {
+  markSelectedAsProcessing(): void {
+    this.orders.forEach((order) => {
       if (order.selected) {
         order.status = 'Processing';
-        order.statusColor = 'bg-blue-500';
       }
     });
   }
-    onOrderHover(order: Order) {
+
+  onOrderHover(order: Order): void {
     this.hoverOrder = order;
   }
 
-  clearHover() {
+  clearHover(): void {
     this.hoverOrder = null;
   }
 
-completeHoverOrder() {
-  if (this.hoverOrder) {
-    this.hoverOrder.status = 'Completed';
-    this.hoverOrder.statusColor = 'bg-blue-500';
-    this.clearHover();
+  completeHoverOrder(): void {
+    if (this.hoverOrder) {
+      this.hoverOrder.status = 'Completed';
+      this.clearHover();
+    }
   }
-}
 
-cancelHoverOrder() {
-  if (this.hoverOrder) {
-    this.hoverOrder.status = 'Cancelled';
-    this.hoverOrder.statusColor = 'bg-red-600';
-    this.clearHover();
+  cancelHoverOrder(): void {
+    if (this.hoverOrder) {
+      this.hoverOrder.status = 'Cancelled';
+      this.clearHover();
+    }
   }
-}
-
 }
