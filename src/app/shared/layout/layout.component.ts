@@ -1,9 +1,9 @@
-import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component, signal } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 
 interface MenuItem {
-  readonly icon: 'squares-2x2' | 'users' | 'document-text' | 'book-open' | 'academic-cap' | 'credit-card' | 'currency-dollar' | 'cog-6-tooth';
+  readonly icon: string;
   readonly label: string;
   readonly route: string;
   active?: boolean;
@@ -23,7 +23,7 @@ export class LayoutComponent {
     { icon: 'squares-2x2', label: 'Dashboard', route: '/dashboard', active: false },
     { icon: 'users', label: 'User Management', route: '/users' },
     { icon: 'document-text', label: 'Post Management', route: '/posts' },
-    { icon: 'document-text', label: 'Order Management', route: '/orders'},
+    { icon: 'shopping-bag', label: 'Order Management', route: '/orders'},
     { icon: 'book-open', label: 'Catalog Management', route: '/catalog' },
     { icon: 'academic-cap', label: 'University Management', route: '/university' }
   ];
