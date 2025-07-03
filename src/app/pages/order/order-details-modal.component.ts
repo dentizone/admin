@@ -1,5 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+} from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { ShipmentService } from '../../core/services/shipment.service';
 
 interface Seller {
   sellerId: string;
@@ -29,8 +37,15 @@ interface Order {
 @Component({
   selector: 'app-order-details-modal',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   template: `
+    <!-- Toast Notification -->
+    <div
+      *ngIf="toastMessage"
+      class="fixed top-6 right-6 z-[9999] px-6 py-3 rounded-lg shadow-lg text-white font-semibold transition bg-green-600 animate-fade-in"
+    >
+      {{ toastMessage }}
+    </div>
     <div
       class="flex fixed inset-0 z-50 justify-center items-center bg-black bg-opacity-60"
       (click)="close.emit()"
@@ -280,41 +295,75 @@ interface Order {
                   </svg>
                   Order Items
                 </div>
-                <ul class="space-y-1">
+                <ul class="flex flex-col gap-6">
                   <ng-container *ngIf="order?.orderItems as items">
                     <ng-container *ngIf="items.length > 0">
                       <li
                         *ngFor="let item of items"
-                        class="flex flex-col gap-0.5 mb-2"
+                        class="flex flex-col gap-4 p-6 rounded-2xl border border-indigo-50 shadow-lg backdrop-blur-md bg-white/80"
                       >
-                        <div class="flex gap-2 items-center">
-                          <span class="font-semibold text-gray-800">{{
-                            item?.postTitle
-                          }}</span>
-                          <span class="text-teal-700">{{
-                            item?.price | currency
-                          }}</span>
-                        </div>
-                        <div
-                          *ngIf="item?.pickupLocation"
-                          class="flex gap-1 items-center pl-6 text-xs text-gray-500"
-                        >
-                          <!-- Map pin icon -->
-                          <svg
-                            class="w-4 h-4 text-rose-400"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            viewBox="0 0 24 24"
+                        <div class="flex flex-col gap-1">
+                          <div class="flex gap-2 items-center">
+                            <span class="text-lg font-bold text-indigo-900">{{
+                              item?.postTitle
+                            }}</span>
+                            <span
+                              class="text-lg font-semibold text-emerald-600"
+                              >{{ item?.price | currency }}</span
+                            >
+                          </div>
+                          <div
+                            *ngIf="item?.pickupLocation"
+                            class="flex gap-2 items-center mt-1 text-sm text-gray-500"
                           >
-                            <path
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              d="M12 21c-4.418 0-8-4.03-8-9a8 8 0 1116 0c0 4.97-3.582 9-8 9z"
-                            />
-                            <circle cx="12" cy="12" r="3" />
-                          </svg>
-                          <span>{{ item.pickupLocation }}</span>
+                            <svg
+                              class="w-4 h-4 text-rose-400"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="2"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M12 21c-4.418 0-8-4.03-8-9a8 8 0 1116 0c0 4.97-3.582 9-8 9z"
+                              />
+                              <circle cx="12" cy="12" r="3" />
+                            </svg>
+                            <span>{{ item.pickupLocation }}</span>
+                          </div>
+                        </div>
+                        <div class="flex flex-col gap-3 mt-2">
+                          <label class="text-xs font-medium text-gray-500"
+                            >Shipment Status</label
+                          >
+                          <select
+                            class="px-3 py-2 text-sm bg-white rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-200"
+                            [(ngModel)]="
+                              shipmentFormState[item.id].selectedShipmentStatus
+                            "
+                          >
+                            <option
+                              *ngFor="let status of shipmentStatusOptions"
+                              [value]="status.value"
+                            >
+                              {{ status.label }}
+                            </option>
+                          </select>
+                          <input
+                            type="text"
+                            class="px-3 py-2 text-sm bg-white rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-200"
+                            placeholder="Comment (اختياري)"
+                            [(ngModel)]="
+                              shipmentFormState[item.id].shipmentComment
+                            "
+                          />
+                          <button
+                            class="py-2 mt-1 w-full font-bold text-white bg-gradient-to-r from-blue-600 to-indigo-500 rounded-xl shadow-md transition hover:from-blue-700 hover:to-indigo-600"
+                            (click)="adjustShipment(item)"
+                          >
+                            Adjust Shipment
+                          </button>
                         </div>
                       </li>
                     </ng-container>
@@ -342,12 +391,77 @@ interface Order {
           opacity: 1;
         }
       }
+      .animate-fade-in {
+        animation: fadeIn 0.3s;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
     `,
   ],
 })
-export class OrderDetailsModalComponent {
+export class OrderDetailsModalComponent implements OnChanges {
   @Input() order: Order | null = null;
   @Output() close = new EventEmitter<void>();
+  shipmentStatusOptions = [
+    { value: 0, label: 'Pending' },
+    { value: 1, label: 'Picked Up' },
+    { value: 2, label: 'Shipped' },
+    { value: 3, label: 'Delivered' },
+    { value: 4, label: 'Cancelled' },
+  ];
+  toastMessage: string | null = null;
+  shipmentFormState: {
+    [itemId: string]: {
+      selectedShipmentStatus: number;
+      shipmentComment: string;
+    };
+  } = {};
+  constructor(private shipmentService: ShipmentService) {}
+
+  ngOnChanges() {
+    if (this.order?.orderItems) {
+      for (const item of this.order.orderItems) {
+        if (!this.shipmentFormState[item.id]) {
+          this.shipmentFormState[item.id] = {
+            selectedShipmentStatus: 0, // TODO: set from real item status if available
+            shipmentComment: '',
+          };
+        }
+      }
+    }
+  }
+
+  showToast(message: string) {
+    this.toastMessage = message;
+    setTimeout(() => {
+      this.toastMessage = null;
+    }, 2500);
+  }
+
+  adjustShipment(item: any) {
+    const state = this.shipmentFormState[item.id] || {
+      selectedShipmentStatus: 0,
+      shipmentComment: '',
+    };
+    const status = state.selectedShipmentStatus;
+    const comment = state.shipmentComment;
+    this.shipmentService.adjustShipment(item.id, status, comment).subscribe({
+      next: () => {
+        this.showToast('Shipment status updated successfully!');
+      },
+      error: () => {
+        this.showToast('Failed to update shipment status.');
+      },
+    });
+  }
 
   getSellerInitials(sellerName: string): string {
     if (!sellerName) return '?';
