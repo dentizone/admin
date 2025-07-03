@@ -69,6 +69,7 @@ interface Order {
               <div
                 class="flex gap-2 items-center text-lg font-semibold text-indigo-900"
               >
+                <!-- Buyer icon -->
                 <svg
                   class="w-5 h-5 text-indigo-400"
                   fill="none"
@@ -79,12 +80,18 @@ interface Order {
                   <path
                     stroke-linecap="round"
                     stroke-linejoin="round"
-                    d="M16 7a4 4 0 01-8 0"
+                    d="M5.121 17.804A13.937 13.937 0 0112 15c2.5 0 4.847.655 6.879 1.804"
+                  />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
                   />
                 </svg>
                 {{ order?.buyerName }}
               </div>
               <div class="flex gap-2 items-center text-gray-600">
+                <!-- Calendar icon -->
                 <svg
                   class="w-5 h-5 text-teal-400"
                   fill="none"
@@ -92,15 +99,13 @@ interface Order {
                   stroke-width="2"
                   viewBox="0 0 24 24"
                 >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                  />
+                  <rect width="18" height="18" x="3" y="4" rx="2" />
+                  <path d="M16 2v4M8 2v4M3 10h18" />
                 </svg>
                 <span>{{ order?.createdAt | date : 'medium' }}</span>
               </div>
               <div class="flex gap-2 items-center text-gray-600">
+                <!-- Money icon -->
                 <svg
                   class="w-5 h-5 text-teal-400"
                   fill="none"
@@ -108,11 +113,9 @@ interface Order {
                   stroke-width="2"
                   viewBox="0 0 24 24"
                 >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4z"
-                  />
+                  <rect width="20" height="12" x="2" y="6" rx="2" />
+                  <path d="M6 10h.01M18 10h.01" />
+                  <circle cx="12" cy="12" r="2" />
                 </svg>
                 <span class="text-lg font-bold text-indigo-900">{{
                   order?.totalAmount | currency
@@ -122,6 +125,7 @@ interface Order {
                 class="flex gap-2 items-center text-gray-600"
                 *ngIf="order?.orderShipmentAddress"
               >
+                <!-- Map pin icon -->
                 <svg
                   class="w-5 h-5 text-rose-400"
                   fill="none"
@@ -132,13 +136,9 @@ interface Order {
                   <path
                     stroke-linecap="round"
                     stroke-linejoin="round"
-                    d="M17.657 16.657L13.414 20.9a2 2 0 01-2.828 0l-4.243-4.243a8 8 0 1111.314 0z"
+                    d="M12 21c-4.418 0-8-4.03-8-9a8 8 0 1116 0c0 4.97-3.582 9-8 9z"
                   />
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                  />
+                  <circle cx="12" cy="12" r="3" />
                 </svg>
                 <span
                   >{{ order?.orderShipmentAddress?.street }},
@@ -150,6 +150,7 @@ interface Order {
                 <div
                   class="flex gap-2 items-center mb-2 font-semibold text-gray-700"
                 >
+                  <!-- Users/Group icon -->
                   <svg
                     class="w-5 h-5 text-purple-400"
                     fill="none"
@@ -160,12 +161,7 @@ interface Order {
                     <path
                       stroke-linecap="round"
                       stroke-linejoin="round"
-                      d="M5.121 17.804A13.937 13.937 0 0112 15c2.5 0 4.847.655 6.879 1.804"
-                    />
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                      d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m9-5a4 4 0 11-8 0 4 4 0 018 0z"
                     />
                   </svg>
                   Sellers
@@ -205,6 +201,7 @@ interface Order {
                 <div
                   class="flex gap-2 items-center mb-2 font-semibold text-gray-700"
                 >
+                  <!-- Clock/History icon -->
                   <svg
                     class="w-5 h-5 text-indigo-400"
                     fill="none"
@@ -212,42 +209,51 @@ interface Order {
                     stroke-width="2"
                     viewBox="0 0 24 24"
                   >
+                    <circle cx="12" cy="12" r="10" />
                     <path
                       stroke-linecap="round"
                       stroke-linejoin="round"
-                      d="M9 17v-2a4 4 0 014-4h3"
+                      d="M12 6v6l4 2"
                     />
                   </svg>
                   Status Timeline
                 </div>
-                <ul class="relative pl-6 border-l-2 border-indigo-100">
+                <ul class="relative pl-8 border-l-2 border-indigo-100">
                   <ng-container *ngIf="order?.statusTimeline as timeline">
                     <ng-container *ngIf="timeline.length > 0">
                       <li
                         *ngFor="let status of timeline; let i = index"
-                        class="flex relative gap-3 items-center mb-4 last:mb-0"
+                        class="flex relative gap-3 mb-6 last:mb-0"
                       >
-                        <span
-                          class="flex absolute -left-6 justify-center items-center w-4 h-4 rounded-full border-2 border-white shadow"
-                          [ngClass]="{
-                            'bg-yellow-300': status.status === 'Pending',
-                            'bg-blue-300': status.status === 'Arrived',
-                            'bg-rose-300': status.status === 'Cancelled',
-                            'bg-purple-300': status.status === 'Placed',
-                            'bg-teal-300': status.status === 'Completed',
-                            'bg-gray-200': !status.status
-                          }"
-                        ></span>
-                        <span class="font-semibold text-gray-700">{{
-                          status.status
-                        }}</span>
-                        <span class="text-xs text-gray-500">{{
-                          status.timestamp | date : 'short'
-                        }}</span>
-                        <span
-                          *ngIf="i < timeline.length - 1"
-                          class="absolute left-[-1.1rem] top-4 w-0.5 h-6 bg-indigo-100"
-                        ></span>
+                        <div
+                          class="absolute left-[-2.1rem] flex flex-col items-center"
+                        >
+                          <span
+                            class="w-4 h-4 rounded-full border-2 border-white shadow"
+                            [ngClass]="{
+                              'bg-yellow-300': status.status === 'Pending',
+                              'bg-blue-300': status.status === 'Arrived',
+                              'bg-rose-300': status.status === 'Cancelled',
+                              'bg-purple-300': status.status === 'Placed',
+                              'bg-teal-300': status.status === 'Completed',
+                              'bg-gray-200': !status.status
+                            }"
+                          ></span>
+                          <span
+                            *ngIf="i < timeline.length - 1"
+                            class="w-0.5 flex-1 bg-indigo-100"
+                          ></span>
+                        </div>
+                        <div
+                          class="flex flex-col gap-1 md:flex-row md:items-center md:gap-3"
+                        >
+                          <span class="font-semibold text-gray-700">{{
+                            status.status
+                          }}</span>
+                          <span class="text-xs text-gray-500">{{
+                            status.timestamp | date : 'short'
+                          }}</span>
+                        </div>
                       </li>
                     </ng-container>
                   </ng-container>
@@ -258,6 +264,7 @@ interface Order {
                 <div
                   class="flex gap-2 items-center mb-2 font-semibold text-gray-700"
                 >
+                  <!-- Shopping bag/cart icon -->
                   <svg
                     class="w-5 h-5 text-teal-400"
                     fill="none"
@@ -268,7 +275,14 @@ interface Order {
                     <path
                       stroke-linecap="round"
                       stroke-linejoin="round"
-                      d="M3 7h18M3 12h18M3 17h18"
+                      d="M5.5 8h13l-1.5 9h-10l-1.5-9z"
+                    />
+                    <circle cx="9" cy="21" r="1" />
+                    <circle cx="15" cy="21" r="1" />
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M7 8V6a5 5 0 0110 0v2"
                     />
                   </svg>
                   Order Items
