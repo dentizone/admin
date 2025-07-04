@@ -41,4 +41,26 @@ export class OrderService {
 
     return this.http.get<any>(this.apiUrl, { params });
   }
+
+  updateOrderStatus(orderId: string, status: number): Observable<any> {
+    return this.http.put(
+      `${environment.apiBaseUrl}/Order/${orderId}/status`,
+      status,
+      {
+        headers: { 'Content-Type': 'application/json' },
+      }
+    );
+  }
+
+  confirmOrder(orderId: string): Observable<any> {
+    // Assuming 5 is the status code for 'Completed'
+    return this.updateOrderStatus(orderId, 5);
+  }
+
+  cancelOrder(orderId: string): Observable<any> {
+    return this.http.put(
+      `${environment.apiBaseUrl}/Order/${orderId}/cancel`,
+      {}
+    );
+  }
 }

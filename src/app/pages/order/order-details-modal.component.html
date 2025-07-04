@@ -32,6 +32,8 @@
           />
         </svg>
         <h2 class="text-3xl font-extrabold text-indigo-900">Order Details</h2>
+      </div>
+      <div class="flex gap-3 items-center mb-6">
         <span class="text-xs text-gray-500 break-all select-all">{{
           order?.id
         }}</span>
@@ -304,6 +306,99 @@
             </ul>
           </div>
         </div>
+      </div>
+    </div>
+
+    <!-- Modern Order Actions at the bottom -->
+    <div
+      class="mt-10 p-6 bg-gray-50 rounded-2xl shadow-inner flex flex-col gap-4"
+    >
+      <div class="flex flex-col md:flex-row gap-4">
+        <select
+          class="flex-1 px-4 py-3 text-base bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-300 transition"
+          [(ngModel)]="selectedOrderStatus"
+          [disabled]="actionsDisabled"
+        >
+          <option [ngValue]="null">Select Status</option>
+          <option
+            *ngFor="let status of orderStatusOptions"
+            [ngValue]="status.value"
+          >
+            {{ status.label }}
+          </option>
+        </select>
+        <button
+          class="flex-1 flex items-center justify-center gap-2 px-4 py-3 text-base font-bold text-white bg-blue-600 rounded-xl shadow hover:bg-blue-700 focus:ring-2 focus:ring-blue-300 transition disabled:opacity-60"
+          (click)="updateOrderStatus()"
+          [disabled]="
+            selectedOrderStatus === null ||
+            isUpdatingOrderStatus ||
+            actionsDisabled
+          "
+        >
+          <svg
+            *ngIf="!isUpdatingOrderStatus"
+            class="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M5 13l4 4L19 7"
+            />
+          </svg>
+          <span *ngIf="!isUpdatingOrderStatus">Update Status</span>
+          <span *ngIf="isUpdatingOrderStatus">Updating...</span>
+        </button>
+      </div>
+      <div class="flex flex-col md:flex-row gap-4">
+        <button
+          class="flex-1 flex items-center justify-center gap-2 px-4 py-3 text-base font-bold text-white bg-green-600 rounded-xl shadow hover:bg-green-700 focus:ring-2 focus:ring-green-300 transition disabled:opacity-60"
+          (click)="confirmOrder()"
+          [disabled]="isConfirmingOrder || actionsDisabled"
+        >
+          <svg
+            *ngIf="!isConfirmingOrder"
+            class="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M9 12l2 2l4-4"
+            />
+          </svg>
+          <span *ngIf="!isConfirmingOrder">Mark as Complete</span>
+          <span *ngIf="isConfirmingOrder">Processing...</span>
+        </button>
+        <button
+          class="flex-1 flex items-center justify-center gap-2 px-4 py-3 text-base font-bold text-white bg-red-600 rounded-xl shadow hover:bg-red-700 focus:ring-2 focus:ring-red-300 transition disabled:opacity-60"
+          (click)="cancelOrder()"
+          [disabled]="isCancellingOrder || actionsDisabled"
+        >
+          <svg
+            *ngIf="!isCancellingOrder"
+            class="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+          <span *ngIf="!isCancellingOrder">Cancel Order</span>
+          <span *ngIf="isCancellingOrder">Cancelling...</span>
+        </button>
       </div>
     </div>
   </div>

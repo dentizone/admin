@@ -8,6 +8,7 @@ import {
   Output,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { OrderService } from '../../core/services/order.service';
 import { ShipmentService } from '../../core/services/shipment.service';
 import { Order } from '../../shared/interfaces/order.interface';
 import { getSellerInitials } from '../../shared/utils/seller.utils';
@@ -75,7 +76,21 @@ export class OrderDetailsModalComponent implements OnChanges, OnDestroy {
   private toastTimeoutId: any;
   selectedOrderItem: any = null;
   selectedOrderItemShipmentHistory: ShipmentStatusHistory[] = [];
-  constructor(private readonly shipmentService: ShipmentService) {}
+  orderStatusOptions = [
+    { value: 1, label: 'Pending' },
+    { value: 2, label: 'Arrived' },
+    { value: 3, label: 'Cancelled' },
+    { value: 4, label: 'Placed' },
+    { value: 5, label: 'Completed' },
+  ];
+  selectedOrderStatus: number | null = null;
+  isUpdatingOrderStatus = false;
+  isConfirmingOrder = false;
+  isCancellingOrder = false;
+  constructor(
+    private readonly shipmentService: ShipmentService,
+    private readonly orderService: OrderService
+  ) {}
 
   ngOnChanges() {
     if (this.order?.orderItems) {
@@ -147,6 +162,61 @@ export class OrderDetailsModalComponent implements OnChanges, OnDestroy {
     if (refresh) {
       this.shipmentUpdated.emit();
     }
+  }
+
+  updateOrderStatus() {
+    if (!this.order?.id || this.selectedOrderStatus === null) return;
+    this.isUpdatingOrderStatus = true;
+    this.orderService
+      .updateOrderStatus(this.order.id, this.selectedOrderStatus)
+      .subscribe({
+        next: () => {
+          this.showToast('Order status updated successfully!', 'success');
+          this.isUpdatingOrderStatus = false;
+          this.shipmentUpdated.emit();
+        },
+        error: () => {
+          this.showToast('Failed to update order status.', 'error');
+          this.isUpdatingOrderStatus = false;
+        },
+      });
+  }
+  confirmOrder() {
+    if (!this.order?.id) return;
+    this.isConfirmingOrder = true;
+    this.orderService.confirmOrder(this.order.id).subscribe({
+      next: () => {
+        this.showToast('Order confirmed as complete!', 'success');
+        this.isConfirmingOrder = false;
+        this.shipmentUpdated.emit();
+      },
+      error: () => {
+        this.showToast('Failed to confirm order.', 'error');
+        this.isConfirmingOrder = false;
+      },
+    });
+  }
+  cancelOrder() {
+    if (!this.order?.id) return;
+    this.isCancellingOrder = true;
+    this.orderService.cancelOrder(this.order.id).subscribe({
+      next: () => {
+        this.showToast('Order cancelled successfully!', 'success');
+        this.isCancellingOrder = false;
+        this.shipmentUpdated.emit();
+      },
+      error: () => {
+        this.showToast('Failed to cancel order.', 'error');
+        this.isCancellingOrder = false;
+      },
+    });
+  }
+
+  get actionsDisabled(): boolean {
+    const status = this.order?.status?.toLowerCase();
+    return (
+      status === 'arrived' || status === 'cancelled' || status === 'completed'
+    );
   }
 
   ngOnDestroy() {
