@@ -5,6 +5,10 @@ import { PlaceholderComponent } from './pages/placeholder/placeholder.component'
 import { UniversityComponent } from './pages/university/university.component';
 import { OrderManagementComponent } from './pages/order/order-management.component';
 
+import { LoginPage } from './pages/login/login-page/login-page';
+import { UserManagement } from './pages/userManagment/user-management/user-management';
+
+
 export const routes: Routes = [
   {
     path: '',
@@ -12,7 +16,7 @@ export const routes: Routes = [
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', component: DashboardComponent },
-      { path: 'users', component: PlaceholderComponent },
+      { path: 'users', component: UserManagement },
       { path: 'posts', component: PlaceholderComponent },
       { path: 'orders', component: OrderManagementComponent },
       { path: 'catalog', component: PlaceholderComponent },
@@ -21,5 +25,6 @@ export const routes: Routes = [
       { path: 'transactions', component: PlaceholderComponent },
       { path: 'settings', component: PlaceholderComponent }
     ]
-  }
+  },
+  {path:'login',component:LoginPage},
 ];
