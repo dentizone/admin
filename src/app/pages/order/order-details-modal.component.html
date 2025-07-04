@@ -1,7 +1,8 @@
 <!-- Toast Notification -->
 <div
   *ngIf="toastMessage"
-  class="fixed top-6 right-6 z-[9999] px-6 py-3 rounded-lg shadow-lg text-white font-semibold transition bg-green-600 animate-fade-in"
+  class="fixed top-6 right-6 z-[9999] px-6 py-3 rounded-lg shadow-lg text-white font-semibold transition animate-fade-in"
+  [ngClass]="toastType === 'success' ? 'bg-green-600' : 'bg-red-600'"
 >
   {{ toastMessage }}
 </div>
@@ -31,7 +32,11 @@
           />
         </svg>
         <h2 class="text-3xl font-extrabold text-indigo-900">Order Details</h2>
+        <span class="text-xs text-gray-500 select-all break-all">{{
+          order?.id
+        }}</span>
       </div>
+
       <div class="flex flex-col gap-10 md:flex-row">
         <!-- Left: Main Info -->
         <div class="flex-1 space-y-6">
@@ -300,6 +305,10 @@
                         [(ngModel)]="
                           shipmentFormState[item.id].selectedShipmentStatus
                         "
+                        [disabled]="
+                          order?.status === 'Cancelled' ||
+                          order?.status === 'Closed'
+                        "
                       >
                         <option
                           *ngFor="let status of shipmentStatusOptions"
@@ -313,10 +322,18 @@
                         class="px-3 py-2 text-sm bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-200"
                         placeholder="Comment (optional)"
                         [(ngModel)]="shipmentFormState[item.id].shipmentComment"
+                        [disabled]="
+                          order?.status === 'Cancelled' ||
+                          order?.status === 'Closed'
+                        "
                       />
                       <button
                         class="w-full py-2 mt-1 font-bold text-white transition shadow-md bg-gradient-to-r from-blue-600 to-indigo-500 rounded-xl hover:from-blue-700 hover:to-indigo-600"
                         (click)="adjustShipment(item)"
+                        [disabled]="
+                          order?.status === 'Cancelled' ||
+                          order?.status === 'Closed'
+                        "
                       >
                         Adjust Shipment
                       </button>

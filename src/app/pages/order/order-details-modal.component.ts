@@ -51,6 +51,8 @@ import { getSellerInitials } from '../../shared/utils/seller.utils';
 export class OrderDetailsModalComponent implements OnChanges, OnDestroy {
   @Input() order: Order | null = null;
   @Output() close = new EventEmitter<void>();
+  @Output() shipmentUpdated = new EventEmitter<void>();
+  toastType: 'success' | 'error' | null = null;
   shipmentStatusOptions = [
     { value: 0, label: 'Pending' },
     { value: 1, label: 'Picked Up' },
@@ -74,7 +76,7 @@ export class OrderDetailsModalComponent implements OnChanges, OnDestroy {
       for (const item of this.order.orderItems) {
         if (!this.shipmentFormState[item.id]) {
           this.shipmentFormState[item.id] = {
-            selectedShipmentStatus: 0, 
+            selectedShipmentStatus: 0,
             shipmentComment: '',
           };
         }
@@ -82,30 +84,46 @@ export class OrderDetailsModalComponent implements OnChanges, OnDestroy {
     }
   }
 
-  showToast(message: string) {
+  showToast(message: string, type: 'success' | 'error' = 'success') {
     this.toastMessage = message;
+    this.toastType = type;
     if (this.toastTimeoutId) {
       clearTimeout(this.toastTimeoutId);
     }
     this.toastTimeoutId = setTimeout(() => {
       this.toastMessage = null;
+      this.toastType = null;
       this.toastTimeoutId = null;
     }, 2500);
   }
 
   adjustShipment(item: any) {
+    if (this.order?.status === 'Cancelled' || this.order?.status === 'Closed') {
+      this.showToast(
+        'Cannot update shipment for closed or cancelled orders.',
+        'error'
+      );
+      return;
+    }
     const state = this.shipmentFormState[item.id] || {
       selectedShipmentStatus: 0,
       shipmentComment: '',
     };
-    const status = state.selectedShipmentStatus;
+    const status = Number(state.selectedShipmentStatus);
     const comment = state.shipmentComment;
+    // Debug log
+    console.log('Adjusting shipment:', { orderItemId: item.id, status });
+    if (!item.id || status === null || status === undefined || isNaN(status)) {
+      this.showToast('Invalid shipment status or item ID.', 'error');
+      return;
+    }
     this.shipmentService.adjustShipment(item.id, status, comment).subscribe({
       next: () => {
-        this.showToast('Shipment status updated successfully!');
+        this.showToast('Shipment status updated successfully!', 'success');
+        this.shipmentUpdated.emit();
       },
       error: () => {
-        this.showToast('Failed to update shipment status.');
+        this.showToast('Failed to update shipment status.', 'error');
       },
     });
   }
