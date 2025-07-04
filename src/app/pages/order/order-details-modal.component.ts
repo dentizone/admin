@@ -67,14 +67,14 @@ export class OrderDetailsModalComponent implements OnChanges, OnDestroy {
   } = {};
   public getSellerInitials = getSellerInitials;
   private toastTimeoutId: any;
-  constructor(private shipmentService: ShipmentService) {}
+  constructor(private readonly shipmentService: ShipmentService) {}
 
   ngOnChanges() {
     if (this.order?.orderItems) {
       for (const item of this.order.orderItems) {
         if (!this.shipmentFormState[item.id]) {
           this.shipmentFormState[item.id] = {
-            selectedShipmentStatus: 0, // TODO: set from real item status if available
+            selectedShipmentStatus: 0, 
             shipmentComment: '',
           };
         }
