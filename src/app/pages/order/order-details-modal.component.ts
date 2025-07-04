@@ -11,11 +11,15 @@ import { FormsModule } from '@angular/forms';
 import { ShipmentService } from '../../core/services/shipment.service';
 import { Order } from '../../shared/interfaces/order.interface';
 import { getSellerInitials } from '../../shared/utils/seller.utils';
+import {
+  OrderItemShipmentModalComponent,
+  ShipmentStatusHistory,
+} from './order-item-shipment-modal.component';
 
 @Component({
   selector: 'app-order-details-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, OrderItemShipmentModalComponent],
   templateUrl: './order-details-modal.component.html',
   styles: [
     `
@@ -69,6 +73,8 @@ export class OrderDetailsModalComponent implements OnChanges, OnDestroy {
   } = {};
   public getSellerInitials = getSellerInitials;
   private toastTimeoutId: any;
+  selectedOrderItem: any = null;
+  selectedOrderItemShipmentHistory: ShipmentStatusHistory[] = [];
   constructor(private readonly shipmentService: ShipmentService) {}
 
   ngOnChanges() {
@@ -126,6 +132,21 @@ export class OrderDetailsModalComponent implements OnChanges, OnDestroy {
         this.showToast('Failed to update shipment status.', 'error');
       },
     });
+  }
+
+  openShipmentModal(item: any) {
+    this.selectedOrderItem = item;
+    // Find shipment history for this item from order.shipmentStatus
+    this.selectedOrderItemShipmentHistory = (
+      this.order?.shipmentStatus || []
+    ).filter((s: any) => s.itemName === item.postTitle || s.id === item.id);
+  }
+  closeShipmentModal(refresh: boolean = false) {
+    this.selectedOrderItem = null;
+    this.selectedOrderItemShipmentHistory = [];
+    if (refresh) {
+      this.shipmentUpdated.emit();
+    }
   }
 
   ngOnDestroy() {

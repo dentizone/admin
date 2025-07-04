@@ -22,4 +22,5 @@ export interface Order {
   }[];
   sellers: Seller[];
   status?: string;
+  shipmentStatus?: any[];
 }
