@@ -1,0 +1,174 @@
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+  <div
+    *ngFor="let order of orders"
+    class="bg-white border border-gray-100 rounded-2xl shadow-sm hover:shadow-lg transition-shadow p-6 flex flex-col gap-4 cursor-pointer group relative"
+    (click)="onClick(order)"
+  >
+    <!-- Header: Order ID and Created At -->
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <span class="text-xs text-gray-400">#</span>
+        <span class="font-mono font-semibold text-gray-800">{{
+          order.id | slice : 0 : 8
+        }}</span>
+      </div>
+      <span class="text-xs text-gray-400 flex items-center gap-1">
+        <svg
+          class="w-4 h-4 inline-block text-gray-300"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+          />
+        </svg>
+        {{ order.createdAt | date : "mediumDate" }}
+      </span>
+    </div>
+    <!-- Buyer & Seller -->
+    <div class="flex items-center gap-4 mt-2">
+      <div class="flex items-center gap-2">
+        <div
+          class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold text-sm"
+        >
+          <svg
+            class="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M5.121 17.804A13.937 13.937 0 0112 15c2.5 0 4.847.655 6.879 1.804M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+            />
+          </svg>
+        </div>
+        <div>
+          <div class="text-sm font-semibold text-gray-800">
+            {{ order.buyerName }}
+          </div>
+          <div class="text-xs text-gray-400">Buyer</div>
+        </div>
+      </div>
+      <div class="flex items-center gap-2 ml-auto">
+        <ng-container *ngIf="order.sellers && order.sellers.length > 0">
+          <div
+            *ngFor="let seller of order.sellers.slice(0, 2); let i = index"
+            class="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center text-purple-700 font-bold text-xs -ml-2 border-2 border-white"
+            [ngStyle]="{ 'z-index': 10 - i }"
+          >
+            <span>{{ getSellerInitials(seller.sellerName) }}</span>
+          </div>
+          <span
+            *ngIf="order.sellers.length > 2"
+            class="text-xs text-gray-400 ml-2"
+            >+{{ order.sellers.length - 2 }} more</span
+          >
+        </ng-container>
+        <span
+          *ngIf="!order.sellers || order.sellers.length === 0"
+          class="text-xs text-gray-400"
+          >No Seller</span
+        >
+      </div>
+    </div>
+    <!-- Status & Total -->
+    <div class="flex items-center gap-4 mt-2">
+      <span
+        class="inline-block px-3 py-1 rounded-full text-xs font-semibold"
+        [ngClass]="{
+          'bg-yellow-100 text-yellow-800':
+            order.statusTimeline?.length &&
+            order.statusTimeline[order.statusTimeline.length - 1].status ===
+              'Pending',
+          'bg-blue-100 text-blue-800':
+            order.statusTimeline?.length &&
+            order.statusTimeline[order.statusTimeline.length - 1].status ===
+              'Arrived',
+          'bg-red-100 text-red-700':
+            order.statusTimeline?.length &&
+            order.statusTimeline[order.statusTimeline.length - 1].status ===
+              'Cancelled',
+          'bg-purple-100 text-purple-800':
+            order.statusTimeline?.length &&
+            order.statusTimeline[order.statusTimeline.length - 1].status ===
+              'Placed',
+          'bg-green-100 text-green-800':
+            order.statusTimeline?.length &&
+            order.statusTimeline[order.statusTimeline.length - 1].status ===
+              'Completed',
+          'bg-gray-200 text-gray-700': !order.statusTimeline?.length
+        }"
+      >
+        {{
+          order.statusTimeline?.length
+            ? order.statusTimeline[order.statusTimeline.length - 1].status
+            : "N/A"
+        }}
+      </span>
+      <span class="ml-auto text-lg font-bold text-blue-900">{{
+        order.totalAmount | currency
+      }}</span>
+    </div>
+    <!-- Items -->
+    <div class="flex items-center gap-2 mt-2">
+      <svg
+        class="w-4 h-4 text-gray-400"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M3 7h18M3 12h18M3 17h18"
+        />
+      </svg>
+      <span class="text-xs text-gray-500"
+        >{{ order.orderItems.length }} item{{
+          order.orderItems.length !== 1 ? "s" : ""
+        }}</span
+      >
+      <span
+        *ngIf="order.orderItems.length > 0"
+        class="text-xs text-gray-700 truncate max-w-xs"
+        >- {{ order.orderItems[0].postTitle }}</span
+      >
+    </div>
+    <!-- Shipment Address (optional) -->
+    <div
+      *ngIf="order.orderShipmentAddress"
+      class="flex items-center gap-2 mt-2 text-xs text-gray-400"
+    >
+      <svg
+        class="w-4 h-4 text-gray-300"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M17.657 16.657L13.414 20.9a2 2 0 01-2.828 0l-4.243-4.243a8 8 0 1111.314 0z"
+        />
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+        />
+      </svg>
+      <span
+        >{{ order.orderShipmentAddress.street }},
+        {{ order.orderShipmentAddress.city }}</span
+      >
+    </div>
+  </div>
+</div>

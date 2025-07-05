@@ -1,0 +1,64 @@
+<div
+  class="flex flex-wrap gap-4 items-center px-4 py-2 bg-white rounded-xl border border-gray-100 shadow-sm"
+>
+  <!-- Status Filter -->
+  <div class="flex flex-col">
+    <label for="statusFilter" class="mb-1 text-xs text-gray-500">Status</label>
+    <select
+      id="statusFilter"
+      class="px-4 py-2 text-sm rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-200"
+      #statusSelect
+      (change)="onStatusChange(statusSelect.value)"
+    >
+      <option value="">All</option>
+      <option value="Pending">Pending</option>
+      <option value="Arrived">Arrived</option>
+      <option value="Cancelled">Cancelled</option>
+      <option value="Placed">Placed</option>
+      <option value="Completed">Completed</option>
+    </select>
+  </div>
+  <!-- Seller Name Filter -->
+  <div class="flex flex-col">
+    <label for="sellerNameFilter" class="mb-1 text-xs text-gray-500"
+      >Seller Name</label
+    >
+    <input
+      id="sellerNameFilter"
+      type="text"
+      class="px-4 py-2 text-sm rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-200"
+      placeholder="Search seller..."
+      #sellerNameInput
+      (input)="onSellerNameInput(sellerNameInput.value)"
+      (blur)="onSellerNameBlur()"
+    />
+  </div>
+  <!-- Buyer Name Filter -->
+  <div class="flex flex-col">
+    <label for="buyerNameFilter" class="mb-1 text-xs text-gray-500"
+      >Buyer Name</label
+    >
+    <input
+      id="buyerNameFilter"
+      type="text"
+      class="px-4 py-2 text-sm rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-200"
+      placeholder="Search buyer..."
+      #buyerNameInput
+      (input)="onBuyerNameInput(buyerNameInput.value)"
+      (blur)="onBuyerNameBlur()"
+    />
+  </div>
+  <!-- Order Date Filter -->
+  <div class="flex flex-col">
+    <label for="orderDateFilter" class="mb-1 text-xs text-gray-500"
+      >Order Date</label
+    >
+    <input
+      id="orderDateFilter"
+      type="date"
+      class="px-4 py-2 text-sm rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-200"
+      #dateInput
+      (change)="onOrderDateChange(dateInput.value)"
+    />
+  </div>
+</div>
