@@ -1,9 +1,12 @@
-import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
+import { Component, OnInit, signal } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
+import { LoadingService } from '../../core/services/loading.service';
+import { Login } from '../../pages/login/login';
 
 interface MenuItem {
-  readonly icon: 'squares-2x2' | 'users' | 'document-text' | 'book-open' | 'academic-cap' | 'credit-card' | 'currency-dollar' | 'cog-6-tooth';
+  readonly icon: string;
   readonly label: string;
   readonly route: string;
   active?: boolean;
@@ -14,48 +17,105 @@ interface MenuItem {
   standalone: true,
   imports: [CommonModule, RouterModule],
   templateUrl: './layout.component.html',
-  styleUrls: ['./layout.component.css']
+  styleUrls: ['./layout.component.css'],
 })
-export class LayoutComponent {
+export class LayoutComponent implements OnInit {
   isSidebarOpen = signal(false);
+  user: any = null;
+  loadingUser = false;
+  globalLoading = false;
 
   readonly sidebarItems: MenuItem[] = [
-    { icon: 'squares-2x2', label: 'Dashboard', route: '/dashboard', active: false },
+    {
+      icon: 'squares-2x2',
+      label: 'Dashboard',
+      route: '/dashboard',
+      active: false,
+    },
     { icon: 'users', label: 'User Management', route: '/users' },
     { icon: 'document-text', label: 'Post Management', route: '/posts' },
+    { icon: 'shopping-bag', label: 'Order Management', route: '/orders' },
     { icon: 'book-open', label: 'Catalog Management', route: '/catalog' },
-    { icon: 'academic-cap', label: 'University Management', route: '/university' }
+    {
+      icon: 'academic-cap',
+      label: 'University Management',
+      route: '/university',
+    },
   ];
 
   readonly financialItems: MenuItem[] = [
-    { icon: 'credit-card', label: 'Withdrawal Requests', route: '/withdrawals' },
-    { icon: 'currency-dollar', label: 'Transaction History', route: '/transactions' }
+    {
+      icon: 'credit-card',
+      label: 'Withdrawal Requests',
+      route: '/withdrawals',
+    },
+    {
+      icon: 'currency-dollar',
+      label: 'Transaction History',
+      route: '/transactions',
+    },
   ];
 
   readonly settingsItems: MenuItem[] = [
-    { icon: 'cog-6-tooth', label: 'Platform Settings', route: '/settings' }
+    { icon: 'cog-6-tooth', label: 'Platform Settings', route: '/settings' },
   ];
 
-  constructor(private readonly router: Router) {
+  constructor(
+    private readonly router: Router,
+    private http: HttpClient,
+    private login: Login,
+    private loading: LoadingService
+  ) {
     this.setActiveByRoute(this.router.url);
     this.router.events.subscribe(() => {
       this.setActiveByRoute(this.router.url);
     });
+    this.loading.loading$.subscribe((val) => (this.globalLoading = val));
+  }
+
+  ngOnInit() {
+    this.fetchCurrentUser();
+  }
+
+  fetchCurrentUser() {
+    this.loadingUser = true;
+    this.http.get('https://apit.gitnasr.com/api/Users/me').subscribe({
+      next: (user) => {
+        this.user = user;
+        this.loadingUser = false;
+      },
+      error: () => {
+        this.user = null;
+        this.loadingUser = false;
+      },
+    });
+  }
+
+  logout() {
+    this.login.logout();
   }
 
   setActiveByRoute(url: string): void {
-    const allItems = [...this.sidebarItems, ...this.financialItems, ...this.settingsItems];
-    allItems.forEach(item => {
+    const allItems = [
+      ...this.sidebarItems,
+      ...this.financialItems,
+      ...this.settingsItems,
+    ];
+    allItems.forEach((item) => {
       item.active = url.startsWith(item.route);
     });
   }
 
   setActiveItem(selectedItem: MenuItem): void {
     // Reset all items
-    [...this.sidebarItems, ...this.financialItems, ...this.settingsItems].forEach(item => {
+    [
+      ...this.sidebarItems,
+      ...this.financialItems,
+      ...this.settingsItems,
+    ].forEach((item) => {
       item.active = false;
     });
-    
+
     // Set selected item as active
     selectedItem.active = true;
 
@@ -66,6 +126,6 @@ export class LayoutComponent {
   }
 
   toggleSidebar(): void {
-    this.isSidebarOpen.update(current => !current);
+    this.isSidebarOpen.update((current) => !current);
   }
-} 
+}

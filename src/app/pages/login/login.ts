@@ -20,7 +20,7 @@ export enum KycStatus {
   Rejected = 4,
   Expired = 5,
   Cancelled = 6,
-  Suspended = 7
+  Suspended = 7,
 }
 
 export enum UserState {
@@ -29,16 +29,15 @@ export enum UserState {
   Blocked = 2,
   Deleted = 3,
   Pending = 4,
-  Suspended = 5
-} 
+  Suspended = 5,
+}
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class Login {
-
-  constructor(private http:HttpClient) {
+  constructor(private http: HttpClient) {
     this.loadStoredUser();
-   }
+  }
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
 
@@ -49,14 +48,14 @@ export class Login {
     }
   }
 
-  checkLogin(email:string, password:string):Observable<any>{
-    const url='https://apit.gitnasr.com/api/auth/login';
+  checkLogin(email: string, password: string): Observable<any> {
+    const url = 'https://apit.gitnasr.com/api/auth/login';
 
-    const body={
-      "email": email,
-      "password": password
-    }
-    return this.http.post(url,body);
+    const body = {
+      email: email,
+      password: password,
+    };
+    return this.http.post(url, body);
   }
 
   getAccessToken(): string | null {
@@ -65,5 +64,12 @@ export class Login {
 
   getRefreshToken(): string | null {
     return localStorage.getItem('refreshToken');
+  }
+
+  logout(): void {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('currentUser');
+    window.location.href = '/login';
   }
 }
