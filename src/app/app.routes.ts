@@ -8,6 +8,7 @@ import { LayoutComponent } from './shared/layout/layout.component';
 import { AuthGuard } from './core/guards/auth.guard';
 import { LoginPage } from './pages/login/login-page/login-page';
 import { UserManagement } from './pages/userManagment/user-management/user-management';
+import { CatalogManagement } from './pages/catalogManagement/catalog-management/catalog-management';
 
 export const routes: Routes = [
   {
@@ -19,8 +20,8 @@ export const routes: Routes = [
       { path: 'dashboard', component: DashboardComponent },
       { path: 'users', component: UserManagement },
       { path: 'posts', component: PlaceholderComponent },
+      { path: 'catalog', component: CatalogManagement },
       { path: 'orders', component: OrderManagementComponent },
-      { path: 'catalog', component: PlaceholderComponent },
       { path: 'university', component: UniversityComponent },
       { path: 'withdrawals', component: PlaceholderComponent },
       { path: 'transactions', component: PlaceholderComponent },
