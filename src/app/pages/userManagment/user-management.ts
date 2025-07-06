@@ -14,12 +14,18 @@ export class UserManagementService {
     this.token=authService.getAccessToken();
    }
 
-   getUsers(page: number): Observable<any> {
+  getUsers(page: number,keyword?:string,status?:number ): Observable<any> {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${this.token}`
     });
-
-    return this.http.get(`${this.apiUrl}?page=${page}`, { headers });
+    let url=`${this.apiUrl}?Page=${page}`
+    if(keyword){
+      url=url+`&SearchTerm=${keyword}`
+    }
+    if(status!=null && status!=-1){
+      url=url+`&Status=${status}`
+    }
+    return this.http.get(url, { headers });
   }
 
   getUserStats():Observable<any>{
