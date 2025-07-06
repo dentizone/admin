@@ -1,17 +1,20 @@
 <!-- Toast Notification -->
 <div
   *ngIf="toastMessage"
-  class="fixed top-6 right-6 z-[9999] px-6 py-3 rounded-lg shadow-lg text-white font-semibold transition bg-green-600 animate-fade-in"
+  class="fixed top-6 right-6 z-[9999] px-6 py-3 rounded-lg shadow-lg text-white font-semibold transition animate-fade-in"
+  [ngClass]="toastType === 'success' ? 'bg-green-600' : 'bg-red-600'"
 >
   {{ toastMessage }}
 </div>
 <div
   class="flex fixed inset-0 z-50 justify-center items-center bg-black bg-opacity-60"
   (click)="close.emit()"
+  (keydown)="close.emit()"
 >
   <div
     class="relative w-full max-w-2xl mx-2 bg-white border-l-8 border-indigo-400 rounded-2xl shadow-2xl animate-scale-in overflow-y-auto max-h-[90vh]"
     (click)="$event.stopPropagation()"
+    (keydown)="$event.stopPropagation()"
   >
     <div class="p-6 md:p-10">
       <div class="flex gap-3 items-center mb-6">
@@ -30,6 +33,12 @@
         </svg>
         <h2 class="text-3xl font-extrabold text-indigo-900">Order Details</h2>
       </div>
+      <div class="flex gap-3 items-center mb-6">
+        <span class="text-xs text-gray-500 break-all select-all">{{
+          order?.id
+        }}</span>
+      </div>
+
       <div class="flex flex-col gap-10 md:flex-row">
         <!-- Left: Main Info -->
         <div class="flex-1 space-y-6">
@@ -206,7 +215,7 @@
                       ></span>
                       <span
                         *ngIf="i < timeline.length - 1"
-                        class="w-0.5 flex-1 bg-indigo-100"
+                        class="flex-1 w-0.5 bg-indigo-100"
                       ></span>
                     </div>
                     <div
@@ -257,7 +266,8 @@
                 <ng-container *ngIf="items.length > 0">
                   <li
                     *ngFor="let item of items"
-                    class="flex flex-col gap-4 p-6 rounded-2xl border border-indigo-50 shadow-lg backdrop-blur-md bg-white/80"
+                    class="flex flex-col gap-4 p-6 rounded-2xl border border-indigo-50 shadow-lg backdrop-blur-md cursor-pointer bg-white/80 hover:bg-indigo-50"
+                    (click)="openShipmentModal(item)"
                   >
                     <div class="flex flex-col gap-1">
                       <div class="flex gap-2 items-center">
@@ -289,36 +299,7 @@
                         <span>{{ item.pickupLocation }}</span>
                       </div>
                     </div>
-                    <div class="flex flex-col gap-3 mt-2">
-                      <label class="text-xs font-medium text-gray-500"
-                        >Shipment Status</label
-                      >
-                      <select
-                        class="px-3 py-2 text-sm bg-white rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-200"
-                        [(ngModel)]="
-                          shipmentFormState[item.id].selectedShipmentStatus
-                        "
-                      >
-                        <option
-                          *ngFor="let status of shipmentStatusOptions"
-                          [value]="status.value"
-                        >
-                          {{ status.label }}
-                        </option>
-                      </select>
-                      <input
-                        type="text"
-                        class="px-3 py-2 text-sm bg-white rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-200"
-                        placeholder="Comment (optional)"
-                        [(ngModel)]="shipmentFormState[item.id].shipmentComment"
-                      />
-                      <button
-                        class="py-2 mt-1 w-full font-bold text-white bg-gradient-to-r from-blue-600 to-indigo-500 rounded-xl shadow-md transition hover:from-blue-700 hover:to-indigo-600"
-                        (click)="adjustShipment(item)"
-                      >
-                        Adjust Shipment
-                      </button>
-                    </div>
+                    <!-- Removed shipment status select, comment input, and Adjust Shipment button -->
                   </li>
                 </ng-container>
               </ng-container>
@@ -327,5 +308,105 @@
         </div>
       </div>
     </div>
+
+    <!-- Modern Order Actions at the bottom -->
+    <div
+      class="mt-10 p-6 bg-gray-50 rounded-2xl shadow-inner flex flex-col gap-4"
+    >
+      <div class="flex flex-col md:flex-row gap-4">
+        <select
+          class="flex-1 px-4 py-3 text-base bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-300 transition"
+          [(ngModel)]="selectedOrderStatus"
+          [disabled]="actionsDisabled"
+        >
+          <option [ngValue]="null">Select Status</option>
+          <option
+            *ngFor="let status of orderStatusOptions"
+            [ngValue]="status.value"
+          >
+            {{ status.label }}
+          </option>
+        </select>
+        <button
+          class="flex-1 flex items-center justify-center gap-2 px-4 py-3 text-base font-bold text-white bg-blue-600 rounded-xl shadow hover:bg-blue-700 focus:ring-2 focus:ring-blue-300 transition disabled:opacity-60"
+          (click)="updateOrderStatus()"
+          [disabled]="
+            selectedOrderStatus === null ||
+            isUpdatingOrderStatus ||
+            actionsDisabled
+          "
+        >
+          <svg
+            *ngIf="!isUpdatingOrderStatus"
+            class="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M5 13l4 4L19 7"
+            />
+          </svg>
+          <span *ngIf="!isUpdatingOrderStatus">Update Status</span>
+          <span *ngIf="isUpdatingOrderStatus">Updating...</span>
+        </button>
+      </div>
+      <div class="flex flex-col md:flex-row gap-4">
+        <button
+          class="flex-1 flex items-center justify-center gap-2 px-4 py-3 text-base font-bold text-white bg-green-600 rounded-xl shadow hover:bg-green-700 focus:ring-2 focus:ring-green-300 transition disabled:opacity-60"
+          (click)="confirmOrder()"
+          [disabled]="isConfirmingOrder || actionsDisabled"
+        >
+          <svg
+            *ngIf="!isConfirmingOrder"
+            class="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M9 12l2 2l4-4"
+            />
+          </svg>
+          <span *ngIf="!isConfirmingOrder">Mark as Complete</span>
+          <span *ngIf="isConfirmingOrder">Processing...</span>
+        </button>
+        <button
+          class="flex-1 flex items-center justify-center gap-2 px-4 py-3 text-base font-bold text-white bg-red-600 rounded-xl shadow hover:bg-red-700 focus:ring-2 focus:ring-red-300 transition disabled:opacity-60"
+          (click)="cancelOrder()"
+          [disabled]="isCancellingOrder || actionsDisabled"
+        >
+          <svg
+            *ngIf="!isCancellingOrder"
+            class="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+          <span *ngIf="!isCancellingOrder">Cancel Order</span>
+          <span *ngIf="isCancellingOrder">Cancelling...</span>
+        </button>
+      </div>
+    </div>
   </div>
 </div>
+<app-order-item-shipment-modal
+  *ngIf="selectedOrderItem"
+  [item]="selectedOrderItem"
+  [shipmentHistory]="selectedOrderItemShipmentHistory"
+  (close)="closeShipmentModal()"
+  (shipmentUpdated)="closeShipmentModal(true)"
+></app-order-item-shipment-modal>

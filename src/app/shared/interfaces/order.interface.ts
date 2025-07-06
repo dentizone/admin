@@ -21,4 +21,6 @@ export interface Order {
     pickupLocation?: string;
   }[];
   sellers: Seller[];
+  status?: string;
+  shipmentStatus?: any[];
 }

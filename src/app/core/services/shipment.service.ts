@@ -6,12 +6,11 @@ import { environment } from '../../../environments/environment';
 export interface AdjustShipmentResponse {
   success: boolean;
   message?: string;
-  // Add more fields as needed based on actual API response
 }
 
 @Injectable({ providedIn: 'root' })
 export class ShipmentService {
-  constructor(private http: HttpClient) {}
+  constructor(private readonly http: HttpClient) {}
 
   adjustShipment(
     orderItemId: string,
@@ -28,7 +27,7 @@ export class ShipmentService {
       newStatus,
       comment: comment || '',
     };
-    return this.http.put<AdjustShipmentResponse>(
+    return this.http.post<AdjustShipmentResponse>(
       `${environment.apiBaseUrl}/Shipping`,
       body
     );

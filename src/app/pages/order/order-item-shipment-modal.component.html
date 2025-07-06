@@ -1,0 +1,147 @@
+<div
+  class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60"
+  (click)="close.emit()"
+>
+  <div
+    class="relative w-full max-w-lg mx-2 bg-white border-l-8 border-indigo-400 rounded-2xl shadow-2xl animate-scale-in overflow-y-auto max-h-[90vh]"
+    (click)="$event.stopPropagation()"
+  >
+    <!-- Toast Notification -->
+    <div
+      *ngIf="toastMessage"
+      class="fixed top-6 right-6 z-[9999] px-6 py-3 rounded-lg shadow-lg text-white font-semibold transition animate-fade-in"
+      [ngClass]="toastType === 'success' ? 'bg-green-600' : 'bg-red-600'"
+    >
+      {{ toastMessage }}
+    </div>
+    <div class="p-6 md:p-10">
+      <div class="flex items-center gap-3 mb-6">
+        <svg
+          class="w-8 h-8 text-indigo-400"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M9 17v-2a4 4 0 014-4h3m-7 6v2a4 4 0 004 4h3m-7-6H5a2 2 0 01-2-2V7a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-4"
+          />
+        </svg>
+        <h2 class="text-2xl font-extrabold text-indigo-900">
+          Shipment Status for Item
+        </h2>
+        <button
+          class="ml-auto text-gray-400 hover:text-red-500"
+          (click)="close.emit()"
+          aria-label="Close"
+        >
+          <svg
+            class="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+      </div>
+      <div class="mb-4">
+        <div class="text-lg font-bold text-indigo-900">
+          {{ item?.postTitle }}
+        </div>
+        <div class="text-emerald-600 font-semibold">
+          {{ item?.price | currency }}
+        </div>
+        <div class="text-xs text-gray-500">
+          Pickup: {{ item?.pickupLocation }}
+        </div>
+        <div
+          *ngIf="item?.id"
+          class="text-xs text-gray-400 select-all break-all"
+        >
+          Item ID: {{ item.id }}
+        </div>
+      </div>
+      <div class="my-6 border-t border-indigo-100"></div>
+      <div>
+        <div class="font-semibold text-gray-700 mb-2">
+          Shipment Status History
+        </div>
+        <ul class="relative pl-8 border-l border-indigo-100 mb-6">
+          <ng-container *ngIf="shipmentHistory?.length; else noHistory">
+            <li
+              *ngFor="let status of shipmentHistory"
+              class="flex items-center gap-3 mb-4 last:mb-0 min-h-[2.5rem]"
+            >
+              <div class="flex flex-col items-center w-4">
+                <span
+                  class="w-3 h-3 border-2 border-white rounded-full shadow"
+                  [ngClass]="{
+                    'bg-yellow-400': status.shipmentActivityStatus === 0,
+                    'bg-blue-400': status.shipmentActivityStatus === 1,
+                    'bg-purple-400': status.shipmentActivityStatus === 2,
+                    'bg-teal-400': status.shipmentActivityStatus === 3,
+                    'bg-rose-400': status.shipmentActivityStatus === 4,
+                    'bg-gray-200': status.shipmentActivityStatus === undefined
+                  }"
+                ></span>
+              </div>
+              <div
+                class="flex flex-col gap-1 md:flex-row md:items-center md:gap-3"
+              >
+                <span class="font-semibold text-gray-700">{{
+                  getShipmentStatusLabel(status.shipmentActivityStatus)
+                }}</span>
+                <span class="text-xs text-gray-500">{{
+                  status.timestamp | date : "short"
+                }}</span>
+                <span class="text-xs text-gray-400">{{ status.comment }}</span>
+              </div>
+            </li>
+          </ng-container>
+          <ng-template #noHistory>
+            <li class="text-gray-400 text-xs">No shipment status history.</li>
+          </ng-template>
+        </ul>
+      </div>
+      <div class="my-6 border-t border-indigo-100"></div>
+      <div>
+        <div class="font-semibold text-gray-700 mb-2">
+          Add New Shipment Status
+        </div>
+        <div class="flex flex-col gap-3">
+          <select
+            class="px-3 py-2 text-sm bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-200"
+            [(ngModel)]="selectedStatus"
+          >
+            <option
+              *ngFor="let status of shipmentStatusOptions"
+              [value]="status.value"
+            >
+              {{ status.label }}
+            </option>
+          </select>
+          <input
+            type="text"
+            class="px-3 py-2 text-sm bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-200"
+            placeholder="Comment (optional)"
+            [(ngModel)]="comment"
+          />
+          <button
+            class="w-full py-2 mt-1 font-bold text-white transition shadow-md bg-gradient-to-r from-blue-600 to-indigo-500 rounded-xl hover:from-blue-700 hover:to-indigo-600"
+            (click)="addShipmentStatus()"
+          >
+            Add Status
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
