@@ -20,7 +20,7 @@ export const routes: Routes = [
       { path: 'users', component: UserManagement },
       { path: 'posts', component: PlaceholderComponent },
       { path: 'catalog', component: CatalogManagement },
-      { path: 'orders', component: OrderManagementComponent },
+      { path: 'orders', component: PlaceholderComponent },
       { path: 'university', component: UniversityComponent },
       { path: 'withdrawals', component: PlaceholderComponent },
       { path: 'transactions', component: PlaceholderComponent },
