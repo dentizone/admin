@@ -12,7 +12,9 @@ import { ToastComponent } from "../../../shared/components/toast-component/toast
 export class UserManagement implements OnInit{
 
   viewToast=false;
+
   isToastSuccess=true;
+
   selectedStatus: string = '';
   statuses: string[] = ['PendingVerification', 'EmailVerified', 'KycVerified','Blacklisted'];
   constructor(private userService:UserManagementService){}
