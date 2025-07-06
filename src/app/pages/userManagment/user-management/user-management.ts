@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { UserManagementService } from '../user-management';
 import { FormsModule } from '@angular/forms';
 import { ToastComponent } from "../../../shared/components/toast-component/toast-component";
+import { UserManagementService } from '../user-management';
 
 @Component({
   selector: 'app-user-management',
@@ -23,7 +23,7 @@ export class UserManagement implements OnInit {
     { name: 'Blacklisted', index: 3 }
   ];
 
-  constructor(private userService: UserManagementService) { }
+  constructor(private readonly userService: UserManagementService) { }
 
   toastMessage = '';
   updateUserShow = false;
@@ -69,7 +69,6 @@ export class UserManagement implements OnInit {
     this.loadUsers();
     this.userService.getUserStats().subscribe({
       next: data => {
-        //this.totalUsers = data.totalUsers;
         this.blackListedUsers = data.usersPerStatus.Blacklisted;
         this.emailverifiedUsers = data.usersPerStatus.EmailVerified;
         this.kycVerifiedUsers = data.usersPerStatus.KycVerified;
