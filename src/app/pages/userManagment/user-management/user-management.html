@@ -124,16 +124,16 @@
         </td>
         <td class="px-6 py-4">
           <select
-            id="statusFilter"
+            id="actionSelect"
             class="border rounded px-2 py-1"
             [(ngModel)]="selectedAction"
             [ngModelOptions]="{standalone:true}"
             (change)="changeUserStatus(user.id)"
           >
             <option value="">Select Action</option>
-            <option value="3">Active</option>
-            <option value="4">Blacklisted</option>
-            <option value="5">Deleted</option>
+            <option *ngFor="let action of actions" [value]="action.index">
+              {{ action.name }}
+            </option>
           </select>
         </td>
       </tr>

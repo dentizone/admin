@@ -24,6 +24,11 @@ export class UserManagement implements OnInit {
     { name: 'Blacklisted', index: 3 },
   ];
 
+  actions = [
+    { name: 'Active', index: 2 },
+    { name: 'Blacklisted', index: 3 },
+  ];
+
   constructor(private readonly userService: UserManagementService) {}
 
   toastMessage = '';
