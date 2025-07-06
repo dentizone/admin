@@ -22,4 +22,20 @@ export class UserManagementService {
     return this.http.get(`${this.apiUrl}?page=${page}`, { headers });
   }
 
+  getUserStats():Observable<any>{
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.token}`
+    });
+    return this.http.get('https://apit.gitnasr.com/api/Users/stats',{headers})
+  }
+  updateUserStatus(userId: string, status: number): Observable<any> {
+    const url = `${this.apiUrl}/${userId}/state`;
+
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${this.token}`
+    });
+
+    return this.http.patch(url, { status }, { headers });
+  }
 }
