@@ -4,47 +4,43 @@
   [message]="toastMessage"
 ></app-toast-component>
 
-<h1 class="text-2xl font-bold mb-1">Withdrawal Management</h1>
+<h1 class="mb-1 text-2xl font-bold">Withdrawal Management</h1>
 <h6 class="mb-6 text-gray-500">
   Overview of Withdrawal Requests in Dentizone.
 </h6>
 
 <!-- Stats Cards -->
-<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4 mb-6">
-  <div class="bg-white shadow rounded-lg p-4 flex flex-col items-center">
+<div class="grid grid-cols-1 gap-4 mb-6 sm:grid-cols-2 md:grid-cols-5">
+  <div class="flex flex-col items-center p-4 bg-white rounded-lg shadow">
     <span class="text-lg font-semibold">Total</span>
     <span class="text-2xl font-bold text-blue-600">{{ stats.total }}</span>
   </div>
-  <div class="bg-yellow-50 shadow rounded-lg p-4 flex flex-col items-center">
+  <div class="flex flex-col items-center p-4 bg-yellow-50 rounded-lg shadow">
     <span class="text-lg font-semibold">Pending</span>
     <span class="text-2xl font-bold text-yellow-600">{{ stats.pending }}</span>
   </div>
-  <div class="bg-green-50 shadow rounded-lg p-4 flex flex-col items-center">
+  <div class="flex flex-col items-center p-4 bg-green-50 rounded-lg shadow">
     <span class="text-lg font-semibold">Approved</span>
     <span class="text-2xl font-bold text-green-600">{{ stats.approved }}</span>
   </div>
-  <div class="bg-red-50 shadow rounded-lg p-4 flex flex-col items-center">
+  <div class="flex flex-col items-center p-4 bg-red-50 rounded-lg shadow">
     <span class="text-lg font-semibold">Rejected</span>
     <span class="text-2xl font-bold text-red-600">{{ stats.rejected }}</span>
   </div>
-  <div class="bg-indigo-50 shadow rounded-lg p-4 flex flex-col items-center">
+  <div class="flex flex-col items-center p-4 bg-indigo-50 rounded-lg shadow">
     <span class="text-lg font-semibold">Completed</span>
     <span class="text-2xl font-bold text-indigo-600"
       >{{ stats.completed }}</span
     >
   </div>
-  <div class="bg-gray-100 shadow rounded-lg p-4 flex flex-col items-center">
-    <span class="text-lg font-semibold">Failed</span>
-    <span class="text-2xl font-bold text-gray-600">{{ stats.failed }}</span>
-  </div>
 </div>
 
 <!-- Filters -->
-<div class="flex flex-col md:flex-row md:items-end gap-4 mb-6">
+<div class="flex flex-col gap-4 mb-6 md:flex-row md:items-end">
   <div>
-    <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+    <label class="block mb-1 text-sm font-medium text-gray-700">Status</label>
     <select
-      class="border rounded px-3 py-2 w-full"
+      class="px-3 py-2 w-full rounded border"
       [(ngModel)]="filter.status"
       (change)="onFilterChange()"
     >
@@ -56,9 +52,9 @@
     </select>
   </div>
   <div>
-    <label class="block text-sm font-medium text-gray-700 mb-1">Search</label>
+    <label class="block mb-1 text-sm font-medium text-gray-700">Search</label>
     <input
-      class="border rounded px-3 py-2 w-full"
+      class="px-3 py-2 w-full rounded border"
       type="text"
       placeholder="Search by user..."
       [(ngModel)]="filter.searchTerm"
@@ -66,9 +62,9 @@
     />
   </div>
   <div>
-    <label class="block text-sm font-medium text-gray-700 mb-1">Date</label>
+    <label class="block mb-1 text-sm font-medium text-gray-700">Date</label>
     <input
-      class="border rounded px-3 py-2 w-full"
+      class="px-3 py-2 w-full rounded border"
       type="date"
       [(ngModel)]="filter.date"
       (change)="onFilterChange()"
@@ -77,7 +73,7 @@
 </div>
 
 <!-- Table -->
-<div class="relative overflow-x-auto shadow-md sm:rounded-lg bg-white">
+<div class="overflow-x-auto relative bg-white shadow-md sm:rounded-lg">
   <table class="w-full text-sm text-left text-gray-500">
     <thead class="text-xs text-gray-700 uppercase bg-gray-50">
       <tr>
@@ -111,25 +107,25 @@
         <td class="px-6 py-4 space-x-2">
           <button
             *ngIf="req.status === 'Pending'"
-            class="bg-red-500 px-4 py-1 rounded-md text-white font-semibold"
+            class="px-4 py-1 font-semibold text-white bg-red-500 rounded-md"
           >
             Denied
           </button>
           <button
             *ngIf="req.status === 'Pending'"
-            class="bg-green-500 px-4 py-1 rounded-md text-white font-semibold"
+            class="px-4 py-1 font-semibold text-white bg-green-500 rounded-md"
           >
             Accept
           </button>
         </td>
       </tr>
       <tr *ngIf="!loading && requests.length === 0">
-        <td colspan="5" class="text-center py-6 text-gray-400">
+        <td colspan="5" class="py-6 text-center text-gray-400">
           No withdrawal requests found.
         </td>
       </tr>
       <tr *ngIf="loading">
-        <td colspan="5" class="text-center py-6 text-gray-400">Loading...</td>
+        <td colspan="5" class="py-6 text-center text-gray-400">Loading...</td>
       </tr>
     </tbody>
   </table>
@@ -138,7 +134,7 @@
 <!-- Pagination -->
 <div class="flex justify-between items-center mt-6" *ngIf="totalPages > 1">
   <button
-    class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300"
+    class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
     [disabled]="filter.page === 1"
     (click)="onPageChange(filter.page - 1)"
   >
@@ -155,7 +151,7 @@
     </button>
   </div>
   <button
-    class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300"
+    class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
     [disabled]="filter.page === totalPages"
     (click)="onPageChange(filter.page + 1)"
   >

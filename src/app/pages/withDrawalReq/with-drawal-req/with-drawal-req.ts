@@ -45,7 +45,6 @@ export class WithDrawalReq implements OnInit {
     approved: 0,
     rejected: 0,
     completed: 0,
-    failed: 0,
   };
 
   // Filters
@@ -83,7 +82,6 @@ export class WithDrawalReq implements OnInit {
               (res.Rejected || 0),
             approved: res.Approved || 0,
             completed: res.Completed || 0,
-            failed: res.Failed || 0,
             pending: res.Pending || 0,
             rejected: res.Rejected || 0,
           };
@@ -108,15 +106,11 @@ export class WithDrawalReq implements OnInit {
     if (this.filter.date)
       params = params.set('RequestDateTime', this.filter.date);
 
-    // TODO: Replace with real token management
-    const token = 'YOUR_SECRET_TOKEN';
-
     this.http
       .get<WithdrawalRequestResponse>(
         'https://apit.gitnasr.com/api/Wallet/all',
         {
           params,
-          headers: { Authorization: `Bearer ${token}` },
         }
       )
       .subscribe({
