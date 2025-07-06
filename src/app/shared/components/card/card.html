@@ -1,18 +1,26 @@
-<div class="bg-white rounded-lg shadow p-4 pr-12 relative">
-
-  <div class="absolute top-4 right-4 w-6 h-6"
-       [innerHTML]="safeIcon">
-  </div>
-
+<div class="relative p-4 pr-12 bg-white rounded-lg shadow">
+  <div class="absolute top-4 right-4 w-6 h-6" [innerHTML]="safeIcon"></div>
 
   <div class="text-sm font-medium text-gray-500">
     {{ card()?.title }}
+    <span *ngIf="card()?.title === 'Orders'" class="block text-xs text-blue-400"
+      >Total Orders</span
+    >
   </div>
 
-
-  <div class="mt-2 text-3xl font-semibold text-gray-900">
-    {{ card()?.value }}
+  <div
+    class="mt-2 text-3xl font-semibold"
+    [ngClass]="{
+         'text-green-600': card()?.title === 'Total Revenue',
+         'text-blue-600': card()?.title === 'Orders',
+         'text-gray-900': card()?.title !== 'Total Revenue' && card()?.title !== 'Orders'
+       }"
+  >
+    <ng-container *ngIf="card()?.title === 'Total Revenue'; else normalValue">
+      <span>{{ card()?.value }}</span>
+    </ng-container>
+    <ng-template #normalValue>
+      <span *ngIf="card()?.title !== 'Orders'">{{ card()?.value }}</span>
+    </ng-template>
   </div>
-
 </div>
-

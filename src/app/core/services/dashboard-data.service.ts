@@ -1,56 +1,63 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
 import { Activity } from '../models/activity.model';
 import { HttpService } from './http.service';
-import { environment } from '../../../environments/environment';
 
-export interface AnalyticsPostResponse {
-  totalPosts: number;
-  averagePostPrice: number;
-  postsByCategory: { [category: string]: number };
-  pendingPosts: number;
-}
-
-export interface AnalyticsUserResponse {
-  totalUsers: number;
-  newUsersLast7Days: number;
-  newUsersLast30Days: number;
-  usersByUniversity: { [university: string]: number };
+export interface AnalyticsResponse {
+  userAnalytics: {
+    totalUsers: number;
+    newUsersLast7Days: number;
+    newUsersLast30Days: number;
+    pendingKyc: number;
+    usersByUniversity: { [university: string]: number };
+  };
+  postAnalytics: {
+    totalPosts: number;
+    pendingPosts: number;
+    activePosts: number;
+    averagePostPrice: number;
+    postsByCategory: { [category: string]: number };
+  };
+  salesAnalytics: {
+    totalSalesRevenue: number;
+    totalsOrder: number;
+    averagePostPrice: number;
+  };
 }
 
 @Injectable({ providedIn: 'root' })
 export class DashboardDataService {
-  private readonly analyticsUrl = environment.analyticsPostUrl;
-  private readonly analyticsUserUrl = environment.analyticsUserUrl;
+  private readonly analyticsUrl = environment.analyticsUrl;
 
   constructor(private readonly httpService: HttpService) {}
 
-  getAnalyticsPost(): Observable<AnalyticsPostResponse> {
-    return this.httpService.get<AnalyticsPostResponse>(this.analyticsUrl).pipe(
-      catchError(error => {
-        console.error('Error fetching analytics post data:', error);
+  getAnalytics(): Observable<AnalyticsResponse> {
+    return this.httpService.get<AnalyticsResponse>(this.analyticsUrl).pipe(
+      catchError((error) => {
+        console.error('Error fetching analytics data:', error);
         // Return a safe fallback value
         return of({
-          totalPosts: 0,
-          averagePostPrice: 0,
-          postsByCategory: {},
-          pendingPosts: 0
-        });
-      })
-    );
-  }
-
-  getAnalyticsUser(): Observable<AnalyticsUserResponse> {
-    return this.httpService.get<AnalyticsUserResponse>(this.analyticsUserUrl).pipe(
-      catchError(error => {
-        console.error('Error fetching analytics user data:', error);
-        // Return a safe fallback value
-        return of({
-          totalUsers: 0,
-          newUsersLast7Days: 0,
-          newUsersLast30Days: 0,
-          usersByUniversity: {}
+          userAnalytics: {
+            totalUsers: 0,
+            newUsersLast7Days: 0,
+            newUsersLast30Days: 0,
+            pendingKyc: 0,
+            usersByUniversity: {},
+          },
+          postAnalytics: {
+            totalPosts: 0,
+            pendingPosts: 0,
+            activePosts: 0,
+            averagePostPrice: 0,
+            postsByCategory: {},
+          },
+          salesAnalytics: {
+            totalSalesRevenue: 0,
+            totalsOrder: 0,
+            averagePostPrice: 0,
+          },
         });
       })
     );
