@@ -1,6 +1,17 @@
-import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
-import { ChartDataset, registerables, Chart, ChartConfiguration } from 'chart.js';
-import { NgChartsModule } from 'ng2-charts'; 
+import {
+  Component,
+  Input,
+  OnInit,
+  OnChanges,
+  SimpleChanges,
+} from '@angular/core';
+import {
+  ChartDataset,
+  registerables,
+  Chart,
+  ChartConfiguration,
+} from 'chart.js';
+import { NgChartsModule } from 'ng2-charts';
 import { CommonModule } from '@angular/common';
 import { PostCategory } from '../../core/models/post-category.model';
 
@@ -9,7 +20,7 @@ Chart.register(...registerables);
 @Component({
   selector: 'app-chart',
   standalone: true,
-  imports: [CommonModule, NgChartsModule], 
+  imports: [CommonModule, NgChartsModule],
   templateUrl: './chart.component.html',
 })
 export class ChartComponent implements OnInit, OnChanges {
@@ -17,6 +28,8 @@ export class ChartComponent implements OnInit, OnChanges {
   @Input() pieChartData: PostCategory[] = [];
   @Input() chartType: 'doughnut' | 'pie' = 'doughnut';
   @Input() title: string = '';
+  @Input() expandable: boolean = false;
+  expanded = false;
 
   public doughnutChartLabels: string[] = [];
   public doughnutChartDatasets: ChartDataset<'doughnut'>[] = [];
@@ -26,9 +39,9 @@ export class ChartComponent implements OnInit, OnChanges {
     plugins: {
       legend: {
         display: false,
-      }
+      },
     },
-    cutout: '80%'
+    cutout: '80%',
   };
   public doughnutChartType = 'doughnut' as const;
 
@@ -40,8 +53,8 @@ export class ChartComponent implements OnInit, OnChanges {
     plugins: {
       legend: {
         display: true,
-      }
-    }
+      },
+    },
   };
   public pieChartType = 'pie' as const;
 
@@ -63,23 +76,35 @@ export class ChartComponent implements OnInit, OnChanges {
     const dataValues: number[] = [];
     const backgroundColors: string[] = [];
 
-    if (!Array.isArray(this.postCategories) || this.postCategories.length === 0) {
+    if (
+      !Array.isArray(this.postCategories) ||
+      this.postCategories.length === 0
+    ) {
       // No data to display
       this.doughnutChartDatasets = [
         {
           data: [],
           backgroundColor: [],
           borderWidth: 0,
-        }
+        },
       ];
       return;
     }
 
-    this.postCategories.forEach(category => {
+    this.postCategories.forEach((category) => {
       // Validate category properties
-      const name = typeof category.name === 'string' && category.name.trim() !== '' ? category.name : 'Unknown';
-      const value = typeof category.value === 'number' && !isNaN(category.value) ? category.value : 0;
-      const color = typeof category.color === 'string' && category.color.trim() !== '' ? category.color : '#CCCCCC';
+      const name =
+        typeof category.name === 'string' && category.name.trim() !== ''
+          ? category.name
+          : 'Unknown';
+      const value =
+        typeof category.value === 'number' && !isNaN(category.value)
+          ? category.value
+          : 0;
+      const color =
+        typeof category.color === 'string' && category.color.trim() !== ''
+          ? category.color
+          : '#CCCCCC';
 
       // Optionally skip categories with missing/invalid name or value
       if (name === 'Unknown' && value === 0) {
@@ -96,7 +121,7 @@ export class ChartComponent implements OnInit, OnChanges {
         data: dataValues,
         backgroundColor: backgroundColors,
         borderWidth: 0,
-      }
+      },
     ];
   }
 
@@ -110,14 +135,23 @@ export class ChartComponent implements OnInit, OnChanges {
           data: [],
           backgroundColor: [],
           borderWidth: 0,
-        }
+        },
       ];
       return;
     }
-    this.pieChartData.forEach(category => {
-      const name = typeof category.name === 'string' && category.name.trim() !== '' ? category.name : 'Unknown';
-      const value = typeof category.value === 'number' && !isNaN(category.value) ? category.value : 0;
-      const color = typeof category.color === 'string' && category.color.trim() !== '' ? category.color : '#CCCCCC';
+    this.pieChartData.forEach((category) => {
+      const name =
+        typeof category.name === 'string' && category.name.trim() !== ''
+          ? category.name
+          : 'Unknown';
+      const value =
+        typeof category.value === 'number' && !isNaN(category.value)
+          ? category.value
+          : 0;
+      const color =
+        typeof category.color === 'string' && category.color.trim() !== ''
+          ? category.color
+          : '#CCCCCC';
       if (name === 'Unknown' && value === 0) {
         return;
       }
@@ -130,7 +164,20 @@ export class ChartComponent implements OnInit, OnChanges {
         data: dataValues,
         backgroundColor: backgroundColors,
         borderWidth: 0,
-      }
+      },
     ];
+  }
+
+  get visibleCategories(): PostCategory[] {
+    if (!this.expandable) return this.postCategories;
+    return this.expanded
+      ? this.postCategories
+      : this.postCategories.slice(0, 6);
+  }
+
+  toggleExpanded() {
+    if (this.expandable) {
+      this.expanded = !this.expanded;
+    }
   }
 }

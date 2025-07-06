@@ -10,11 +10,19 @@
     ></canvas>
   </div>
   <ul class="grid grid-cols-2 gap-2 mt-4">
-    <li *ngFor="let c of postCategories" class="flex items-center">
-      <span class="w-3 h-3 mr-2 rounded-full" [style.background]="c.color"></span>
+    <li *ngFor="let c of visibleCategories" class="flex items-center">
+      <span
+        class="w-3 h-3 mr-2 rounded-full"
+        [style.background]="c.color"
+      ></span>
       <span class="text-sm">{{ c.name }}</span>
     </li>
   </ul>
+  <button
+    *ngIf="expandable && postCategories.length > 6"
+    (click)="toggleExpanded()"
+    class="mt-2 text-xs text-blue-500 hover:underline"
+  >
+    {{ expanded ? "Show less" : "Show more" }}
+  </button>
 </div>
-
-
