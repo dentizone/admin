@@ -57,6 +57,13 @@ export class WithDrawalReq implements OnInit {
   pageSize = 10;
   totalPages = 1;
 
+  // Modal state
+  showModal = false;
+  modalAction: 'approve' | 'deny' | null = null;
+  modalRequest: WithdrawalRequest | null = null;
+  modalComment = '';
+  modalLoading = false;
+
   constructor(private http: HttpClient) {}
 
   ngOnInit() {
@@ -138,5 +145,57 @@ export class WithDrawalReq implements OnInit {
     if (page < 1 || page > this.totalPages) return;
     this.filter.page = page;
     this.fetchRequests();
+  }
+
+  openModal(action: 'approve' | 'deny', request: WithdrawalRequest) {
+    this.showModal = true;
+    this.modalAction = action;
+    this.modalRequest = request;
+    this.modalComment = '';
+    this.modalLoading = false;
+  }
+
+  closeModal() {
+    this.showModal = false;
+    this.modalAction = null;
+    this.modalRequest = null;
+    this.modalComment = '';
+    this.modalLoading = false;
+  }
+
+  submitModal() {
+    if (!this.modalRequest || !this.modalAction) return;
+    this.modalLoading = true;
+    const id = this.modalRequest.id;
+    const note = this.modalComment;
+    const url =
+      this.modalAction === 'approve'
+        ? `https://apit.gitnasr.com/api/Wallet/withdrawal/${id}/approve`
+        : `https://apit.gitnasr.com/api/Wallet/withdrawal/${id}/reject`;
+    // TODO: Replace with real token management
+    const token = 'YOUR_SECRET_TOKEN';
+    this.http
+      .post(url, note ? { note } : {}, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .subscribe({
+        next: () => {
+          this.toastMessage =
+            this.modalAction === 'approve'
+              ? 'Withdrawal approved!'
+              : 'Withdrawal denied!';
+          this.isToastSuccess = true;
+          this.viewToast = true;
+          this.closeModal();
+          this.fetchRequests();
+          this.fetchStats();
+        },
+        error: () => {
+          this.toastMessage = 'Action failed. Please try again.';
+          this.isToastSuccess = false;
+          this.viewToast = true;
+          this.modalLoading = false;
+        },
+      });
   }
 }

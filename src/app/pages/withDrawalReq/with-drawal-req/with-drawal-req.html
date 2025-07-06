@@ -72,6 +72,57 @@
   </div>
 </div>
 
+<!-- Modal Dialog -->
+<div
+  *ngIf="showModal"
+  class="flex fixed inset-0 z-50 justify-center items-center bg-black bg-opacity-40"
+>
+  <div
+    class="relative p-6 w-full max-w-md bg-white rounded-lg shadow-lg animate-fade-in"
+  >
+    <h2 class="mb-4 text-xl font-bold text-center">
+      {{ modalAction === 'approve' ? 'Approve Withdrawal' : 'Deny Withdrawal' }}
+    </h2>
+    <div class="mb-4">
+      <label class="block mb-2 text-sm font-medium text-gray-700"
+        >Wanna Leave Comment for the user?</label
+      >
+      <textarea
+        class="w-full border rounded px-3 py-2 min-h-[80px] resize-y"
+        [(ngModel)]="modalComment"
+        [disabled]="modalLoading"
+      ></textarea>
+    </div>
+    <div class="flex gap-2 justify-end mt-6">
+      <button
+        class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+        (click)="closeModal()"
+        [disabled]="modalLoading"
+      >
+        Cancel
+      </button>
+      <button
+        *ngIf="modalAction === 'approve'"
+        class="px-4 py-2 font-semibold text-white bg-green-600 rounded hover:bg-green-700 disabled:opacity-60"
+        (click)="submitModal()"
+        [disabled]="modalLoading"
+      >
+        <span *ngIf="!modalLoading">Approve</span>
+        <span *ngIf="modalLoading">Approving...</span>
+      </button>
+      <button
+        *ngIf="modalAction === 'deny'"
+        class="px-4 py-2 font-semibold text-white bg-red-600 rounded hover:bg-red-700 disabled:opacity-60"
+        (click)="submitModal()"
+        [disabled]="modalLoading"
+      >
+        <span *ngIf="!modalLoading">Deny</span>
+        <span *ngIf="modalLoading">Denying...</span>
+      </button>
+    </div>
+  </div>
+</div>
+
 <!-- Table -->
 <div class="overflow-x-auto relative bg-white shadow-md sm:rounded-lg">
   <table class="w-full text-sm text-left text-gray-500">
@@ -108,14 +159,16 @@
           <button
             *ngIf="req.status === 'Pending'"
             class="px-4 py-1 font-semibold text-white bg-red-500 rounded-md"
+            (click)="openModal('deny', req)"
           >
-            Denied
+            Deny
           </button>
           <button
             *ngIf="req.status === 'Pending'"
             class="px-4 py-1 font-semibold text-white bg-green-500 rounded-md"
+            (click)="openModal('approve', req)"
           >
-            Accept
+            Approve
           </button>
         </td>
       </tr>
