@@ -71,6 +71,15 @@ export class WithDrawalReq implements OnInit {
     this.fetchRequests();
   }
 
+  showToast(message: string, isSuccess: boolean = true) {
+    this.toastMessage = message;
+    this.isToastSuccess = isSuccess;
+    this.viewToast = true;
+    setTimeout(() => {
+      this.viewToast = false;
+    }, 5000);
+  }
+
   fetchStats() {
     // TODO: Replace with real token management
     const token = 'YOUR_SECRET_TOKEN';
@@ -94,9 +103,7 @@ export class WithDrawalReq implements OnInit {
           };
         },
         error: (err) => {
-          this.toastMessage = 'Failed to load withdrawal stats.';
-          this.isToastSuccess = false;
-          this.viewToast = true;
+          this.showToast('Failed to load withdrawal stats.', false);
         },
       });
   }
@@ -113,11 +120,15 @@ export class WithDrawalReq implements OnInit {
     if (this.filter.date)
       params = params.set('RequestDateTime', this.filter.date);
 
+    // TODO: Replace with real token management
+    const token = 'YOUR_SECRET_TOKEN';
+
     this.http
       .get<WithdrawalRequestResponse>(
         'https://apit.gitnasr.com/api/Wallet/all',
         {
           params,
+          headers: { Authorization: `Bearer ${token}` },
         }
       )
       .subscribe({
@@ -128,9 +139,7 @@ export class WithDrawalReq implements OnInit {
           this.loading = false;
         },
         error: (err) => {
-          this.toastMessage = 'Failed to load withdrawal requests.';
-          this.isToastSuccess = false;
-          this.viewToast = true;
+          this.showToast('Failed to load withdrawal requests.', false);
           this.loading = false;
         },
       });
@@ -180,20 +189,18 @@ export class WithDrawalReq implements OnInit {
       })
       .subscribe({
         next: () => {
-          this.toastMessage =
+          this.showToast(
             this.modalAction === 'approve'
               ? 'Withdrawal approved!'
-              : 'Withdrawal denied!';
-          this.isToastSuccess = true;
-          this.viewToast = true;
+              : 'Withdrawal denied!',
+            true
+          );
           this.closeModal();
           this.fetchRequests();
           this.fetchStats();
         },
         error: () => {
-          this.toastMessage = 'Action failed. Please try again.';
-          this.isToastSuccess = false;
-          this.viewToast = true;
+          this.showToast('Action failed. Please try again.', false);
           this.modalLoading = false;
         },
       });
