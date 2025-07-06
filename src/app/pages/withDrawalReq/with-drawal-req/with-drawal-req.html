@@ -1,45 +1,213 @@
+<app-toast-component
+  *ngIf="viewToast"
+  [isSuccess]="isToastSuccess"
+  [message]="toastMessage"
+></app-toast-component>
 
-<app-toast-component *ngIf="viewToast" [isSuccess]="isToastSuccess" [message]="toastMessage"></app-toast-component>
-<h1 class="text-2xl font-bold ">
-  WithDrawal Management
-</h1>
-<h6 class="mb-4 text-gray-500">This is overview about WithDrawal Requests in Dentizone.</h6>
-<div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-            <tr>
-                <th scope="col" class="px-6 py-3">
-                    User Name
-                </th>
-                <th scope="col" class="px-6 py-3">
-                    Amount
-                </th>
-                <th scope="col" class="px-6 py-3">
-                    Date
-                </th>
-                <th scope="col" class="px-6 py-3">
-                    Action
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600">
-                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                    Apple MacBook Pro 17"
-                </th>
-                <td class="px-6 py-4">
-                    Silver
-                </td>
-                <td class="px-6 py-4">
-                    Laptop
-                </td>
-                <td class="px-6 py-4 space-x-3">
-                    <button class="bg-red-500 px-4 py-1 rounded-md text-white font-semibold">Denied</button>
-                    <button class="bg-green-500 px-4 py-1 rounded-md text-white font-semibold">Accept</button>
-                </td>
-            </tr>
-            
-        </tbody>
-    </table>
+<h1 class="mb-1 text-2xl font-bold">Withdrawal Management</h1>
+<h6 class="mb-6 text-gray-500">
+  Overview of Withdrawal Requests in Dentizone.
+</h6>
+
+<!-- Stats Cards -->
+<div class="grid grid-cols-1 gap-4 mb-6 sm:grid-cols-2 md:grid-cols-5">
+  <div class="flex flex-col items-center p-4 bg-white rounded-lg shadow">
+    <span class="text-lg font-semibold">Total</span>
+    <span class="text-2xl font-bold text-blue-600">{{ stats.total }}</span>
+  </div>
+  <div class="flex flex-col items-center p-4 bg-yellow-50 rounded-lg shadow">
+    <span class="text-lg font-semibold">Pending</span>
+    <span class="text-2xl font-bold text-yellow-600">{{ stats.pending }}</span>
+  </div>
+  <div class="flex flex-col items-center p-4 bg-green-50 rounded-lg shadow">
+    <span class="text-lg font-semibold">Approved</span>
+    <span class="text-2xl font-bold text-green-600">{{ stats.approved }}</span>
+  </div>
+  <div class="flex flex-col items-center p-4 bg-red-50 rounded-lg shadow">
+    <span class="text-lg font-semibold">Rejected</span>
+    <span class="text-2xl font-bold text-red-600">{{ stats.rejected }}</span>
+  </div>
+  <div class="flex flex-col items-center p-4 bg-indigo-50 rounded-lg shadow">
+    <span class="text-lg font-semibold">Completed</span>
+    <span class="text-2xl font-bold text-indigo-600"
+      >{{ stats.completed }}</span
+    >
+  </div>
 </div>
 
+<!-- Filters -->
+<div class="flex flex-col gap-4 mb-6 md:flex-row md:items-end">
+  <div>
+    <label class="block mb-1 text-sm font-medium text-gray-700">Status</label>
+    <select
+      class="px-3 py-2 w-full rounded border"
+      [(ngModel)]="filter.status"
+      (change)="onFilterChange()"
+    >
+      <option value="">All</option>
+      <option value="Pending">Pending</option>
+      <option value="Approved">Approved</option>
+      <option value="Rejected">Rejected</option>
+      <option value="Completed">Completed</option>
+    </select>
+  </div>
+  <div>
+    <label class="block mb-1 text-sm font-medium text-gray-700">Search</label>
+    <input
+      class="px-3 py-2 w-full rounded border"
+      type="text"
+      placeholder="Search by user..."
+      [(ngModel)]="filter.searchTerm"
+      (input)="onFilterChange()"
+    />
+  </div>
+  <div>
+    <label class="block mb-1 text-sm font-medium text-gray-700">Date</label>
+    <input
+      class="px-3 py-2 w-full rounded border"
+      type="date"
+      [(ngModel)]="filter.date"
+      (change)="onFilterChange()"
+    />
+  </div>
+</div>
+
+<!-- Modal Dialog -->
+<div
+  *ngIf="showModal"
+  class="flex fixed inset-0 z-50 justify-center items-center bg-black bg-opacity-40"
+>
+  <div
+    class="relative p-6 w-full max-w-md bg-white rounded-lg shadow-lg animate-fade-in"
+  >
+    <h2 class="mb-4 text-xl font-bold text-center">
+      {{ modalAction === 'approve' ? 'Approve Withdrawal' : 'Deny Withdrawal' }}
+    </h2>
+    <div class="mb-4">
+      <label class="block mb-2 text-sm font-medium text-gray-700"
+        >Wanna Leave Comment for the user?</label
+      >
+      <textarea
+        class="w-full border rounded px-3 py-2 min-h-[80px] resize-y"
+        [(ngModel)]="modalComment"
+        [disabled]="modalLoading"
+      ></textarea>
+    </div>
+    <div class="flex gap-2 justify-end mt-6">
+      <button
+        class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+        (click)="closeModal()"
+        [disabled]="modalLoading"
+      >
+        Cancel
+      </button>
+      <button
+        *ngIf="modalAction === 'approve'"
+        class="px-4 py-2 font-semibold text-white bg-green-600 rounded hover:bg-green-700 disabled:opacity-60"
+        (click)="submitModal()"
+        [disabled]="modalLoading"
+      >
+        <span *ngIf="!modalLoading">Approve</span>
+        <span *ngIf="modalLoading">Approving...</span>
+      </button>
+      <button
+        *ngIf="modalAction === 'deny'"
+        class="px-4 py-2 font-semibold text-white bg-red-600 rounded hover:bg-red-700 disabled:opacity-60"
+        (click)="submitModal()"
+        [disabled]="modalLoading"
+      >
+        <span *ngIf="!modalLoading">Deny</span>
+        <span *ngIf="modalLoading">Denying...</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Table -->
+<div class="overflow-x-auto relative bg-white shadow-md sm:rounded-lg">
+  <table class="w-full text-sm text-left text-gray-500">
+    <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+      <tr>
+        <th class="px-6 py-3">User Name</th>
+        <th class="px-6 py-3">Amount</th>
+        <th class="px-6 py-3">Date</th>
+        <th class="px-6 py-3">Status</th>
+        <th class="px-6 py-3">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr
+        *ngFor="let req of requests"
+        class="bg-white border-b hover:bg-gray-50"
+      >
+        <td class="px-6 py-4 font-medium text-gray-900">{{ req.fullName }}</td>
+        <td class="px-6 py-4">{{ req.amount | number:'1.2-2' }}</td>
+        <td class="px-6 py-4">{{ req.createdAt | date:'mediumDate' }}</td>
+        <td class="px-6 py-4">
+          <span
+            [ngClass]="{
+            'text-yellow-600': req.status === 'Pending',
+            'text-green-600': req.status === 'Approved',
+            'text-red-600': req.status === 'Rejected',
+            'text-indigo-600': req.status === 'Completed'
+          }"
+            class="font-semibold"
+            >{{ req.status }}</span
+          >
+        </td>
+        <td class="px-6 py-4 space-x-2">
+          <button
+            *ngIf="req.status === 'Pending'"
+            class="px-4 py-1 font-semibold text-white bg-red-500 rounded-md"
+            (click)="openModal('deny', req)"
+          >
+            Deny
+          </button>
+          <button
+            *ngIf="req.status === 'Pending'"
+            class="px-4 py-1 font-semibold text-white bg-green-500 rounded-md"
+            (click)="openModal('approve', req)"
+          >
+            Approve
+          </button>
+        </td>
+      </tr>
+      <tr *ngIf="!loading && requests.length === 0">
+        <td colspan="5" class="py-6 text-center text-gray-400">
+          No withdrawal requests found.
+        </td>
+      </tr>
+      <tr *ngIf="loading">
+        <td colspan="5" class="py-6 text-center text-gray-400">Loading...</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Pagination -->
+<div class="flex justify-between items-center mt-6" *ngIf="totalPages > 1">
+  <button
+    class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
+    [disabled]="filter.page === 1"
+    (click)="onPageChange(filter.page - 1)"
+  >
+    Previous
+  </button>
+  <div class="space-x-1">
+    <button
+      *ngFor="let page of [].constructor(totalPages); let i = index"
+      class="px-3 py-1 rounded"
+      [ngClass]="filter.page === (i+1) ? 'bg-blue-500 text-white' : 'bg-gray-200 hover:bg-gray-300'"
+      (click)="onPageChange(i+1)"
+    >
+      {{ i+1 }}
+    </button>
+  </div>
+  <button
+    class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
+    [disabled]="filter.page === totalPages"
+    (click)="onPageChange(filter.page + 1)"
+  >
+    Next
+  </button>
+</div>
