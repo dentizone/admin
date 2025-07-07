@@ -144,10 +144,15 @@
         <div class="mb-4 border-b border-gray-200 ms-3">
             <ul class="flex flex-wrap -mb-px text-sm font-medium text-center"  data-tabs-active-classes="text-purple-600 hover:text-purple-600 " role="tablist">
                 <li class="me-2" role="presentation">
-                    <button (click)="handleModalTabs(1)" class="inline-block text-blue-700 p-4 border-b-2 border-blue-800 rounded-t-lg hover:text-gray-600 hover:border-gray-300" type="button" role="tab" aria-controls="profile" aria-selected="false">Post Details</button>
+                    <button (click)="handleModalTabs(1)" 
+                    [ngClass]="{'text-blue-700 border-blue-800 hover:text-blue-600':activeTab==1,
+                    'text-blue-900 hover:text-gray-600 hover:border-gray-300':activeTab!=1}"
+                    class="inline-block  p-4 border-b-2  rounded-t-lg" type="button" role="tab">Post Details</button>
                 </li>
                 <li class="me-2" role="presentation">
-                    <button (click)="handleModalTabs(2)" class="inline-block text-blue-900 p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300" type="button" role="tab">Seller Details</button>
+                    <button (click)="handleModalTabs(2)" [ngClass]="{'text-blue-700 border-blue-800 hover:text-blue-600':activeTab==2,
+                    'text-blue-900 hover:text-gray-600 hover:border-gray-300':activeTab!=2}"
+                    class="inline-block  p-4 border-b-2 rounded-t-lg " type="button" role="tab">Seller Details</button>
                 </li>
             </ul>
         </div>
