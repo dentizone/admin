@@ -35,10 +35,10 @@ export enum UserState {
   providedIn: 'root',
 })
 export class Login {
-  constructor(private http: HttpClient) {
+  constructor(private readonly http: HttpClient) {
     this.loadStoredUser();
   }
-  private currentUserSubject = new BehaviorSubject<User | null>(null);
+  private readonly currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
 
   private loadStoredUser(): void {

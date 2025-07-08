@@ -62,9 +62,9 @@ export class LayoutComponent implements OnInit {
 
   constructor(
     private readonly router: Router,
-    private http: HttpClient,
-    private login: Login,
-    private loading: LoadingService
+    private readonly http: HttpClient,
+    private readonly login: Login,
+    private readonly loading: LoadingService
   ) {
     this.setActiveByRoute(this.router.url);
     this.router.events.subscribe(() => {

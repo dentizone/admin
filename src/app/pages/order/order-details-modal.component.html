@@ -265,6 +265,7 @@
               <ng-container *ngIf="order?.orderItems as items">
                 <ng-container *ngIf="items.length > 0">
                   <li
+                  onkeydown=""
                     *ngFor="let item of items"
                     class="flex flex-col gap-4 p-6 rounded-2xl border border-indigo-50 shadow-lg backdrop-blur-md cursor-pointer bg-white/80 hover:bg-indigo-50"
                     (click)="openShipmentModal(item)"

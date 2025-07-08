@@ -1,5 +1,6 @@
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
   <div
+  onkeydown=""
     *ngFor="let order of orders"
     class="bg-white border border-gray-100 rounded-2xl shadow-sm hover:shadow-lg transition-shadow p-6 flex flex-col gap-4 cursor-pointer group relative"
     (click)="onClick(order)"

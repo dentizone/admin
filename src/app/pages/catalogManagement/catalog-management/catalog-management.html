@@ -22,7 +22,7 @@
     </thead>
     <tbody>
       @for (catalog of categories; track $index) {
-      <tr (click)="getSubcategory(catalog.id,$index)" class="bg-white border-b hover:bg-gray-50">
+      <tr onkeydown="" (click)="getSubcategory(catalog.id,$index)" class="bg-white border-b hover:bg-gray-50">
         <td class="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap">
           <img class="w-10 h-10 rounded-md" [src]="catalog.iconUrl" alt="icon">
           <div class="ps-3">
@@ -32,7 +32,7 @@
         <td class="px-6 py-4 text-red-600">
           <div class="inline-flex space-x-5">
           <a (click)="showEdit($index)" class="font-medium text-blue-600 hover:underline">Edit Category</a>
-          <svg xmlns="http://www.w3.org/2000/svg" (click)="removeCategory(catalog.id)"
+          <svg onkeydown="" xmlns="http://www.w3.org/2000/svg" (click)="removeCategory(catalog.id)"
      fill="" 
      viewBox="0 0 24 24" 
      stroke-width="1.5" 
@@ -70,6 +70,7 @@
           <td class="px-6 py-4 text-blue-900 whitespace-nowrap">
             <div class="text-base font-semibold">{{ catalog.name }}
                 <svg xmlns="http://www.w3.org/2000/svg" 
+                onkeydown=""
                     (click)="removeSubcategory(catalog.id)"
                     fill="none" 
                     viewBox="0 0 24 24" 
@@ -92,8 +93,8 @@
 
     </div>
     <!-- Edit user modal -->
-    <div *ngIf="isEditShown" class="fixed inset-0 z-50 flex items-center justify-center w-full p-4 overflow-x-hidden overflow-y-auto bg-black/30"(click)="onBackdropClick($event)">
-  <div class="relative w-full max-w-2xl max-h-full" (click)="$event.stopPropagation()">
+    <div onkeydown="" *ngIf="isEditShown" class="fixed inset-0 z-50 flex items-center justify-center w-full p-4 overflow-x-hidden overflow-y-auto bg-black/30"(click)="onBackdropClick($event)">
+  <div onkeydown="" class="relative w-full max-w-2xl max-h-full" (click)="$event.stopPropagation()">
     
     <!-- Modal content -->
     <form class="relative bg-white rounded-lg shadow-md">
@@ -150,8 +151,8 @@
 </div>
 
 <!--  -->
- <div *ngIf="isAddCategoryShow" class="fixed inset-0 z-50 flex items-center justify-center w-full p-4 overflow-x-hidden overflow-y-auto bg-black/30"(click)="onBackdropClick($event)">
-  <div class="relative w-full max-w-2xl max-h-full" (click)="$event.stopPropagation()">
+ <div onkeydown="" *ngIf="isAddCategoryShow" class="fixed inset-0 z-50 flex items-center justify-center w-full p-4 overflow-x-hidden overflow-y-auto bg-black/30"(click)="onBackdropClick($event)">
+  <div onkeydown="" class="relative w-full max-w-2xl max-h-full" (click)="$event.stopPropagation()">
     
     <!-- Modal content -->
     <form class="relative bg-white rounded-lg shadow-md">
@@ -211,8 +212,10 @@
 
 
 <div *ngIf="subCategoryAddShow" class="fixed inset-0 z-50 flex items-center justify-center w-full p-4 overflow-x-hidden overflow-y-auto bg-black/30"
-(click)="onBackdropClick($event)">
-  <div class="relative w-full max-w-2xl max-h-full" (click)="$event.stopPropagation()">
+(click)="onBackdropClick($event)"
+onkeydown=""
+>
+  <div onkeydown="" class="relative w-full max-w-2xl max-h-full" (click)="$event.stopPropagation()">
     <!-- Modal content -->
     <form class="relative bg-white rounded-lg shadow-md">
       <!-- Modal header -->

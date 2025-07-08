@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
 })
 export class LoginPage {
 
-  constructor(private service:Login, private route:Router){}
+  constructor(private readonly service:Login, private readonly route:Router){}
   userEmail=''
   userPass=''
   onSubmit(){

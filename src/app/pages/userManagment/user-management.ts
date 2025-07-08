@@ -9,8 +9,8 @@ import { Observable } from 'rxjs';
 export class UserManagementService {
 
   token:string |null;
-  private apiUrl = 'https://apit.gitnasr.com/api/Users';
-  constructor(private http:HttpClient,private authService:Login) {
+  private readonly apiUrl = 'https://apit.gitnasr.com/api/Users';
+  constructor(private readonly http:HttpClient,authService:Login) {
     this.token=authService.getAccessToken();
    }
 

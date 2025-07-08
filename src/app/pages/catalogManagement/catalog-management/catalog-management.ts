@@ -36,7 +36,7 @@ export class CatalogManagement implements OnInit{
   handelAddCategory(){
     this.isAddCategoryShow=!this.isAddCategoryShow;
   }
-  constructor(private catalogService:CatalogService){}
+  constructor(private readonly catalogService:CatalogService){}
 
   isEditShown=false;
   removeCategory(categoryID:string){
@@ -126,7 +126,6 @@ setTimeout(() => {
         this.newCategory.iconUrl='/assets/images/image-gallery.png';
         this.newCategory.name='';
         console.log(this.newCategoryIconUrl);
-        //this.newUrl='';
         this.handelAddCategory();
         this.getCategories();
       },
@@ -211,7 +210,6 @@ setTimeout(() => {
       : `https://apit.gitnasr.com/${res.url}`;
 
       console.log(this.newCategoryIconUrl)
-      //this.newCategory.iconUrl=res.url;
       this.toastMessage='Icon Changed Successfully';
       this.showToast();
     },

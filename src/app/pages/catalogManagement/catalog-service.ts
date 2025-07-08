@@ -8,7 +8,7 @@ import { Login } from '../login/login';
 export class CatalogService {
 
   token:string |null;
-  constructor(private http:HttpClient,private authService:Login) {
+  constructor(private readonly http:HttpClient,authService:Login) {
     this.token=authService.getAccessToken();
   }
 

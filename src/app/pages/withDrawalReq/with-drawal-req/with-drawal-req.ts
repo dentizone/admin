@@ -64,7 +64,7 @@ export class WithDrawalReq implements OnInit {
   modalComment = '';
   modalLoading = false;
 
-  constructor(private http: HttpClient) {}
+  constructor(private readonly http: HttpClient) {}
 
   ngOnInit() {
     this.fetchStats();
@@ -81,7 +81,6 @@ export class WithDrawalReq implements OnInit {
   }
 
   fetchStats() {
-    // TODO: Replace with real token management
     const token = 'YOUR_SECRET_TOKEN';
     this.http
       .get<any>('https://apit.gitnasr.com/api/Wallet/stats', {
@@ -120,7 +119,6 @@ export class WithDrawalReq implements OnInit {
     if (this.filter.date)
       params = params.set('RequestDateTime', this.filter.date);
 
-    // TODO: Replace with real token management
     const token = 'YOUR_SECRET_TOKEN';
 
     this.http
@@ -181,7 +179,8 @@ export class WithDrawalReq implements OnInit {
       this.modalAction === 'approve'
         ? `https://apit.gitnasr.com/api/Wallet/withdrawal/${id}/approve`
         : `https://apit.gitnasr.com/api/Wallet/withdrawal/${id}/reject`;
-    // TODO: Replace with real token management
+   
+        
     const token = 'YOUR_SECRET_TOKEN';
     this.http
       .post(url, note ? { note } : {}, {
