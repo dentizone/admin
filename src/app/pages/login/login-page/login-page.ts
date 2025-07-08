@@ -50,6 +50,7 @@ export class LoginPage {
       },
       error: (err) => {
         this.showToast('Login failed. Please check your credentials.', false);
+        this.loading = false;
       },
       complete: () => {
         this.loading = false;
