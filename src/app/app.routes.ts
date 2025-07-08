@@ -8,9 +8,9 @@ import { LayoutComponent } from './shared/layout/layout.component';
 import { AuthGuard } from './core/guards/auth.guard';
 import { CatalogManagement } from './pages/catalogManagement/catalog-management/catalog-management';
 import { LoginPage } from './pages/login/login-page/login-page';
+import { PostManagementComponent } from './pages/PostManagement/post-management-component/post-management-component';
 import { UserManagement } from './pages/userManagment/user-management/user-management';
 import { WithDrawalReq } from './pages/withDrawalReq/with-drawal-req/with-drawal-req';
-import { PostManagementComponent } from './pages/PostManagement/post-management-component/post-management-component';
 
 export const routes: Routes = [
   {

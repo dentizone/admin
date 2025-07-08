@@ -1,21 +1,91 @@
-<div class="min-h-screen items-center flex justify-center">
-    <div  class="flex flex-col items-center bg-white border border-gray-200 rounded-lg shadow-sm md:flex-row w-5/6 justify-self-center h-5/6">
-        <img class="object-cover w-full rounded-t-lg h-96 md:h-auto md:w-1/2 md:rounded-none md:rounded-s-lg" src="/assets/images/LogoWithBackground.png" alt="">
-        <div class="flex flex-col justify-between p-4 leading-normal w-full justify-self-center items-center ">
-            <h2 class="font-bold text-3xl mb-8 text-[#125a74]">Sign In</h2>
-            <form class="w-full justify-self-center" (submit)="onSubmit()">
-            <div class="mb-5">
-                <label for="email" class="block mb-2 text-sm md:text-xl font-medium text-[#125a74] ">Your email</label>
-                <input [(ngModel)]="userEmail" [ngModelOptions]="{standalone:true}" type="email" id="email" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder="adim@domain.com" required />
-            </div>
-            <div class="mb-5">
-                <label for="password" class="block mb-2 text-sm md:text-xl font-medium text-[#125a74]">Your password</label>
-                <input [(ngModel)]="userPass" [ngModelOptions]="{standalone:true}" type="password" id="password" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " required />
-            </div>
-            
-            <button type="submit" class="text-white bg-[#208cb4] hover:bg-[#19a2d3] focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center float-end mt-10">Sign In</button>
-            </form>
-
+<app-toast-component
+  *ngIf="viewToast"
+  [isSuccess]="isToastSuccess"
+  [message]="toastMessage"
+></app-toast-component>
+<div
+  class="flex justify-center items-center min-h-screen bg-gradient-to-br from-blue-50 to-blue-100"
+>
+  <div
+    class="flex flex-col justify-center items-center px-4 w-full max-w-2xl bg-white rounded-2xl border border-gray-200 shadow-xl md:flex-row"
+  >
+    <div class="flex flex-col justify-center items-center p-8 w-full bg-white">
+      <img
+        class="object-cover w-40 h-40 rounded-full border-4 border-[#208cb4] shadow-md mb-6 bg-white"
+        src="/assets/images/LogoWithBackground.png"
+        alt="Logo"
+      />
+      <h2 class="font-bold text-4xl mb-4 text-[#125a74] text-center">
+        Sign In
+      </h2>
+      <p class="mb-8 text-center text-gray-500">
+        Let's Make Good Decisions Today
+      </p>
+      <form class="w-full" (submit)="onSubmit()">
+        <div class="mb-6">
+          <label
+            for="email"
+            class="block mb-2 text-base font-medium text-[#125a74]"
+            >Email Address</label
+          >
+          <input
+            [(ngModel)]="userEmail"
+            [ngModelOptions]="{standalone:true}"
+            type="email"
+            id="email"
+            class="block p-3 w-full text-base text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-[#208cb4] focus:border-[#208cb4] transition"
+            placeholder="admin@domain.com"
+            required
+            [disabled]="loading"
+          />
         </div>
+        <div class="relative mb-4">
+          <label
+            for="password"
+            class="block mb-2 text-base font-medium text-[#125a74]"
+            >Password</label
+          >
+          <input
+            [(ngModel)]="userPass"
+            [ngModelOptions]="{standalone:true}"
+            [type]="showPassword ? 'text' : 'password'"
+            id="password"
+            class="block p-3 w-full text-base text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-[#208cb4] focus:border-[#208cb4] transition pr-12"
+            required
+            [disabled]="loading"
+          />
+        </div>
+
+        <button
+          type="submit"
+          class="w-full py-3 px-6 text-white bg-[#208cb4] hover:bg-[#19a2d3] focus:ring-4 focus:outline-none focus:ring-blue-200 font-semibold rounded-lg text-base shadow-md transition mt-2 flex items-center justify-center"
+          [disabled]="loading"
+        >
+          <svg
+            *ngIf="loading"
+            class="mr-2 w-5 h-5 text-white animate-spin"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              class="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              stroke-width="4"
+            ></circle>
+            <path
+              class="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8v8z"
+            ></path>
+          </svg>
+          <span *ngIf="!loading">Sign In</span>
+          <span *ngIf="loading">Signing In...</span>
+        </button>
+      </form>
     </div>
+  </div>
 </div>
