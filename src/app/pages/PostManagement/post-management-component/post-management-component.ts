@@ -1,149 +1,240 @@
 import { CommonModule } from '@angular/common';
 import { Component, HostListener, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { PostService } from '../post-service';
-import { ToastComponent } from "../../../shared/components/toast-component/toast-component";
 import { QuillModule } from 'ngx-quill';
+import { CardDetails } from '../../../core/models/card.model';
+import { ToastComponent } from '../../../shared/components/toast-component/toast-component';
+import { PostService } from '../post-service';
 
-interface Post{
-  id:string;
-  title:string;
-  description:string;
-  price:number;
-  expireDate:string;
-  condition:string;
-  category:string;
-  subCategory:string;
-  status:string;
+interface Post {
+  id: string;
+  title: string;
+  description: string;
+  price: number;
+  expireDate: string;
+  condition: string;
+  category: string;
+  subCategory: string;
+  status: string;
   seller: {
-      id: string,
-      username: string,
-      academicYear: number,
-      universityName: string
+    id: string;
+    username: string;
+    academicYear: number;
+    universityName: string;
+  };
+  assets: [
+    {
+      id: string;
+      url: string;
     },
-    assets: [
-      {
-        id:string,
-        url: string
-      },
-      {
-        id: string,
-        url: string
-      }
-    ],
-    createdAt: string,
-    updatedAt: string
+    {
+      id: string;
+      url: string;
+    }
+  ];
+  createdAt: string;
+  updatedAt: string;
 }
 @Component({
   selector: 'app-post-management-component',
-  imports: [CommonModule, FormsModule, ToastComponent,QuillModule],
+  imports: [CommonModule, FormsModule, ToastComponent, QuillModule],
   templateUrl: './post-management-component.html',
-  styleUrl: './post-management-component.css'
 })
 export class PostManagementComponent implements OnInit {
-
-  posts:Post[]=[];
+  posts: Post[] = [];
   visiblePages: number[] = [];
-  selectedPost:Post={id:'string',
-  title:'string',
-  description:'string',
-  price:0,
-  expireDate:'string',
-  condition:'string',
-  category:'string',
-  subCategory:'string',
-  status:'string',
-  seller: {
+  selectedPost: Post = {
+    id: 'string',
+    title: 'string',
+    description: 'string',
+    price: 0,
+    expireDate: 'string',
+    condition: 'string',
+    category: 'string',
+    subCategory: 'string',
+    status: 'string',
+    seller: {
       id: 'string',
       username: 'string',
       academicYear: 0,
-      universityName: 'string'
+      universityName: 'string',
     },
     assets: [
       {
-        id:'string',
-        url: 'string'
+        id: 'string',
+        url: 'string',
       },
       {
         id: 'string',
-        url: 'string'
-      }
+        url: 'string',
+      },
     ],
     createdAt: 'string',
-    updatedAt: 'string'};
-    currentPage=1;
-  moreActionDropdown=false;
-  selectedStatus=0;
-  viewToast: boolean=false;
-  toastMessage: string='';
-  isToastSuccess: boolean=true;
-  showPostDetails=false;
-  TotalPages=0;
-  totalProducts=0;
-  keyword=''
-  handleShowPostDetails(inputPost:Post){
-    this.showPostDetails=!this.showPostDetails;
-      this.selectedPost=inputPost;
+    updatedAt: 'string',
+  };
+  currentPage = 1;
+  moreActionDropdown = false;
+  selectedStatus = 0;
+  viewToast: boolean = false;
+  toastMessage: string = '';
+  isToastSuccess: boolean = true;
+  showPostDetails = false;
+  TotalPages = 0;
+  totalProducts = 0;
+  keyword = '';
+  city: string = '';
+  category: string = '';
+  subCategory: string = '';
+  condition: string = '';
+  minPrice: number | null = null;
+  maxPrice: number | null = null;
+  sortBy: string = '';
+  sortDirection: boolean = true; // true: ASC, false: DESC
+  postStatus: number = 1; // Default to Active
+  postStats: any = null;
+  statCards: (CardDetails & { color: string })[] = [];
+  handleShowPostDetails(inputPost: Post) {
+    this.showPostDetails = !this.showPostDetails;
+    this.selectedPost = inputPost;
   }
-  closeShowPostDetails(){
-    this.showPostDetails=false;
+  closeShowPostDetails() {
+    this.showPostDetails = false;
   }
- openedDropdownPostId: string | null = null;
-activeTab=1;
-handleModalTabs(active:number){
-  this.activeTab=active;
-}
-searchUsingKeyword(){
-  this.loadPosts();
-}
-handleMoreActionDropdown(event: MouseEvent, postId: string) {
-  event.stopPropagation(); // prevent card click
-  if (this.openedDropdownPostId === postId) {
-    this.openedDropdownPostId = null; // toggle off
-  } else {
-    this.openedDropdownPostId = postId;
+  openedDropdownPostId: string | null = null;
+  activeTab = 1;
+  handleModalTabs(active: number) {
+    this.activeTab = active;
   }
-}
+  searchUsingKeyword() {
+    this.currentPage = 1;
+    this.loadPosts();
+  }
 
+  resetFilters() {
+    this.keyword = '';
+    this.city = '';
+    this.category = '';
+    this.subCategory = '';
+    this.condition = '';
+    this.minPrice = null;
+    this.maxPrice = null;
+    this.sortBy = '';
+    this.sortDirection = true;
+    this.postStatus = 1;
+    this.currentPage = 1;
+    this.loadPosts();
+  }
 
-  constructor(private readonly postService:PostService){}
+  handleMoreActionDropdown(event: MouseEvent, postId: string) {
+    event.stopPropagation(); // prevent card click
+    if (this.openedDropdownPostId === postId) {
+      this.openedDropdownPostId = null; // toggle off
+    } else {
+      this.openedDropdownPostId = postId;
+    }
+  }
+
+  constructor(private readonly postService: PostService) {}
 
   ngOnInit(): void {
-    this.loadPosts()
+    this.loadPosts();
+    this.loadPostStats();
   }
-  loadPosts(){
-    this.postService.getAllPosts(this.currentPage,this.keyword).subscribe({
-      next:data=>{
-        this.posts=data.items;
-        if(this.totalProducts==0){
-          this.TotalPages=data.totalPages;
-        this.totalProducts=data.totalCount;
-        }
-        
-        this.updateVisiblePages();
+  loadPosts() {
+    this.postService
+      .getAllPosts({
+        pageNumber: this.currentPage,
+        keyword: this.keyword,
+        city: this.city,
+        category: this.category,
+        subCategory: this.subCategory,
+        condition: this.condition || undefined,
+        minPrice: this.minPrice || undefined,
+        maxPrice: this.maxPrice || undefined,
+        sortBy: this.sortBy || undefined,
+        sortDirection: this.sortDirection,
+        postStatus: this.postStatus,
+      })
+      .subscribe({
+        next: (data) => {
+          this.posts = data.items;
+          if (this.totalProducts == 0) {
+            this.TotalPages = data.totalPages;
+            this.totalProducts = data.totalCount;
+          }
+          this.updateVisiblePages();
+        },
+        error: (err) => {
+          console.log(err);
+        },
+      });
+  }
+  loadPostStats() {
+    this.postService.getPostStats().subscribe({
+      next: (stats) => {
+        this.postStats = stats;
+        this.statCards = [
+          {
+            title: 'Active',
+            value: stats.Active,
+            color: '#22c55e', // green-500
+            icon: `<svg fill='none' viewBox='0 0 24 24' stroke='currentColor' stroke-width='2' width='32' height='32'><circle cx='12' cy='12' r='10' stroke='#22c55e' stroke-width='2' fill='#bbf7d0'/><path stroke='#22c55e' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' d='M9 12l2 2 4-4'/></svg>`,
+          },
+          {
+            title: 'Expired',
+            value: stats.Expired,
+            color: '#f59e42', // orange-400
+            icon: `<svg fill='none' viewBox='0 0 24 24' stroke='currentColor' stroke-width='2' width='32' height='32'><circle cx='12' cy='12' r='10' stroke='#f59e42' stroke-width='2' fill='#fef3c7'/><path stroke='#f59e42' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' d='M12 8v4l2 2'/></svg>`,
+          },
+
+          {
+            title: 'Pending',
+            value: stats.Pending,
+            color: '#fbbf24', // yellow-400
+            icon: `<svg fill='none' viewBox='0 0 24 24' stroke='currentColor' stroke-width='2' width='32' height='32'><circle cx='12' cy='12' r='10' stroke='#fbbf24' stroke-width='2' fill='#fef9c3'/><path stroke='#fbbf24' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' d='M12 8v4h4'/></svg>`,
+          },
+          {
+            title: 'Rejected',
+            value: stats.Rejected,
+            color: '#ef4444', // red-500
+            icon: `<svg fill='none' viewBox='0 0 24 24' stroke='currentColor' stroke-width='2' width='32' height='32'><circle cx='12' cy='12' r='10' stroke='#ef4444' stroke-width='2' fill='#fee2e2'/><path stroke='#ef4444' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' d='M15 9l-6 6m0-6l6 6'/></svg>`,
+          },
+          {
+            title: 'Removed',
+            value: stats.Removed,
+            color: '#a3a3a3', // neutral-400
+            icon: `<svg fill='none' viewBox='0 0 24 24' stroke='currentColor' stroke-width='2' width='32' height='32'><circle cx='12' cy='12' r='10' stroke='#a3a3a3' stroke-width='2' fill='#f3f4f6'/><path stroke='#a3a3a3' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' d='M9 9l6 6m0-6l-6 6'/></svg>`,
+          },
+          {
+            title: 'Sold',
+            value: stats.Sold,
+            color: '#3b82f6', // blue-500
+            icon: `<svg fill='none' viewBox='0 0 24 24' stroke='currentColor' stroke-width='2' width='32' height='32'><circle cx='12' cy='12' r='10' stroke='#3b82f6' stroke-width='2' fill='#dbeafe'/><path stroke='#3b82f6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' d='M9 12l2 2 4-4'/></svg>`,
+          },
+        ];
       },
-      error:err=>{
-        console.log(err)
-      }
-    })
+      error: (err) => {
+        console.error('Failed to load post stats', err);
+      },
+    });
   }
-  showToast(){
-this.viewToast=true;
-setTimeout(() => {
-    this.viewToast = false;
-    this.toastMessage='';
-    this.isToastSuccess=true;
-  }, 2000);
-}
-   @HostListener('document:click', ['$event'])
-onDocumentClick(event: MouseEvent) {
-  const target = event.target as HTMLElement;
-  const clickedDropdown = target.closest('.dropdown-wrapper');
-  if (!clickedDropdown) {
-    this.openedDropdownPostId = null;
+  showToast() {
+    this.viewToast = true;
+    setTimeout(() => {
+      this.viewToast = false;
+      this.toastMessage = '';
+      this.isToastSuccess = true;
+    }, 2000);
   }
-}
-changePage(page: number) {
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+    const clickedDropdown = target.closest('.dropdown-wrapper');
+    if (!clickedDropdown) {
+      this.openedDropdownPostId = null;
+    }
+  }
+  changePage(page: number) {
     if (page < 1 || page > this.TotalPages) return;
     this.currentPage = page;
     this.loadPosts();
@@ -158,20 +249,24 @@ changePage(page: number) {
       start = Math.max(end - maxVisible + 1, 1);
     }
 
-    this.visiblePages = Array.from({ length: end - start + 1 }, (_, i) => start + i);
+    this.visiblePages = Array.from(
+      { length: end - start + 1 },
+      (_, i) => start + i
+    );
   }
-    changePostStatus(postID:string,status:number){
-      this.postService.changePostStatus(postID,status).subscribe({
-        next:data=>{
-          this.toastMessage='The status change successfuly'
-          this.showToast();
-          this.loadPosts();
-        },
-        error:err=>{
-          this.isToastSuccess=false;
-          this.toastMessage='Failed to change Status';
-          this.showToast();
-        }
-      })
-    }
+  changePostStatus(postID: string, status: number) {
+    this.postService.changePostStatus(postID, status).subscribe({
+      next: (data) => {
+        this.toastMessage = 'The status change successfuly';
+        this.showToast();
+        this.loadPosts();
+        this.showPostDetails = false;
+      },
+      error: (err) => {
+        this.isToastSuccess = false;
+        this.toastMessage = 'Failed to change Status';
+        this.showToast();
+      },
+    });
+  }
 }
