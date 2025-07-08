@@ -80,6 +80,7 @@ export class PostManagementComponent implements OnInit {
   showPostDetails=false;
   TotalPages=0;
   totalProducts=0;
+  keyword=''
   handleShowPostDetails(inputPost:post){
     this.showPostDetails=!this.showPostDetails;
       this.selectedPost=inputPost;
@@ -91,6 +92,9 @@ export class PostManagementComponent implements OnInit {
 activeTab=1;
 handleModalTabs(active:number){
   this.activeTab=active;
+}
+searchUsingKeyword(){
+  this.loadPosts();
 }
 handleMoreActionDropdown(event: MouseEvent, postId: string) {
   event.stopPropagation(); // prevent card click
@@ -108,11 +112,14 @@ handleMoreActionDropdown(event: MouseEvent, postId: string) {
     this.loadPosts()
   }
   loadPosts(){
-    this.postService.getAllPosts(this.currentPage).subscribe({
+    this.postService.getAllPosts(this.currentPage,this.keyword).subscribe({
       next:data=>{
         this.posts=data.items;
-        this.TotalPages=data.totalPages;
+        if(this.totalProducts==0){
+          this.TotalPages=data.totalPages;
         this.totalProducts=data.totalCount;
+        }
+        
         this.updateVisiblePages();
       },
       error:err=>{

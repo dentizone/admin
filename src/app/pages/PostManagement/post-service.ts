@@ -14,8 +14,8 @@ export class PostService {
       this.token=authService.getAccessToken();
      }
   
-  getAllPosts(pageNum:number):Observable<any>{
-    const url=`https://apit.gitnasr.com/api/Posts/search?PageNumber=${pageNum}`
+  getAllPosts(pageNum:number,keyword:string):Observable<any>{
+    const url=`https://apit.gitnasr.com/api/Posts/search?PageNumber=${pageNum}&Keyword=${keyword}`
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${this.token}`
