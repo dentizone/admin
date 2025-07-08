@@ -10,7 +10,7 @@ export class PostService {
 
   api='https://apit.gitnasr.com/api/Posts';
   token:string|null;
-  constructor(private http:HttpClient,private authService:Login) {
+  constructor(private readonly http:HttpClient,private readonly authService:Login) {
       this.token=authService.getAccessToken();
      }
   

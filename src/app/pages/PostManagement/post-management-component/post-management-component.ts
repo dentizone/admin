@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, HostListener, OnInit, viewChild, ViewChild } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { PostService } from '../post-service';
 import { ToastComponent } from "../../../shared/components/toast-component/toast-component";
 import { QuillModule } from 'ngx-quill';
 
-interface post{
+interface Post{
   id:string;
   title:string;
   description:string;
@@ -42,9 +42,9 @@ interface post{
 })
 export class PostManagementComponent implements OnInit {
 
-  posts:post[]=[];
+  posts:Post[]=[];
   visiblePages: number[] = [];
-  selectedPost:post={id:'string',
+  selectedPost:Post={id:'string',
   title:'string',
   description:'string',
   price:0,
@@ -81,7 +81,7 @@ export class PostManagementComponent implements OnInit {
   TotalPages=0;
   totalProducts=0;
   keyword=''
-  handleShowPostDetails(inputPost:post){
+  handleShowPostDetails(inputPost:Post){
     this.showPostDetails=!this.showPostDetails;
       this.selectedPost=inputPost;
   }
@@ -106,7 +106,7 @@ handleMoreActionDropdown(event: MouseEvent, postId: string) {
 }
 
 
-  constructor(private postService:PostService){}
+  constructor(private readonly postService:PostService){}
 
   ngOnInit(): void {
     this.loadPosts()
