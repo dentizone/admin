@@ -1,0 +1,170 @@
+<div class="p-6">
+  <!-- Sentiment Cards -->
+  <div class="grid grid-cols-1 gap-4 mb-8 md:grid-cols-4">
+    <div class="flex flex-col items-center p-4 bg-green-100 rounded-lg shadow">
+      <span class="text-2xl font-bold text-green-700">
+        <ng-container *ngIf="!loadingStats; else loadingStatsTpl"
+          >{{ sentimentCounts.Positive ?? 0 }}</ng-container
+        >
+      </span>
+      <span class="text-green-700">Positive</span>
+    </div>
+    <div class="flex flex-col items-center p-4 bg-red-100 rounded-lg shadow">
+      <span class="text-2xl font-bold text-red-700">
+        <ng-container *ngIf="!loadingStats; else loadingStatsTpl"
+          >{{ sentimentCounts.Negative ?? 0 }}</ng-container
+        >
+      </span>
+      <span class="text-red-700">Negative</span>
+    </div>
+    <div class="flex flex-col items-center p-4 bg-yellow-100 rounded-lg shadow">
+      <span class="text-2xl font-bold text-yellow-700">
+        <ng-container *ngIf="!loadingStats; else loadingStatsTpl"
+          >{{ sentimentCounts.Unknown ?? 0 }}</ng-container
+        >
+      </span>
+      <span class="text-yellow-700">Unknown</span>
+    </div>
+    <div class="flex flex-col items-center p-4 bg-blue-100 rounded-lg shadow">
+      <span class="text-2xl font-bold text-blue-700">
+        <ng-container *ngIf="!loadingStats; else loadingStatsTpl"
+          >{{ sentimentCounts.Neutral ?? 0 }}</ng-container
+        >
+      </span>
+      <span class="text-blue-700">Neutral</span>
+    </div>
+  </div>
+  <ng-template #loadingStatsTpl>
+    <span class="animate-pulse">...</span>
+  </ng-template>
+  <div *ngIf="errorStats" class="mb-4 text-red-600">{{ errorStats }}</div>
+
+  <!-- Filter Inputs -->
+  <div class="flex flex-wrap gap-2 items-end mb-4">
+    <input
+      type="text"
+      [(ngModel)]="filter"
+      (ngModelChange)="onFilterChange()"
+      placeholder="Search text..."
+      class="px-3 py-2 w-full rounded border border-gray-300 md:w-1/4 focus:outline-none focus:ring-2 focus:ring-blue-400"
+    />
+    <select
+      [(ngModel)]="stars"
+      (ngModelChange)="onFilterChange()"
+      class="px-3 py-2 rounded border border-gray-300"
+    >
+      <option [ngValue]="null">All Stars</option>
+      <option *ngFor="let s of [1,2,3,4,5]" [ngValue]="s">{{s}} Stars</option>
+    </select>
+    <select
+      [(ngModel)]="sentiment"
+      (ngModelChange)="onFilterChange()"
+      class="px-3 py-2 rounded border border-gray-300"
+    >
+      <option [ngValue]="null">All Sentiments</option>
+      <option value="Positive">Positive</option>
+      <option value="Negative">Negative</option>
+      <option value="Unknown">Neutral</option>
+    </select>
+    <input
+      type="date"
+      [(ngModel)]="createdAfter"
+      (ngModelChange)="onFilterChange()"
+      class="px-3 py-2 rounded border border-gray-300"
+      placeholder="Created After"
+    />
+    <input
+      type="date"
+      [(ngModel)]="createdBefore"
+      (ngModelChange)="onFilterChange()"
+      class="px-3 py-2 rounded border border-gray-300"
+      placeholder="Created Before"
+    />
+  </div>
+
+  <!-- Reviews Table -->
+  <div class="overflow-x-auto">
+    <table class="min-w-full bg-white rounded shadow">
+      <thead>
+        <tr class="text-gray-700 bg-gray-100">
+          <th class="px-4 py-2 text-left">Comment</th>
+          <th class="px-4 py-2 text-left">Stars</th>
+          <th class="px-4 py-2 text-left">User Name</th>
+          <th class="px-4 py-2 text-left">Sentiment</th>
+          <th class="px-4 py-2 text-left">Created At</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngIf="loadingReviews">
+          <td colspan="5" class="py-4 text-center text-gray-400">Loading...</td>
+        </tr>
+        <tr *ngIf="errorReviews">
+          <td colspan="5" class="py-4 text-center text-red-600">
+            {{ errorReviews }}
+          </td>
+        </tr>
+        <tr
+          *ngFor="let review of filteredReviews"
+          class="border-b hover:bg-gray-50"
+        >
+          <td class="px-4 py-2">{{ review.comment }}</td>
+          <td class="px-4 py-2">
+            <span *ngFor="let star of [].constructor(review.stars)">
+              <svg
+                class="inline w-4 h-4 text-yellow-400"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.967a1 1 0 00.95.69h4.175c.969 0 1.371 1.24.588 1.81l-3.38 2.455a1 1 0 00-.364 1.118l1.287 3.966c.3.922-.755 1.688-1.54 1.118l-3.38-2.454a1 1 0 00-1.175 0l-3.38 2.454c-.784.57-1.838-.196-1.54-1.118l1.287-3.966a1 1 0 00-.364-1.118L2.05 9.394c-.783-.57-.38-1.81.588-1.81h4.175a1 1 0 00.95-.69l1.286-3.967z"
+                />
+              </svg>
+            </span>
+          </td>
+          <td class="px-4 py-2">{{ review.user?.username }}</td>
+          <td class="px-4 py-2">
+            <span
+              [ngClass]="{
+                'text-green-700': review.stars >= 4,
+                'text-yellow-700': review.stars === 3,
+                'text-red-700': review.stars <= 2
+              }"
+            >
+              {{ review.sentiment ? review.sentiment : 'Unknown' }}
+            </span>
+          </td>
+          <td class="px-4 py-2">{{ review.createdAt | date:'medium' }}</td>
+        </tr>
+        <tr
+          *ngIf="!loadingReviews && !errorReviews && filteredReviews.length === 0"
+        >
+          <td colspan="5" class="py-4 text-center text-gray-400">
+            No reviews found.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <div
+    class="flex gap-2 justify-center items-center mt-4"
+    *ngIf="totalPages > 1"
+  >
+    <button
+      (click)="onPageChange(page-1)"
+      [disabled]="page === 1"
+      class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
+    >
+      Prev
+    </button>
+    <span>Page {{page}} of {{totalPages}}</span>
+    <button
+      (click)="onPageChange(page+1)"
+      [disabled]="page === totalPages"
+      class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
+    >
+      Next
+    </button>
+  </div>
+</div>

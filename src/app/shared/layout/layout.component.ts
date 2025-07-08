@@ -41,6 +41,11 @@ export class LayoutComponent implements OnInit {
       label: 'University Management',
       route: '/university',
     },
+    {
+      icon: 'review-icon',
+      label: 'Feedback Management',
+      route: '/feedback',
+    },
   ];
 
   readonly financialItems: MenuItem[] = [
@@ -49,15 +54,6 @@ export class LayoutComponent implements OnInit {
       label: 'Withdrawal Requests',
       route: '/withdrawals',
     },
-    {
-      icon: 'currency-dollar',
-      label: 'Transaction History',
-      route: '/transactions',
-    },
-  ];
-
-  readonly settingsItems: MenuItem[] = [
-    { icon: 'cog-6-tooth', label: 'Platform Settings', route: '/settings' },
   ];
 
   constructor(
@@ -96,11 +92,7 @@ export class LayoutComponent implements OnInit {
   }
 
   setActiveByRoute(url: string): void {
-    const allItems = [
-      ...this.sidebarItems,
-      ...this.financialItems,
-      ...this.settingsItems,
-    ];
+    const allItems = [...this.sidebarItems, ...this.financialItems];
     allItems.forEach((item) => {
       item.active = url.startsWith(item.route);
     });
@@ -108,11 +100,7 @@ export class LayoutComponent implements OnInit {
 
   setActiveItem(selectedItem: MenuItem): void {
     // Reset all items
-    [
-      ...this.sidebarItems,
-      ...this.financialItems,
-      ...this.settingsItems,
-    ].forEach((item) => {
+    [...this.sidebarItems, ...this.financialItems].forEach((item) => {
       item.active = false;
     });
 

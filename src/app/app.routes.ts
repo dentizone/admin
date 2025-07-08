@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
+import { FeedbackPageComponent } from './pages/feedback/feedback-page/feedback-page';
 import { OrderManagementComponent } from './pages/order/order-management.component';
 import { PlaceholderComponent } from './pages/placeholder/placeholder.component';
 import { UniversityComponent } from './pages/university/university.component';
@@ -28,6 +29,7 @@ export const routes: Routes = [
       { path: 'withdrawals', component: WithDrawalReq },
       { path: 'transactions', component: PlaceholderComponent },
       { path: 'settings', component: PlaceholderComponent },
+      { path: 'feedback', component: FeedbackPageComponent },
     ],
   },
   { path: 'login', component: LoginPage },
