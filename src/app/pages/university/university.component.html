@@ -88,21 +88,6 @@
         </tbody>
       </table>
     </div>
-    <div class="flex items-center justify-between mt-6">
-      <div class="text-sm text-gray-500">
-        Showing
-        <span class="font-semibold text-gray-700">{{ (page - 1) * pageSize + 1 }}</span>
-        to
-        <span class="font-semibold text-gray-700">{{ Math.min(page * pageSize, totalCount) }}</span>
-        of
-        <span class="font-semibold text-gray-700">{{ totalCount }}</span>
-        universities
-      </div>
-      <nav class="inline-flex gap-1" aria-label="Pagination">
-        <button (click)="prevPage()" [disabled]="page === 1" class="px-3 py-1 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 disabled:opacity-50">Prev</button>
-      
-        <button (click)="nextPage()" [disabled]="page === totalPages" class="px-3 py-1 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 disabled:opacity-50">Next</button>
-      </nav>
-    </div>
+    <app-pagination-component (pageChanged)="onPageChanged($event)" [currentPage]="page" [TotalPages]="totalPages" ></app-pagination-component>
   </div>
 </div> 

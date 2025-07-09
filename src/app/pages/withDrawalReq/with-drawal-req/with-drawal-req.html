@@ -38,8 +38,9 @@
 <!-- Filters -->
 <div class="flex flex-col gap-4 mb-6 md:flex-row md:items-end">
   <div>
-    <label class="block mb-1 text-sm font-medium text-gray-700">Status</label>
+    <label for="status" class="block mb-1 text-sm font-medium text-gray-700">Status</label>
     <select
+    id="status"
       class="px-3 py-2 w-full rounded border"
       [(ngModel)]="filter.status"
       (change)="onFilterChange()"
@@ -52,8 +53,9 @@
     </select>
   </div>
   <div>
-    <label class="block mb-1 text-sm font-medium text-gray-700">Search</label>
+    <label for="search" class="block mb-1 text-sm font-medium text-gray-700">Search</label>
     <input
+    id="search"
       class="px-3 py-2 w-full rounded border"
       type="text"
       placeholder="Search by user..."
@@ -62,8 +64,9 @@
     />
   </div>
   <div>
-    <label class="block mb-1 text-sm font-medium text-gray-700">Date</label>
+    <label for="date" class="block mb-1 text-sm font-medium text-gray-700">Date</label>
     <input
+    id="date"
       class="px-3 py-2 w-full rounded border"
       type="date"
       [(ngModel)]="filter.date"
@@ -84,10 +87,11 @@
       {{ modalAction === 'approve' ? 'Approve Withdrawal' : 'Deny Withdrawal' }}
     </h2>
     <div class="mb-4">
-      <label class="block mb-2 text-sm font-medium text-gray-700"
+      <label for="Comment" class="block mb-2 text-sm font-medium text-gray-700"
         >Wanna Leave Comment for the user?</label
       >
       <textarea
+      id="Comment"
         class="w-full border rounded px-3 py-2 min-h-[80px] resize-y"
         [(ngModel)]="modalComment"
         [disabled]="modalLoading"
@@ -184,30 +188,5 @@
   </table>
 </div>
 
-<!-- Pagination -->
-<div class="flex justify-between items-center mt-6" *ngIf="totalPages > 1">
-  <button
-    class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
-    [disabled]="filter.page === 1"
-    (click)="onPageChange(filter.page - 1)"
-  >
-    Previous
-  </button>
-  <div class="space-x-1">
-    <button
-      *ngFor="let page of [].constructor(totalPages); let i = index"
-      class="px-3 py-1 rounded"
-      [ngClass]="filter.page === (i+1) ? 'bg-blue-500 text-white' : 'bg-gray-200 hover:bg-gray-300'"
-      (click)="onPageChange(i+1)"
-    >
-      {{ i+1 }}
-    </button>
-  </div>
-  <button
-    class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
-    [disabled]="filter.page === totalPages"
-    (click)="onPageChange(filter.page + 1)"
-  >
-    Next
-  </button>
-</div>
+<app-pagination-component (pageChanged)="onPageChanged($event)" [currentPage]="filter.page" [TotalPages]="totalPages" ></app-pagination-component>
+

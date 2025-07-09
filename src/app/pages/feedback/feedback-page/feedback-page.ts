@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { PaginationComponent } from "../../../shared/components/Pagination/pagination-component/pagination-component";
 
 interface ReviewStats {
   Positive: number;
@@ -37,7 +38,7 @@ interface ReviewResponse {
 @Component({
   selector: 'app-feedback-page',
   standalone: true,
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, PaginationComponent],
   templateUrl: './feedback-page.html',
   styleUrls: ['./feedback-page.css'],
 })
@@ -65,7 +66,12 @@ export class FeedbackPageComponent implements OnInit {
   totalCount = 0;
   totalPages = 1;
 
-  constructor(private http: HttpClient) {}
+  constructor(private readonly http: HttpClient) {}
+
+  onPageChanged(newPage: number) {
+    this.page = newPage;
+    this.fetchReviews();
+  }
 
   ngOnInit() {
     this.fetchStats();
@@ -123,12 +129,6 @@ export class FeedbackPageComponent implements OnInit {
 
   onFilterChange() {
     this.page = 1;
-    this.fetchReviews();
-  }
-
-  onPageChange(newPage: number) {
-    if (newPage < 1 || newPage > this.totalPages) return;
-    this.page = newPage;
     this.fetchReviews();
   }
 

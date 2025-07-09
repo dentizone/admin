@@ -141,38 +141,4 @@
     </tbody>
   </table>
 </div>
-<div class="flex justify-center mt-4">
-  <nav class="flex items-center space-x-1">
-    <!-- Prev Button -->
-    <button
-      class="px-3 py-1 rounded border text-sm"
-      [disabled]="CurrentPage === 1"
-      (click)="changePage(CurrentPage - 1)"
-    >
-      Prev
-    </button>
-
-    <!-- Page Numbers -->
-    <ng-container *ngFor="let page of visiblePages">
-      <button
-        class="px-3 py-1 rounded border text-sm"
-        [ngClass]="{
-          'bg-blue-600 text-white': page === CurrentPage,
-          'hover:bg-blue-100': page !== CurrentPage
-        }"
-        (click)="changePage(page)"
-      >
-        {{ page }}
-      </button>
-    </ng-container>
-
-    <!-- Next Button -->
-    <button
-      class="px-3 py-1 rounded border text-sm"
-      [disabled]="CurrentPage === TotalPages"
-      (click)="changePage(CurrentPage + 1)"
-    >
-      Next
-    </button>
-  </nav>
-</div>
+<app-pagination-component [currentPage]="CurrentPage" [TotalPages]="TotalPages" (pageChanged)="onPageChanged($event)"></app-pagination-component>

@@ -146,25 +146,6 @@
     </table>
   </div>
 
-  <!-- Pagination -->
-  <div
-    class="flex gap-2 justify-center items-center mt-4"
-    *ngIf="totalPages > 1"
-  >
-    <button
-      (click)="onPageChange(page-1)"
-      [disabled]="page === 1"
-      class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
-    >
-      Prev
-    </button>
-    <span>Page {{page}} of {{totalPages}}</span>
-    <button
-      (click)="onPageChange(page+1)"
-      [disabled]="page === totalPages"
-      class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
-    >
-      Next
-    </button>
-  </div>
+  <app-pagination-component (pageChanged)="onPageChanged($event)" [currentPage]="page" [TotalPages]="totalPages" ></app-pagination-component>
+
 </div>

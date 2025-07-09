@@ -5,6 +5,7 @@ import { QuillModule } from 'ngx-quill';
 import { CardDetails } from '../../../core/models/card.model';
 import { ToastComponent } from '../../../shared/components/toast-component/toast-component';
 import { PostService } from '../post-service';
+import { PaginationComponent } from '../../../shared/components/Pagination/pagination-component/pagination-component';
 
 interface Post {
   id: string;
@@ -37,12 +38,11 @@ interface Post {
 }
 @Component({
   selector: 'app-post-management-component',
-  imports: [CommonModule, FormsModule, ToastComponent, QuillModule],
+  imports: [CommonModule, FormsModule, ToastComponent, QuillModule,PaginationComponent],
   templateUrl: './post-management-component.html',
 })
 export class PostManagementComponent implements OnInit {
   posts: Post[] = [];
-  visiblePages: number[] = [];
   selectedPost: Post = {
     id: 'string',
     title: 'string',
@@ -162,7 +162,6 @@ export class PostManagementComponent implements OnInit {
             this.TotalPages = data.totalPages;
             this.totalProducts = data.totalCount;
           }
-          this.updateVisiblePages();
         },
         error: (err) => {
           console.log(err);
@@ -234,26 +233,10 @@ export class PostManagementComponent implements OnInit {
       this.openedDropdownPostId = null;
     }
   }
-  changePage(page: number) {
-    if (page < 1 || page > this.TotalPages) return;
-    this.currentPage = page;
-    this.loadPosts();
-  }
-  updateVisiblePages() {
-    const maxVisible = 5;
-    let start = Math.max(this.currentPage - Math.floor(maxVisible / 2), 1);
-    let end = start + maxVisible - 1;
-
-    if (end > this.TotalPages) {
-      end = this.TotalPages;
-      start = Math.max(end - maxVisible + 1, 1);
-    }
-
-    this.visiblePages = Array.from(
-      { length: end - start + 1 },
-      (_, i) => start + i
-    );
-  }
+  onPageChanged(newPage: number) {
+  this.currentPage = newPage;
+  this.loadPosts(); 
+}
   changePostStatus(postID: string, status: number) {
     this.postService.changePostStatus(postID, status).subscribe({
       next: (data) => {
