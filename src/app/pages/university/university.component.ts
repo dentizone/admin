@@ -3,11 +3,12 @@ import { FormsModule } from '@angular/forms';
 import { NgClass } from '@angular/common';
 import { UniversityService } from '../../core/services/university.service';
 import { University, CreateUniversityDto, UpdateUniversityDto, PagedResultDto } from '../../core/models/university.model';
+import { PaginationComponent } from "../../shared/components/Pagination/pagination-component/pagination-component";
 
 @Component({
   selector: 'app-university',
   standalone: true,
-  imports: [FormsModule, NgClass],
+  imports: [FormsModule, NgClass, PaginationComponent],
   providers: [],
   templateUrl: './university.component.html',
 })
@@ -39,6 +40,10 @@ export class UniversityComponent {
     this.loadUniversities();
   }
 
+  onPageChanged(newPage: number) {
+  this.page = newPage;
+  this.loadUniversities();
+}
   showToast(message: string, type: 'error' | 'success' = 'error') {
     this.toastMessage = message;
     this.toastType = type;
@@ -115,27 +120,6 @@ export class UniversityComponent {
   delete(university: University) {
     if (university.id) {
       this.universityService.delete(university.id).subscribe(() => this.loadUniversities());
-    }
-  }
-
-  goToPage(page: number) {
-    if (page >= 1 && page <= this.totalPages) {
-      this.page = page;
-      this.loadUniversities();
-    }
-  }
-
-  nextPage() {
-    if (this.page < this.totalPages) {
-      this.page++;
-      this.loadUniversities();
-    }
-  }
-
-  prevPage() {
-    if (this.page > 1) {
-      this.page--;
-      this.loadUniversities();
     }
   }
 } 

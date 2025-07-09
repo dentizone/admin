@@ -3,6 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ToastComponent } from '../../../shared/components/toast-component/toast-component';
+import { PaginationComponent } from "../../../shared/components/Pagination/pagination-component/pagination-component";
 
 interface WithdrawalRequest {
   id: string;
@@ -23,7 +24,7 @@ interface WithdrawalRequestResponse {
 
 @Component({
   selector: 'app-with-drawal-req',
-  imports: [CommonModule, FormsModule, ToastComponent],
+  imports: [CommonModule, FormsModule, ToastComponent, PaginationComponent],
   templateUrl: './with-drawal-req.html',
   styleUrl: './with-drawal-req.css',
   standalone: true,
@@ -147,13 +148,10 @@ export class WithDrawalReq implements OnInit {
     this.filter.page = 1;
     this.fetchRequests();
   }
-
-  onPageChange(page: number) {
-    if (page < 1 || page > this.totalPages) return;
-    this.filter.page = page;
-    this.fetchRequests();
-  }
-
+  onPageChanged(newPage: number) {
+  this.filter.page = newPage;
+  this.fetchRequests(); 
+}
   openModal(action: 'approve' | 'deny', request: WithdrawalRequest) {
     this.showModal = true;
     this.modalAction = action;

@@ -5,11 +5,12 @@ import { CardDetails } from '../../../core/models/card.model';
 import { Card } from '../../../shared/components/card/card';
 import { ToastComponent } from '../../../shared/components/toast-component/toast-component';
 import { UserManagementService } from '../user-management';
+import { PaginationComponent } from '../../../shared/components/Pagination/pagination-component/pagination-component';
 
 @Component({
   selector: 'app-user-management',
   standalone: true,
-  imports: [CommonModule, FormsModule, ToastComponent, Card],
+  imports: [CommonModule, FormsModule,PaginationComponent, ToastComponent, Card],
   templateUrl: './user-management.html',
   styleUrl: './user-management.css',
 })
@@ -31,6 +32,10 @@ export class UserManagement implements OnInit {
 
   constructor(private readonly userService: UserManagementService) {}
 
+  onPageChanged(newPage: number) {
+  this.CurrentPage = newPage;
+  this.loadUsers(+this.selectedStatus, this.searchKeyword); 
+}
   toastMessage = '';
   updateUserShow = false;
 
@@ -127,20 +132,12 @@ export class UserManagement implements OnInit {
           this.totalUsers = data.totalCount;
           this.TotalPages = data.totalPages;
           this.assignUserAvatars(this.users);
-          this.updateVisiblePages();
         },
         error: (err) => {
           console.error('Error loading users:', err);
         },
       });
   }
-
-  changePage(page: number) {
-    if (page < 1 || page > this.TotalPages) return;
-    this.CurrentPage = page;
-    this.loadUsers(+this.selectedStatus, this.searchKeyword);
-  }
-
   filterUsers() {
     if (+this.selectedStatus != -1 || this.searchKeyword) {
       this.loadUsers(+this.selectedStatus, this.searchKeyword);
@@ -148,23 +145,6 @@ export class UserManagement implements OnInit {
       this.filteredUsers = [...this.users];
     }
   }
-
-  updateVisiblePages() {
-    const maxVisible = 5;
-    let start = Math.max(this.CurrentPage - Math.floor(maxVisible / 2), 1);
-    let end = start + maxVisible - 1;
-
-    if (end > this.TotalPages) {
-      end = this.TotalPages;
-      start = Math.max(end - maxVisible + 1, 1);
-    }
-
-    this.visiblePages = Array.from(
-      { length: end - start + 1 },
-      (_, i) => start + i
-    );
-  }
-
   showUpdateUser() {
     this.updateUserShow = !this.updateUserShow;
   }

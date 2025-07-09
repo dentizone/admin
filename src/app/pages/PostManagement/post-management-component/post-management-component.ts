@@ -5,6 +5,8 @@ import { QuillModule } from 'ngx-quill';
 import { CardDetails } from '../../../core/models/card.model';
 import { ToastComponent } from '../../../shared/components/toast-component/toast-component';
 import { PostService } from '../post-service';
+import { PaginationComponent } from '../../../shared/components/Pagination/pagination-component/pagination-component';
+import { FiltersComponent } from "../filter-component/filter-component";
 
 interface Post {
   id: string;
@@ -37,12 +39,44 @@ interface Post {
 }
 @Component({
   selector: 'app-post-management-component',
-  imports: [CommonModule, FormsModule, ToastComponent, QuillModule],
+  imports: [CommonModule, FormsModule, ToastComponent, QuillModule, PaginationComponent, FiltersComponent],
   templateUrl: './post-management-component.html',
 })
 export class PostManagementComponent implements OnInit {
+  selectCity(c:string) {
+    this.filters.city=c;
+  }
+  dropDown=false;
+  handleDropdown(){
+    this.dropDown=!this.dropDown;
+  }
+  //Categories section for filter
+  categories: string[] = ['Technology', 'Education', 'Health', 'Entertainment'];
+  categoryDropdownOpen=false;
+   selectCategory(categoryName: string) {
+    this.filters.category = categoryName;
+    this.categoryDropdownOpen = false;
+  }
+filters = {
+    city: '',
+    category: '',
+    subCategory: '',
+    condition: '',
+    minPrice: null,
+    maxPrice: null,
+    sortBy: '',
+    sortDirection: true,
+    postStatus: 1
+};
+
+  //subcategories section for filter
+  subcategories: string[] = ['AI', 'Web Development', 'Mobile Apps', 'UI/UX'];
+  subcategoryDropdownOpen = false;
+  selectSubcategory(subcategoryName: string) {
+    this.filters.subCategory = subcategoryName;
+    this.subcategoryDropdownOpen = false;
+  }
   posts: Post[] = [];
-  visiblePages: number[] = [];
   selectedPost: Post = {
     id: 'string',
     title: 'string',
@@ -82,17 +116,10 @@ export class PostManagementComponent implements OnInit {
   TotalPages = 0;
   totalProducts = 0;
   keyword = '';
-  city: string = '';
-  category: string = '';
-  subCategory: string = '';
-  condition: string = '';
-  minPrice: number | null = null;
-  maxPrice: number | null = null;
-  sortBy: string = '';
-  sortDirection: boolean = true; // true: ASC, false: DESC
-  postStatus: number = 1; // Default to Active
   postStats: any = null;
   statCards: (CardDetails & { color: string })[] = [];
+  cityDropdownOpen: boolean=false;
+  cities: string[]=['Alex','aswan','cairo'];
   handleShowPostDetails(inputPost: Post) {
     this.showPostDetails = !this.showPostDetails;
     this.selectedPost = inputPost;
@@ -111,17 +138,6 @@ export class PostManagementComponent implements OnInit {
   }
 
   resetFilters() {
-    this.keyword = '';
-    this.city = '';
-    this.category = '';
-    this.subCategory = '';
-    this.condition = '';
-    this.minPrice = null;
-    this.maxPrice = null;
-    this.sortBy = '';
-    this.sortDirection = true;
-    this.postStatus = 1;
-    this.currentPage = 1;
     this.loadPosts();
   }
 
@@ -145,15 +161,15 @@ export class PostManagementComponent implements OnInit {
       .getAllPosts({
         pageNumber: this.currentPage,
         keyword: this.keyword,
-        city: this.city,
-        category: this.category,
-        subCategory: this.subCategory,
-        condition: this.condition || undefined,
-        minPrice: this.minPrice || undefined,
-        maxPrice: this.maxPrice || undefined,
-        sortBy: this.sortBy || undefined,
-        sortDirection: this.sortDirection,
-        postStatus: this.postStatus,
+        city: this.filters.city,
+        category: this.filters.category,
+        subCategory: this.filters.subCategory,
+        condition: this.filters.condition || undefined,
+        minPrice: this.filters.minPrice || undefined,
+        maxPrice: this.filters.maxPrice || undefined,
+        sortBy: this.filters.sortBy || undefined,
+        sortDirection: this.filters.sortDirection,
+        postStatus: this.filters.postStatus,
       })
       .subscribe({
         next: (data) => {
@@ -162,7 +178,6 @@ export class PostManagementComponent implements OnInit {
             this.TotalPages = data.totalPages;
             this.totalProducts = data.totalCount;
           }
-          this.updateVisiblePages();
         },
         error: (err) => {
           console.log(err);
@@ -178,7 +193,11 @@ export class PostManagementComponent implements OnInit {
             title: 'Active',
             value: stats.Active,
             color: '#22c55e', // green-500
-            icon: `<svg fill='none' viewBox='0 0 24 24' stroke='currentColor' stroke-width='2' width='32' height='32'><circle cx='12' cy='12' r='10' stroke='#22c55e' stroke-width='2' fill='#bbf7d0'/><path stroke='#22c55e' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' d='M9 12l2 2 4-4'/></svg>`,
+            icon: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="10" stroke="#22c55e" stroke-width="2" fill="#bbf7d0"/>
+              <path d="M9 12l2 2 4-4" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            `,
           },
           {
             title: 'Expired',
@@ -234,26 +253,10 @@ export class PostManagementComponent implements OnInit {
       this.openedDropdownPostId = null;
     }
   }
-  changePage(page: number) {
-    if (page < 1 || page > this.TotalPages) return;
-    this.currentPage = page;
-    this.loadPosts();
-  }
-  updateVisiblePages() {
-    const maxVisible = 5;
-    let start = Math.max(this.currentPage - Math.floor(maxVisible / 2), 1);
-    let end = start + maxVisible - 1;
-
-    if (end > this.TotalPages) {
-      end = this.TotalPages;
-      start = Math.max(end - maxVisible + 1, 1);
-    }
-
-    this.visiblePages = Array.from(
-      { length: end - start + 1 },
-      (_, i) => start + i
-    );
-  }
+  onPageChanged(newPage: number) {
+  this.currentPage = newPage;
+  this.loadPosts(); 
+}
   changePostStatus(postID: string, status: number) {
     this.postService.changePostStatus(postID, status).subscribe({
       next: (data) => {

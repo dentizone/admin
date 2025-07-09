@@ -4,6 +4,7 @@ import { OrderService } from '../../core/services/order.service';
 import { OrderDetailsModalComponent } from './order-details-modal.component';
 import { OrderHeaderComponent } from './order-header/order-header.compoenent';
 import { OrderListComponent } from './order-lists/order-list.component';
+import { PaginationComponent } from "../../shared/components/Pagination/pagination-component/pagination-component";
 
 interface Seller {
   sellerId: string;
@@ -39,7 +40,8 @@ interface Order {
     OrderHeaderComponent,
     OrderListComponent,
     OrderDetailsModalComponent,
-  ],
+    PaginationComponent
+],
   templateUrl: './order-management.component.html',
 })
 export class OrderManagementComponent implements OnInit {
@@ -67,6 +69,10 @@ export class OrderManagementComponent implements OnInit {
 
   constructor(private readonly orderService: OrderService) {}
 
+  onPageChanged(newPage: number) {
+  this.page = newPage;
+  this.loadOrders(); 
+}
   ngOnInit(): void {
     this.loadOrders();
   }
@@ -122,13 +128,6 @@ export class OrderManagementComponent implements OnInit {
     this.buyerName = buyer;
     this.page = 1;
     this.loadOrders();
-  }
-
-  onPageChange(newPage: number): void {
-    if (newPage > 0 && newPage <= this.totalPages) {
-      this.page = newPage;
-      this.loadOrders();
-    }
   }
 
   onOrderDateChange(date: string): void {

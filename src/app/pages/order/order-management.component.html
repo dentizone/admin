@@ -19,23 +19,7 @@
     </app-order-list>
   </div>
 
-  <div class="flex justify-between items-center mt-6">
-    <button
-      class="px-4 py-2 bg-gray-200 rounded"
-      [disabled]="page === 1"
-      (click)="onPageChange(page - 1)"
-    >
-      Previous
-    </button>
-    <span>Page {{ page }} of {{ totalPages }}</span>
-    <button
-      class="px-4 py-2 bg-gray-200 rounded"
-      [disabled]="page === totalPages"
-      (click)="onPageChange(page + 1)"
-    >
-      Next
-    </button>
-  </div>
+  <app-pagination-component [currentPage]="page" [TotalPages]="totalPages" (pageChanged)="onPageChanged($event)"></app-pagination-component>
 </div>
 
 <app-order-details-modal
