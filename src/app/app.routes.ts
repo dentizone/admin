@@ -7,6 +7,7 @@ import { UniversityComponent } from './pages/university/university.component';
 import { LayoutComponent } from './shared/layout/layout.component';
 
 import { AuthGuard } from './core/guards/auth.guard';
+import { ActivityComponent } from './pages/activity/activity.component';
 import { CatalogManagement } from './pages/catalogManagement/catalog-management/catalog-management';
 import { LoginPage } from './pages/login/login-page/login-page';
 import { PostManagementComponent } from './pages/PostManagement/post-management-component/post-management-component';
@@ -30,6 +31,7 @@ export const routes: Routes = [
       { path: 'transactions', component: PlaceholderComponent },
       { path: 'settings', component: PlaceholderComponent },
       { path: 'feedback', component: FeedbackPageComponent },
+      { path: 'activity', component: ActivityComponent },
     ],
   },
   { path: 'login', component: LoginPage },

@@ -33,6 +33,7 @@ export class LayoutComponent implements OnInit {
       active: false,
     },
     { icon: 'users', label: 'User Management', route: '/users' },
+    { icon: 'bolt', label: 'Users Activity', route: '/activity' },
     { icon: 'document-text', label: 'Post Management', route: '/posts' },
     { icon: 'shopping-bag', label: 'Order Management', route: '/orders' },
     { icon: 'book-open', label: 'Catalog Management', route: '/catalog' },
