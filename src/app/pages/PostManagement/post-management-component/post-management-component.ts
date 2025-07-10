@@ -51,7 +51,12 @@ export class PostManagementComponent implements OnInit {
     this.dropDown=!this.dropDown;
   }
   //Categories section for filter
-  categories: string[] = ['Technology', 'Education', 'Health', 'Entertainment'];
+  categories=[
+    {
+      id: '',
+      categoryName: '',
+      subcategories: ['']
+    }];
   categoryDropdownOpen=false;
    selectCategory(categoryName: string) {
     this.filters.category = categoryName;
@@ -155,6 +160,17 @@ filters = {
   ngOnInit(): void {
     this.loadPosts();
     this.loadPostStats();
+    this.loadFilters();
+  }
+  loadFilters(){
+    this.postService.getFilters().subscribe({
+      next:data=>{
+        this.cities=data.cities;
+        this.categories=data.categories},
+        error:err=>{
+          console.log(err);
+        }
+    })
   }
   loadPosts() {
     this.postService

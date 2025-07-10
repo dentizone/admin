@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { PostService } from '../post-service';
 
 @Component({
   selector: 'app-post-filters',
@@ -9,15 +10,22 @@ import { FormsModule } from '@angular/forms';
 })
 export class FiltersComponent {
   @Input() cities: string[] = [];
-  @Input() categories: string[] = [];
-  @Input() subcategories: string[] = [];
+  @Input() categories: any[] = [];
+  subcategories= [{
+    name: '',
+    id: '',
+    category: {
+      id: '',
+      name: ''
+    }},
+  ];
 
   @Input() filters: any = {};
   @Output() filtersChange = new EventEmitter<any>();
 
   @Output() filter = new EventEmitter<void>();
   @Output() reset = new EventEmitter<void>();
-
+  constructor(private readonly postService:PostService){}
   // Optional: Emit changes immediately on value change
   onFilter() {
     this.filtersChange.emit(this.filters);
@@ -50,9 +58,19 @@ export class FiltersComponent {
     this.cityDropdownOpen = false;
   }
 
-  selectCategory(category: string) {
+  selectCategory(category: string,id:string) {
     this.filters.category = category;
     this.categoryDropdownOpen = false;
+    this.getSubcategories(id);
+  }
+
+  getSubcategories(id:string){
+    this.postService.getSubcategories(id).subscribe({
+      next:data=>{
+        this.subcategories=data
+      }
+    })
+    
   }
 
   selectSubcategory(sub: string) {

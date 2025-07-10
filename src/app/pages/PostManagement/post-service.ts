@@ -68,4 +68,18 @@ export class PostService {
       headers,
     });
   }
+  getFilters():Observable<any>{
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${this.token}`,
+    });
+    return this.http.get('https://apit.gitnasr.com/api/Posts/sidebar',{headers})
+  }
+  getSubcategories(id:string):Observable<any>{
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${this.token}`,
+    });
+    return this.http.get(`https://apit.gitnasr.com/api/Catalog/categories/${id}/subcategories`,{headers})
+  }
 }

@@ -27,6 +27,170 @@ export class CatalogManagement implements OnInit{
     id:'',
     name:''
   }
+
+
+  ncategories = [
+    {
+      title: 'Department',
+      items: [
+        {
+          name: 'All Home',
+          children: [
+            {
+              name: 'Divisions',
+              children: [
+                { name: 'Buildings' }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      title: 'Address',
+      items: [
+        {
+          name: 'Attra Rugs & Mass',
+          children: [
+            { name: 'Kitchen' },
+            { name: 'Department' }
+          ]
+        },
+        {
+          name: 'Furniture',
+          children: [
+            {
+              name: 'Divisions',
+              children: [
+                { name: 'Buildings' }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      title: 'Name',
+      items: [
+        { name: 'Total: 6' },
+        { name: 'Bedding' },
+        { name: 'Blinds & Pands' },
+        { name: 'Home Decor' }
+      ]
+    },
+    {
+      title: 'Description',
+      items: [
+        {
+          name: 'Apparel, Footware & Accessories',
+          children: [
+            {
+              name: 'Divisions',
+              children: [
+                { name: 'Apparel' }
+              ]
+            },
+            { name: 'Harding apparel' },
+            { name: 'Workwear apparel' },
+            { name: 'Footware' },
+            { name: 'Accessories' }
+          ]
+        }
+      ]
+    },
+    {
+      title: 'Description',
+      items: [
+        {
+          name: 'Electronic',
+          children: [
+            {
+              name: 'Divisions',
+              children: [
+                { name: 'Audio Equipment' },
+                { name: 'Cables, Extensions' },
+                { name: 'Clocks' },
+                { name: 'Computer Accessories' },
+                { name: 'Beauty Products' },
+                { name: 'Memory Sticks & Cards' },
+                { name: 'TVs & Home Theures' }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      title: 'Date',
+      items: [
+        { name: 'Total: 12' },
+        { name: 'Powerbar' },
+        { name: 'Batteries' },
+        { name: 'Heating' },
+        { name: 'Cameras' },
+        { name: 'Batteries' },
+        { name: 'Penters' },
+        { name: 'Venture Management' }
+      ]
+    },
+    {
+      title: 'Description',
+      items: [
+        {
+          name: 'Food & Beverage',
+          children: [
+            {
+              name: 'Divisions',
+              children: [
+                { name: 'Beverages' }
+              ]
+            },
+            { name: 'Dressing' },
+            { name: 'Passenger' },
+            { name: 'Toilet & Snacks' }
+          ]
+        }
+      ]
+    },
+    {
+      title: 'Description',
+      items: [
+        { name: 'Troll: 3' },
+        { name: 'Snacks' },
+        { name: 'Toilet & Snacks' }
+      ]
+    },
+    {
+      title: 'Name',
+      items: [
+        { name: 'Office' },
+        { name: 'Other' },
+        { name: 'Business' },
+        { name: 'Offices' },
+        { name: 'Online' },
+        { name: 'Retail & Sales' }
+      ]
+    },
+    {
+      title: 'Description',
+      items: [
+        {
+          name: 'Tools and Storage',
+          children: [
+            {
+              name: 'Divisions',
+              children: [
+                { name: 'Home Improvement' },
+                { name: 'Storage & Organization' },
+                { name: 'Electrical' }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ];
+
   subCategoryAddShow=false;
   newSubCategoryName='';
   newUrl=''
