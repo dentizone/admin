@@ -1,0 +1,290 @@
+<div class="p-6">
+  <h1 class="flex gap-2 items-center mb-4 text-2xl font-bold">
+    <svg
+      class="w-6 h-6 text-yellow-500"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M14 3L5 16h7l-1 5 9-13h-7l1-5z"
+      />
+    </svg>
+    Users Activity
+  </h1>
+
+  <!-- Filters -->
+  <form
+    class="flex flex-wrap gap-4 items-end mb-4"
+    (ngSubmit)="onFilterChange()"
+    autocomplete="off"
+  >
+    <input
+      type="text"
+      placeholder="User ID"
+      [(ngModel)]="filter.userId"
+      name="userId"
+      class="w-40 input input-bordered"
+    />
+    <input
+      type="text"
+      placeholder="Device"
+      [(ngModel)]="filter.device"
+      name="device"
+      class="w-40 input input-bordered"
+    />
+    <input
+      type="text"
+      placeholder="IP Address"
+      [(ngModel)]="filter.ipAddress"
+      name="ipAddress"
+      class="w-40 input input-bordered"
+    />
+    <select
+      [(ngModel)]="filter.activityType"
+      name="activityType"
+      class="w-48 input input-bordered"
+    >
+      <option value="">All Activities</option>
+      <option *ngFor="let type of userActivities" [value]="type">
+        {{ type }}
+      </option>
+    </select>
+    <input
+      type="date"
+      [(ngModel)]="filter.detectedAfter"
+      name="detectedAfter"
+      class="w-40 input input-bordered"
+    />
+    <input
+      type="date"
+      [(ngModel)]="filter.detectedBefore"
+      name="detectedBefore"
+      class="w-40 input input-bordered"
+    />
+    <input
+      type="text"
+      placeholder="Search"
+      [(ngModel)]="filter.searchText"
+      name="searchText"
+      class="w-48 input input-bordered"
+    />
+    <button type="submit" class="px-6 btn btn-primary">Filter</button>
+  </form>
+
+  <!-- Table -->
+  <div class="overflow-x-auto bg-white rounded shadow">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-gray-50">
+        <tr>
+          <th
+            class="px-4 py-2 text-xs font-medium text-left text-gray-500 uppercase"
+          >
+            #
+          </th>
+          <th
+            class="px-4 py-2 text-xs font-medium text-left text-gray-500 uppercase"
+          >
+            User
+          </th>
+          <th
+            class="px-4 py-2 text-xs font-medium text-left text-gray-500 uppercase"
+          >
+            Activity
+          </th>
+          <th
+            class="px-4 py-2 text-xs font-medium text-left text-gray-500 uppercase"
+          >
+            Device
+          </th>
+          <th
+            class="px-4 py-2 text-xs font-medium text-left text-gray-500 uppercase"
+          >
+            User Agent
+          </th>
+          <th
+            class="px-4 py-2 text-xs font-medium text-left text-gray-500 uppercase"
+          >
+            IP Address
+          </th>
+          <th
+            class="px-4 py-2 text-xs font-medium text-left text-gray-500 uppercase"
+          >
+            Detected At
+          </th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-100">
+        <tr *ngIf="loading">
+          <td colspan="7" class="py-8 text-center">
+            <span class="inline-block mr-2 align-middle loader"></span> Loading
+            activities...
+          </td>
+        </tr>
+        <tr *ngIf="!loading && activities.length === 0">
+          <td colspan="7" class="py-8 text-center text-gray-400">
+            No activity found.
+          </td>
+        </tr>
+        <tr *ngFor="let activity of activities; let i = index">
+          <td class="px-4 py-2 text-sm text-gray-700">
+            {{ ((filter.pageNumber ?? 1) - 1) * (pageSize ?? 10) + i + 1 }}
+          </td>
+          <td class="px-4 py-2 text-sm text-gray-700">
+            <span class="font-semibold">{{ activity.userName }}</span>
+            <div class="text-xs text-gray-400">{{ activity.userId }}</div>
+          </td>
+          <td class="flex gap-2 items-center px-4 py-2 text-sm">
+            <ng-container [ngSwitch]="activity.activityType">
+              <svg
+                *ngSwitchCase="'Login'"
+                class="w-5 h-5 text-green-500"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 12H3m6-6v12m13-6a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              <svg
+                *ngSwitchCase="'Logout'"
+                class="w-5 h-5 text-red-500"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4m7 7l5 5m0 0l-5 5m5-5H9"
+                />
+              </svg>
+              <svg
+                *ngSwitchCase="'Register'"
+                class="w-5 h-5 text-blue-500"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14v7m-4-4h8"
+                />
+              </svg>
+              <svg
+                *ngSwitchCase="'OrderPlaced'"
+                class="w-5 h-5 text-indigo-500"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M3 3h18v18H3V3zm3 3h12v12H6V6z"
+                />
+              </svg>
+              <svg
+                *ngSwitchCase="'OrderCancelled'"
+                class="w-5 h-5 text-pink-500"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+              <svg
+                *ngSwitchCase="'AskedQuestion'"
+                class="w-5 h-5 text-yellow-500"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.77 9.77 0 01-4-.8l-4.28 1.07a1 1 0 01-1.22-1.22l1.07-4.28A9.77 9.77 0 013 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                />
+              </svg>
+              <svg
+                *ngSwitchCase="'AnsweredQuestion'"
+                class="w-5 h-5 text-teal-500"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M5 13l4 4L19 7"
+                />
+              </svg>
+              <svg
+                *ngSwitchDefault
+                class="w-5 h-5 text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <circle cx="12" cy="12" r="10" stroke-width="2" />
+              </svg>
+            </ng-container>
+            <span>{{ activity.activityType }}</span>
+          </td>
+          <td class="px-4 py-2 text-sm text-gray-700">
+            {{ activity.device || "-" }}
+          </td>
+          <td
+            class="px-4 py-2 max-w-xs text-xs text-gray-500 truncate"
+            title="{{ activity.userAgent }}"
+          >
+            {{ activity.userAgent }}
+          </td>
+          <td class="px-4 py-2 text-sm text-gray-700">
+            {{ activity.ipAddress }}
+          </td>
+          <td class="px-4 py-2 text-sm text-gray-700">
+            {{ activity.detectedAt | date : "medium" }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <div class="flex justify-between items-center mt-4" *ngIf="totalPages > 1">
+    <button
+      class="btn btn-sm"
+      [disabled]="(filter.pageNumber ?? 1) === 1"
+      (click)="onPageChange((filter.pageNumber ?? 1) - 1)"
+    >
+      Previous
+    </button>
+    <span>Page {{ filter.pageNumber ?? 1 }} of {{ totalPages ?? 1 }}</span>
+    <button
+      class="btn btn-sm"
+      [disabled]="(filter.pageNumber ?? 1) === (totalPages ?? 1)"
+      (click)="onPageChange((filter.pageNumber ?? 1) + 1)"
+    >
+      Next
+    </button>
+  </div>
+</div>
