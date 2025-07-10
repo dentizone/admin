@@ -27,6 +27,20 @@ export class CatalogManagement implements OnInit{
     id:'',
     name:''
   }
+categories=[{
+    iconUrl:'',
+    id:'',
+    name:''
+  }]
+  subCategory=[{
+    category:{
+      id:'',
+      name:''
+    } ,
+    id: "",
+    name: "Choose Category"
+  }]
+  isEditShown=false;
   subCategoryAddShow=false;
   newSubCategoryName='';
   newUrl=''
@@ -38,7 +52,6 @@ export class CatalogManagement implements OnInit{
   }
   constructor(private readonly catalogService:CatalogService){}
 
-  isEditShown=false;
   removeCategory(categoryID:string){
     this.catalogService.removeCategory(categoryID).subscribe({
       next:data=>{
@@ -54,10 +67,10 @@ export class CatalogManagement implements OnInit{
     })
   }
   onBackdropClick(event: MouseEvent) {
-  this.isEditShown = false;
-  this.subCategoryAddShow=false;
-  this.isAddCategoryShow=false;
-}
+    this.isEditShown = false;
+    this.subCategoryAddShow=false;
+    this.isAddCategoryShow=false;
+  }
   showEdit(index?:number){
     this.isEditShown=!this.isEditShown;
 
@@ -66,19 +79,7 @@ export class CatalogManagement implements OnInit{
       console.log(this.selectedCategory);
     }
   }
-  categories=[{
-    iconUrl:'',
-    id:'',
-    name:''
-  }]
-  subCategory=[{
-    category:{
-      id:'',
-      name:''
-    } ,
-    id: "",
-    name: "Choose Category"
-  }]
+  
   ngOnInit(): void {
     this.getCategories();
   }
@@ -93,13 +94,13 @@ export class CatalogManagement implements OnInit{
     })
   }
   showToast(){
-this.viewToast=true;
-setTimeout(() => {
-    this.viewToast = false;
-    this.toastMessage='';
-    this.isToastSuccess=true;
-  }, 2000);
-}
+    this.viewToast=true;
+    setTimeout(() => {
+        this.viewToast = false;
+        this.toastMessage='';
+        this.isToastSuccess=true;
+      }, 2000);
+  }
   addSubCategory(){
     this.catalogService.addSubcategory(this.selectedCategory.id,this.newSubCategoryName).subscribe({
       next:data=>{
@@ -194,7 +195,7 @@ setTimeout(() => {
       }
     })
   }
-   onImageUpload(event: Event): void {
+  onImageUpload(event: Event): void {
   const file = (event.target as HTMLInputElement).files?.[0];
   if (!file) return;
 
@@ -223,8 +224,7 @@ setTimeout(() => {
   };
 
   reader.readAsDataURL(file);
-}
-
+  }
   onImageChange(event: Event): void {
   const file = (event.target as HTMLInputElement).files?.[0];
   if (!file) return;
@@ -250,6 +250,6 @@ setTimeout(() => {
   };
 
   reader.readAsDataURL(file);
-}
+  }
 
 }

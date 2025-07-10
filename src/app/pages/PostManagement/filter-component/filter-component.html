@@ -34,13 +34,16 @@
           <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" clip-rule="evenodd" />
         </svg>
       </button>
-      <div *ngIf="categoryDropdownOpen" class="absolute mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
-        <ul class="py-1 text-sm text-gray-700">
-          <li *ngFor="let cat of categories">
-            <a (click)="selectCategory(cat)" class="block px-4 py-2 hover:bg-gray-100">{{ cat }}</a>
-          </li>
-        </ul>
-      </div>
+      <div *ngIf="categoryDropdownOpen" 
+     class="absolute mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10 max-h-40 overflow-y-auto">
+  <ul class="py-1 text-sm text-gray-700">
+    <li *ngFor="let cat of categories">
+      <a (click)="selectCategory(cat.categoryName,cat.id)" class="block px-4 py-2 hover:bg-gray-100">
+        {{ cat.categoryName }}
+      </a>
+    </li>
+  </ul>
+</div>
     </div>
 
     <!-- Subcategory -->
@@ -58,7 +61,7 @@
       <div *ngIf="subcategoryDropdownOpen" class="absolute mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
         <ul class="py-1 text-sm text-gray-700">
           <li *ngFor="let s of subcategories">
-            <a (click)="selectSubcategory(s)" class="block px-4 py-2 hover:bg-gray-100">{{ s }}</a>
+            <a (click)="selectSubcategory(s.name)" class="block px-4 py-2 hover:bg-gray-100">{{ s.name }}</a>
           </li>
         </ul>
       </div>
