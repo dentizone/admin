@@ -1,13 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { RouterModule } from '@angular/router';
 import { Activity } from '../../core/models/activity.model';
 import { DashboardDataService } from '../../core/services/dashboard-data.service';
 
 @Component({
   selector: 'app-recent-activity',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './recent-activity.component.html',
 })
 export class RecentActivityComponent implements OnInit {
