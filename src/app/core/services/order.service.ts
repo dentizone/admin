@@ -53,8 +53,12 @@ export class OrderService {
   }
 
   confirmOrder(orderId: string): Observable<any> {
-    // Assuming 5 is the status code for 'Completed'
-    return this.updateOrderStatus(orderId, 5);
+   return this.http.put(
+      `${environment.apiBaseUrl}/Order/${orderId}/confirm`,
+      {
+        headers: { 'Content-Type': 'application/json' },
+      }
+    );
   }
 
   cancelOrder(orderId: string): Observable<any> {
