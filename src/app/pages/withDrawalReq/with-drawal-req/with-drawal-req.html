@@ -4,189 +4,431 @@
   [message]="toastMessage"
 ></app-toast-component>
 
-<h1 class="mb-1 text-2xl font-bold">Withdrawal Management</h1>
-<h6 class="mb-6 text-gray-500">
-  Overview of Withdrawal Requests in Dentizone.
-</h6>
-
-<!-- Stats Cards -->
-<div class="grid grid-cols-1 gap-4 mb-6 sm:grid-cols-2 md:grid-cols-5">
-  <div class="flex flex-col items-center p-4 bg-white rounded-lg shadow">
-    <span class="text-lg font-semibold">Total</span>
-    <span class="text-2xl font-bold text-blue-600">{{ stats.total }}</span>
-  </div>
-  <div class="flex flex-col items-center p-4 bg-yellow-50 rounded-lg shadow">
-    <span class="text-lg font-semibold">Pending</span>
-    <span class="text-2xl font-bold text-yellow-600">{{ stats.pending }}</span>
-  </div>
-  <div class="flex flex-col items-center p-4 bg-green-50 rounded-lg shadow">
-    <span class="text-lg font-semibold">Approved</span>
-    <span class="text-2xl font-bold text-green-600">{{ stats.approved }}</span>
-  </div>
-  <div class="flex flex-col items-center p-4 bg-red-50 rounded-lg shadow">
-    <span class="text-lg font-semibold">Rejected</span>
-    <span class="text-2xl font-bold text-red-600">{{ stats.rejected }}</span>
-  </div>
-  <div class="flex flex-col items-center p-4 bg-indigo-50 rounded-lg shadow">
-    <span class="text-lg font-semibold">Completed</span>
-    <span class="text-2xl font-bold text-indigo-600"
-      >{{ stats.completed }}</span
-    >
-  </div>
-</div>
-
-<!-- Filters -->
-<div class="flex flex-col gap-4 mb-6 md:flex-row md:items-end">
-  <div>
-    <label for="status" class="block mb-1 text-sm font-medium text-gray-700">Status</label>
-    <select
-    id="status"
-      class="px-3 py-2 w-full rounded border"
-      [(ngModel)]="filter.status"
-      (change)="onFilterChange()"
-    >
-      <option value="">All</option>
-      <option value="Pending">Pending</option>
-      <option value="Approved">Approved</option>
-      <option value="Rejected">Rejected</option>
-      <option value="Completed">Completed</option>
-    </select>
-  </div>
-  <div>
-    <label for="search" class="block mb-1 text-sm font-medium text-gray-700">Search</label>
-    <input
-    id="search"
-      class="px-3 py-2 w-full rounded border"
-      type="text"
-      placeholder="Search by user..."
-      [(ngModel)]="filter.searchTerm"
-      (input)="onFilterChange()"
-    />
-  </div>
-  <div>
-    <label for="date" class="block mb-1 text-sm font-medium text-gray-700">Date</label>
-    <input
-    id="date"
-      class="px-3 py-2 w-full rounded border"
-      type="date"
-      [(ngModel)]="filter.date"
-      (change)="onFilterChange()"
-    />
-  </div>
-</div>
-
-<!-- Modal Dialog -->
-<div
-  *ngIf="showModal"
-  class="flex fixed inset-0 z-50 justify-center items-center bg-black bg-opacity-40"
->
-  <div
-    class="relative p-6 w-full max-w-md bg-white rounded-lg shadow-lg animate-fade-in"
-  >
-    <h2 class="mb-4 text-xl font-bold text-center">
-      {{ modalAction === 'approve' ? 'Approve Withdrawal' : 'Deny Withdrawal' }}
-    </h2>
-    <div class="mb-4">
-      <label for="Comment" class="block mb-2 text-sm font-medium text-gray-700"
-        >Wanna Leave Comment for the user?</label
-      >
-      <textarea
-      id="Comment"
-        class="w-full border rounded px-3 py-2 min-h-[80px] resize-y"
-        [(ngModel)]="modalComment"
-        [disabled]="modalLoading"
-      ></textarea>
-    </div>
-    <div class="flex gap-2 justify-end mt-6">
-      <button
-        class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
-        (click)="closeModal()"
-        [disabled]="modalLoading"
-      >
-        Cancel
-      </button>
-      <button
-        *ngIf="modalAction === 'approve'"
-        class="px-4 py-2 font-semibold text-white bg-green-600 rounded hover:bg-green-700 disabled:opacity-60"
-        (click)="submitModal()"
-        [disabled]="modalLoading"
-      >
-        <span *ngIf="!modalLoading">Approve</span>
-        <span *ngIf="modalLoading">Approving...</span>
-      </button>
-      <button
-        *ngIf="modalAction === 'deny'"
-        class="px-4 py-2 font-semibold text-white bg-red-600 rounded hover:bg-red-700 disabled:opacity-60"
-        (click)="submitModal()"
-        [disabled]="modalLoading"
-      >
-        <span *ngIf="!modalLoading">Deny</span>
-        <span *ngIf="modalLoading">Denying...</span>
-      </button>
+<div class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+  <!-- Header Section -->
+  <div class="relative overflow-hidden bg-white border-b border-slate-200/60">
+    <div class="absolute inset-0 bg-gradient-to-r from-blue-600/5 to-indigo-600/5"></div>
+    <div class="relative px-6 py-8 sm:px-8">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-4">
+          <div class="flex items-center justify-center w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+          </div>
+          <div>
+            <h1 class="text-3xl font-bold text-transparent bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text">
+              Withdrawal Management
+            </h1>
+            <p class="mt-1 text-sm text-slate-500">Track and manage withdrawal requests across the platform</p>
+          </div>
+        </div>
+        <div class="items-center hidden px-4 py-2 space-x-2 rounded-full sm:flex bg-slate-100/60">
+          <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+          <span class="text-sm font-medium text-slate-600">Live Updates</span>
+        </div>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- Table -->
-<div class="overflow-x-auto relative bg-white shadow-md sm:rounded-lg">
-  <table class="w-full text-sm text-left text-gray-500">
-    <thead class="text-xs text-gray-700 uppercase bg-gray-50">
-      <tr>
-        <th class="px-6 py-3">User Name</th>
-        <th class="px-6 py-3">Amount</th>
-        <th class="px-6 py-3">Date</th>
-        <th class="px-6 py-3">Status</th>
-        <th class="px-6 py-3">Action</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr
-        *ngFor="let req of requests"
-        class="bg-white border-b hover:bg-gray-50"
+  <div class="px-6 py-8 sm:px-8">
+    <!-- Stats Cards -->
+    <div class="mb-8">
+      <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-5">
+        <div class="relative p-6 overflow-hidden bg-white border shadow-sm rounded-2xl border-slate-200/60">
+          <div class="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-blue-500/10 to-blue-600/20 rounded-bl-2xl"></div>
+          <div class="relative">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-sm font-medium text-slate-600">Total</span>
+              <div class="flex items-center justify-center w-8 h-8 rounded-lg bg-blue-50">
+                <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                </svg>
+              </div>
+            </div>
+            <span class="text-2xl font-bold text-blue-600">{{ stats.total }}</span>
+          </div>
+        </div>
+        
+        <div class="relative p-6 overflow-hidden bg-white border shadow-sm rounded-2xl border-slate-200/60">
+          <div class="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-yellow-500/10 to-yellow-600/20 rounded-bl-2xl"></div>
+          <div class="relative">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-sm font-medium text-slate-600">Pending</span>
+              <div class="flex items-center justify-center w-8 h-8 rounded-lg bg-yellow-50">
+                <svg class="w-4 h-4 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+              </div>
+            </div>
+            <span class="text-2xl font-bold text-yellow-600">{{ stats.pending }}</span>
+          </div>
+        </div>
+        
+        <div class="relative p-6 overflow-hidden bg-white border shadow-sm rounded-2xl border-slate-200/60">
+          <div class="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-green-500/10 to-green-600/20 rounded-bl-2xl"></div>
+          <div class="relative">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-sm font-medium text-slate-600">Approved</span>
+              <div class="flex items-center justify-center w-8 h-8 rounded-lg bg-green-50">
+                <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+              </div>
+            </div>
+            <span class="text-2xl font-bold text-green-600">{{ stats.approved }}</span>
+          </div>
+        </div>
+        
+        <div class="relative p-6 overflow-hidden bg-white border shadow-sm rounded-2xl border-slate-200/60">
+          <div class="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-red-500/10 to-red-600/20 rounded-bl-2xl"></div>
+          <div class="relative">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-sm font-medium text-slate-600">Rejected</span>
+              <div class="flex items-center justify-center w-8 h-8 rounded-lg bg-red-50">
+                <svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+              </div>
+            </div>
+            <span class="text-2xl font-bold text-red-600">{{ stats.rejected }}</span>
+          </div>
+        </div>
+        
+        <div class="relative p-6 overflow-hidden bg-white border shadow-sm rounded-2xl border-slate-200/60">
+          <div class="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-indigo-500/10 to-indigo-600/20 rounded-bl-2xl"></div>
+          <div class="relative">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-sm font-medium text-slate-600">Completed</span>
+              <div class="flex items-center justify-center w-8 h-8 rounded-lg bg-indigo-50">
+                <svg class="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                </svg>
+              </div>
+            </div>
+            <span class="text-2xl font-bold text-indigo-600">{{ stats.completed }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Advanced Filters -->
+    <div class="mb-8">
+      <div class="p-6 bg-white border shadow-sm rounded-2xl border-slate-200/60 backdrop-blur-sm">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-lg font-semibold text-slate-900">Advanced Filters</h2>
+          <button
+            type="button"
+            class="text-sm transition-colors text-slate-500 hover:text-slate-700"
+            (click)="filter = { page: 1, status: '', searchTerm: '', date: '' }; onFilterChange()"
+          >
+            Clear All
+          </button>
+        </div>
+        
+        <form (ngSubmit)="onFilterChange()" autocomplete="off">
+          <div class="grid grid-cols-1 gap-4 mb-6 sm:grid-cols-2 lg:grid-cols-3">
+            <!-- Status Filter -->
+            <div class="space-y-2">
+              <label for="status" class="block text-sm font-medium text-slate-700">Status</label>
+              <div class="relative">
+                <svg class="absolute w-4 h-4 transform -translate-y-1/2 left-3 top-1/2 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <select
+                  id="status"
+                  [(ngModel)]="filter.status"
+                  name="status"
+                  (change)="onFilterChange()"
+                  class="w-full py-3 pl-10 pr-4 text-sm transition-all duration-200 border outline-none appearance-none cursor-pointer bg-slate-50/70 border-slate-200/60 rounded-xl focus:bg-white focus:border-blue-300 focus:ring-4 focus:ring-blue-100"
+                >
+                  <option value="">All Statuses</option>
+                  <option value="Pending">Pending</option>
+                  <option value="Approved">Approved</option>
+                  <option value="Rejected">Rejected</option>
+                  <option value="Completed">Completed</option>
+                </select>
+                <svg class="absolute w-4 h-4 transform -translate-y-1/2 pointer-events-none right-3 top-1/2 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </div>
+            </div>
+
+            <!-- Search Filter -->
+            <div class="space-y-2">
+              <label for="search" class="block text-sm font-medium text-slate-700">Search</label>
+              <div class="relative">
+                <svg class="absolute w-4 h-4 transform -translate-y-1/2 left-3 top-1/2 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+                <input
+                  id="search"
+                  type="text"
+                  placeholder="Search by user name..."
+                  [(ngModel)]="filter.searchTerm"
+                  name="searchTerm"
+                  (input)="onFilterChange()"
+                  class="w-full py-3 pl-10 pr-4 text-sm transition-all duration-200 border outline-none bg-slate-50/70 border-slate-200/60 rounded-xl focus:bg-white focus:border-blue-300 focus:ring-4 focus:ring-blue-100"
+                />
+              </div>
+            </div>
+
+            <!-- Date Filter -->
+            <div class="space-y-2">
+              <label for="date" class="block text-sm font-medium text-slate-700">Date</label>
+              <div class="relative">
+                <svg class="absolute w-4 h-4 transform -translate-y-1/2 left-3 top-1/2 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+                <input
+                  id="date"
+                  type="date"
+                  [(ngModel)]="filter.date"
+                  name="date"
+                  (change)="onFilterChange()"
+                  class="w-full py-3 pl-10 pr-4 text-sm transition-all duration-200 border outline-none bg-slate-50/70 border-slate-200/60 rounded-xl focus:bg-white focus:border-blue-300 focus:ring-4 focus:ring-blue-100"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between">
+            <div class="text-sm text-slate-500">
+              Found <span class="font-semibold text-slate-700">{{ requests.length }}</span> withdrawal requests
+            </div>
+            <button
+              type="submit"
+              class="flex items-center px-6 py-3 space-x-2 font-semibold text-white transition-all duration-200 transform shadow-lg outline-none bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl hover:shadow-xl hover:scale-105 focus:ring-4 focus:ring-blue-200"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+              </svg>
+              <span>Apply Filters</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal Dialog -->
+    <div
+      *ngIf="showModal"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 backdrop-blur-sm"
+    >
+      <div
+        class="relative w-full max-w-md p-8 bg-white border shadow-2xl rounded-2xl border-slate-200/60 animate-fade-in"
       >
-        <td class="px-6 py-4 font-medium text-gray-900">{{ req.fullName }}</td>
-        <td class="px-6 py-4">{{ req.amount | number:'1.2-2' }}</td>
-        <td class="px-6 py-4">{{ req.createdAt | date:'mediumDate' }}</td>
-        <td class="px-6 py-4">
-          <span
-            [ngClass]="{
-            'text-yellow-600': req.status === 'Pending',
-            'text-green-600': req.status === 'Approved',
-            'text-red-600': req.status === 'Rejected',
-            'text-indigo-600': req.status === 'Completed'
-          }"
-            class="font-semibold"
-            >{{ req.status }}</span
-          >
-        </td>
-        <td class="px-6 py-4 space-x-2">
+        <div class="flex items-center justify-center w-16 h-16 mx-auto mb-6 rounded-full"
+             [ngClass]="{
+               'bg-green-100': modalAction === 'approve',
+               'bg-red-100': modalAction === 'deny'
+             }">
+          <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+               [ngClass]="{
+                 'text-green-600': modalAction === 'approve',
+                 'text-red-600': modalAction === 'deny'
+               }">
+            <path *ngIf="modalAction === 'approve'" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            <path *ngIf="modalAction === 'deny'" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+        </div>
+        
+        <h2 class="mb-2 text-xl font-bold text-center text-slate-900">
+          {{ modalAction === 'approve' ? 'Approve Withdrawal' : 'Reject Withdrawal' }}
+        </h2>
+        <p class="mb-6 text-sm text-center text-slate-500">
+          {{ modalAction === 'approve' ? 'Confirm the approval of this withdrawal request' : 'Confirm the rejection of this withdrawal request' }}
+        </p>
+        
+        <div class="mb-6 space-y-2">
+          <label for="Comment" class="block text-sm font-medium text-slate-700">
+            Comment for User <span class="text-slate-400">(Optional)</span>
+          </label>
+          <div class="relative">
+            <textarea
+              id="Comment"
+              placeholder="Leave a comment for the user..."
+              [(ngModel)]="modalComment"
+              [disabled]="modalLoading"
+              class="w-full px-4 py-3 text-sm transition-all duration-200 border outline-none resize-y bg-slate-50/70 border-slate-200/60 rounded-xl min-h-[100px] focus:bg-white focus:border-blue-300 focus:ring-4 focus:ring-blue-100 disabled:opacity-60"
+            ></textarea>
+          </div>
+        </div>
+        
+        <div class="flex justify-end gap-3">
           <button
-            *ngIf="req.status === 'Pending'"
-            class="px-4 py-1 font-semibold text-white bg-red-500 rounded-md"
-            (click)="openModal('deny', req)"
+            class="px-6 py-3 text-sm font-medium transition-all duration-200 border rounded-xl text-slate-600 border-slate-300 bg-slate-50 hover:bg-slate-100 disabled:opacity-60"
+            (click)="closeModal()"
+            [disabled]="modalLoading"
           >
-            Deny
+            Cancel
           </button>
           <button
-            *ngIf="req.status === 'Pending'"
-            class="px-4 py-1 font-semibold text-white bg-green-500 rounded-md"
-            (click)="openModal('approve', req)"
+            *ngIf="modalAction === 'approve'"
+            class="flex items-center px-6 py-3 space-x-2 text-sm font-semibold text-white transition-all duration-200 transform shadow-lg outline-none bg-gradient-to-r from-green-600 to-emerald-600 rounded-xl hover:shadow-xl hover:scale-105 disabled:opacity-60 focus:ring-4 focus:ring-green-200"
+            (click)="submitModal()"
+            [disabled]="modalLoading"
           >
-            Approve
+            <svg *ngIf="modalLoading" class="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+            </svg>
+            <span>{{ modalLoading ? 'Approving...' : 'Approve' }}</span>
           </button>
-        </td>
-      </tr>
-      <tr *ngIf="!loading && requests.length === 0">
-        <td colspan="5" class="py-6 text-center text-gray-400">
-          No withdrawal requests found.
-        </td>
-      </tr>
-      <tr *ngIf="loading">
-        <td colspan="5" class="py-6 text-center text-gray-400">Loading...</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
+          <button
+            *ngIf="modalAction === 'deny'"
+            class="flex items-center px-6 py-3 space-x-2 text-sm font-semibold text-white transition-all duration-200 transform shadow-lg outline-none bg-gradient-to-r from-red-600 to-rose-600 rounded-xl hover:shadow-xl hover:scale-105 disabled:opacity-60 focus:ring-4 focus:ring-red-200"
+            (click)="submitModal()"
+            [disabled]="modalLoading"
+          >
+            <svg *ngIf="modalLoading" class="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+            </svg>
+            <span>{{ modalLoading ? 'Rejecting...' : 'Reject' }}</span>
+          </button>
+        </div>
+      </div>
+    </div>
 
-<app-pagination-component (pageChanged)="onPageChanged($event)" [currentPage]="filter.page" [TotalPages]="totalPages" ></app-pagination-component>
+    <!-- Withdrawal Requests Table -->
+    <div class="overflow-hidden bg-white border shadow-sm rounded-2xl border-slate-200/60">
+      <!-- Table Header -->
+      <div class="px-6 py-4 border-b border-slate-200/60 bg-slate-50/50">
+        <div class="flex items-center justify-between">
+          <h3 class="text-lg font-semibold text-slate-900">Withdrawal Requests</h3>
+          <div class="flex items-center space-x-2">
+            <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+            <span class="text-sm text-slate-500">Real-time updates</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Loading State -->
+      <div *ngIf="loading" class="flex items-center justify-center py-16">
+        <div class="flex flex-col items-center space-y-4">
+          <div class="relative">
+            <div class="w-12 h-12 border-4 rounded-full border-slate-200 animate-spin border-t-blue-500"></div>
+            <div class="absolute inset-0 w-12 h-12 border-4 border-transparent rounded-full animate-ping border-t-blue-300"></div>
+          </div>
+          <p class="font-medium text-slate-500">Loading withdrawal requests...</p>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div *ngIf="!loading && requests.length === 0" class="flex flex-col items-center justify-center py-16">
+        <div class="flex items-center justify-center w-16 h-16 mb-4 rounded-full bg-slate-100">
+          <svg class="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+        </div>
+        <h3 class="mb-1 text-lg font-semibold text-slate-900">No Withdrawal Requests Found</h3>
+        <p class="max-w-sm text-center text-slate-500">No withdrawal requests match your current filters. Try adjusting your search criteria.</p>
+      </div>
+
+      <!-- Requests Table -->
+      <div *ngIf="!loading && requests.length > 0" class="overflow-x-auto">
+        <table class="w-full">
+          <thead class="border-b bg-slate-50/80 border-slate-200/60">
+            <tr>
+              <th class="px-6 py-4 text-xs font-semibold tracking-wider text-left uppercase text-slate-600">User</th>
+              <th class="px-6 py-4 text-xs font-semibold tracking-wider text-left uppercase text-slate-600">Amount</th>
+              <th class="px-6 py-4 text-xs font-semibold tracking-wider text-left uppercase text-slate-600">Date</th>
+              <th class="px-6 py-4 text-xs font-semibold tracking-wider text-left uppercase text-slate-600">Status</th>
+              <th class="px-6 py-4 text-xs font-semibold tracking-wider text-left uppercase text-slate-600">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            <tr *ngFor="let req of requests" class="transition-colors duration-150 group hover:bg-slate-50/50">
+              <!-- User Info -->
+              <td class="px-6 py-4">
+                <div class="flex items-center space-x-3">
+                  <div class="flex items-center justify-center flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600">
+                    <span class="text-sm font-semibold text-white">{{ req.fullName.charAt(0).toUpperCase() }}</span>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-sm font-semibold truncate text-slate-900">{{ req.fullName }}</p>
+                    <p class="text-xs truncate text-slate-500">ID: {{ req.id || 'N/A' }}</p>
+                  </div>
+                </div>
+              </td>
+
+              <!-- Amount -->
+              <td class="px-6 py-4">
+                <div class="flex items-center space-x-2">
+                  <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  </svg>
+                  <span class="text-sm font-semibold text-slate-900">${{ req.amount | number:'1.2-2' }}</span>
+                </div>
+              </td>
+
+              <!-- Date -->
+              <td class="px-6 py-4">
+                <div class="flex items-center space-x-2">
+                  <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                  </svg>
+                  <span class="text-sm text-slate-600">{{ req.createdAt | date:'mediumDate' }}</span>
+                </div>
+              </td>
+
+              <!-- Status -->
+              <td class="px-6 py-4">
+                <span class="inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full"
+                      [ngClass]="{
+                        'text-yellow-700 bg-yellow-100': req.status === 'Pending',
+                        'text-green-700 bg-green-100': req.status === 'Approved',
+                        'text-red-700 bg-red-100': req.status === 'Rejected',
+                        'text-indigo-700 bg-indigo-100': req.status === 'Completed'
+                      }">
+                  <div class="w-1.5 h-1.5 mr-2 rounded-full"
+                       [ngClass]="{
+                         'bg-yellow-500': req.status === 'Pending',
+                         'bg-green-500': req.status === 'Approved',
+                         'bg-red-500': req.status === 'Rejected',
+                         'bg-indigo-500': req.status === 'Completed'
+                       }"></div>
+                  {{ req.status }}
+                </span>
+              </td>
+
+              <!-- Actions -->
+              <td class="px-6 py-4">
+                <div class="flex items-center space-x-2" *ngIf="req.status === 'Pending'">
+                  <button
+                    class="flex items-center px-4 py-2 space-x-1 text-xs font-semibold text-white transition-all duration-200 transform rounded-lg shadow-sm bg-gradient-to-r from-red-500 to-red-600 hover:shadow-md hover:scale-105 focus:ring-4 focus:ring-red-200"
+                    (click)="openModal('deny', req)"
+                  >
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                    <span>Reject</span>
+                  </button>
+                  <button
+                    class="flex items-center px-4 py-2 space-x-1 text-xs font-semibold text-white transition-all duration-200 transform rounded-lg shadow-sm bg-gradient-to-r from-green-500 to-green-600 hover:shadow-md hover:scale-105 focus:ring-4 focus:ring-green-200"
+                    (click)="openModal('approve', req)"
+                  >
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    <span>Approve</span>
+                  </button>
+                </div>
+                <div *ngIf="req.status !== 'Pending'" class="text-xs text-slate-400">
+                  No actions available
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <app-pagination-component 
+      (pageChanged)="onPageChanged($event)" 
+      [currentPage]="filter.page" 
+      [TotalPages]="totalPages"
+      class="mt-6">
+    </app-pagination-component>
+  </div>
+</div>
 
