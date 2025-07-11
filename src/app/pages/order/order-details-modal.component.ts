@@ -142,9 +142,11 @@ export class OrderDetailsModalComponent implements OnChanges, OnDestroy {
       next: () => {
         this.showToast('Shipment status updated successfully!', 'success');
         this.shipmentUpdated.emit();
+        setTimeout(()=>{this.close.emit()},1000)
       },
       error: () => {
         this.showToast('Failed to update shipment status.', 'error');
+        setTimeout(()=>{this.close.emit()},1000)
       },
     });
   }
@@ -174,10 +176,13 @@ export class OrderDetailsModalComponent implements OnChanges, OnDestroy {
           this.showToast('Order status updated successfully!', 'success');
           this.isUpdatingOrderStatus = false;
           this.shipmentUpdated.emit();
+          setTimeout(()=>{this.close.emit()},1000)
         },
         error: () => {
           this.showToast('Failed to update order status.', 'error');
+          setTimeout(()=>{this.close.emit()},1000)
           this.isUpdatingOrderStatus = false;
+          
         },
       });
   }
@@ -189,10 +194,13 @@ export class OrderDetailsModalComponent implements OnChanges, OnDestroy {
         this.showToast('Order confirmed as complete!', 'success');
         this.isConfirmingOrder = false;
         this.shipmentUpdated.emit();
+         setTimeout(()=>{this.close.emit()},1000)
       },
       error: () => {
+        
         this.showToast('Failed to confirm order.', 'error');
         this.isConfirmingOrder = false;
+        setTimeout(()=>{this.close.emit()},1000)
       },
     });
   }
@@ -203,11 +211,15 @@ export class OrderDetailsModalComponent implements OnChanges, OnDestroy {
       next: () => {
         this.showToast('Order cancelled successfully!', 'success');
         this.isCancellingOrder = false;
+        
         this.shipmentUpdated.emit();
+        setTimeout(()=>{this.close.emit()},1000)
       },
       error: () => {
         this.showToast('Failed to cancel order.', 'error');
+        
         this.isCancellingOrder = false;
+        setTimeout(()=>{this.close.emit()},1000)
       },
     });
   }
