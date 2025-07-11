@@ -1,7 +1,15 @@
 <h1 class="text-2xl font-bold">Dashboard Overview</h1>
-<h6 class="mb-4 text-gray-500">
-  Welcome back, Admin! Here's what's happening on Dentizone today!
-</h6>
+<div class="flex items-center justify-between mb-4">
+  <h6 class="text-gray-500">
+    Welcome back, Admin! Here's what's happening on Dentizone today!
+  </h6>
+  <button 
+    (click)="forceRefresh()" 
+    class="text-blue-600 hover:text-blue-800 underline cursor-pointer text-sm"
+  >
+    Force Refresh
+  </button>
+</div>
 <div class="flex flex-wrap gap-6">
   <app-card
     *ngFor="let card of DashboardCards"

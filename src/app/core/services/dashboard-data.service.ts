@@ -33,8 +33,9 @@ export class DashboardDataService {
 
   constructor(private readonly httpService: HttpService) {}
 
-  getAnalytics(): Observable<AnalyticsResponse> {
-    return this.httpService.get<AnalyticsResponse>(this.analyticsUrl).pipe(
+  getAnalytics(useCache: boolean = true): Observable<AnalyticsResponse> {
+    const params = useCache ? undefined : { useCache: 'false' };
+    return this.httpService.get<AnalyticsResponse>(this.analyticsUrl, params).pipe(
       catchError((error) => {
         console.error('Error fetching analytics data:', error);
         // Return a safe fallback value

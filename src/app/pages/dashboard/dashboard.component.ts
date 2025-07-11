@@ -69,7 +69,11 @@ export class DashboardComponent implements OnInit {
   constructor(private readonly dashboardDataService: DashboardDataService) {}
 
   ngOnInit(): void {
-    this.dashboardDataService.getAnalytics().subscribe((data) => {
+    this.loadAnalytics();
+  }
+
+  loadAnalytics(useCache: boolean = true): void {
+    this.dashboardDataService.getAnalytics(useCache).subscribe((data) => {
       // User Analytics
       const user = data.userAnalytics;
       const post = data.postAnalytics;
@@ -121,5 +125,9 @@ export class DashboardComponent implements OnInit {
       }));
       this.averagePostPrice = post.averagePostPrice;
     });
+  }
+
+  forceRefresh(): void {
+    this.loadAnalytics(false);
   }
 }
