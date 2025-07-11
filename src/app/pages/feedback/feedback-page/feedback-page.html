@@ -1,151 +1,505 @@
-<div class="p-6">
-  <!-- Sentiment Cards -->
-  <div class="grid grid-cols-1 gap-4 mb-8 md:grid-cols-4">
-    <div class="flex flex-col items-center p-4 bg-green-100 rounded-lg shadow">
-      <span class="text-2xl font-bold text-green-700">
-        <ng-container *ngIf="!loadingStats; else loadingStatsTpl"
-          >{{ sentimentCounts.Positive ?? 0 }}</ng-container
-        >
-      </span>
-      <span class="text-green-700">Positive</span>
-    </div>
-    <div class="flex flex-col items-center p-4 bg-red-100 rounded-lg shadow">
-      <span class="text-2xl font-bold text-red-700">
-        <ng-container *ngIf="!loadingStats; else loadingStatsTpl"
-          >{{ sentimentCounts.Negative ?? 0 }}</ng-container
-        >
-      </span>
-      <span class="text-red-700">Negative</span>
-    </div>
-    <div class="flex flex-col items-center p-4 bg-yellow-100 rounded-lg shadow">
-      <span class="text-2xl font-bold text-yellow-700">
-        <ng-container *ngIf="!loadingStats; else loadingStatsTpl"
-          >{{ sentimentCounts.Unknown ?? 0 }}</ng-container
-        >
-      </span>
-      <span class="text-yellow-700">Unknown</span>
-    </div>
-    <div class="flex flex-col items-center p-4 bg-blue-100 rounded-lg shadow">
-      <span class="text-2xl font-bold text-blue-700">
-        <ng-container *ngIf="!loadingStats; else loadingStatsTpl"
-          >{{ sentimentCounts.Neutral ?? 0 }}</ng-container
-        >
-      </span>
-      <span class="text-blue-700">Neutral</span>
+<div class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+  <!-- Header Section -->
+  <div class="relative overflow-hidden bg-white border-b border-slate-200/60">
+    <div class="absolute inset-0 bg-gradient-to-r from-blue-600/5 to-indigo-600/5"></div>
+    <div class="relative px-6 py-8 sm:px-8">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-4">
+          <div class="flex items-center justify-center w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+            </svg>
+          </div>
+          <div>
+            <h1 class="text-3xl font-bold text-transparent bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text">
+              Feedback Management
+            </h1>
+            <p class="mt-1 text-sm text-slate-500">Monitor and analyze user feedback and reviews</p>
+          </div>
+        </div>
+        <div class="items-center hidden px-4 py-2 space-x-2 rounded-full sm:flex bg-slate-100/60">
+          <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+          <span class="text-sm font-medium text-slate-600">Live Updates</span>
+        </div>
+      </div>
     </div>
   </div>
-  <ng-template #loadingStatsTpl>
-    <span class="animate-pulse">...</span>
-  </ng-template>
-  <div *ngIf="errorStats" class="mb-4 text-red-600">{{ errorStats }}</div>
 
-  <!-- Filter Inputs -->
-  <div class="flex flex-wrap gap-2 items-end mb-4">
-    <input
-      type="text"
-      [(ngModel)]="filter"
-      (ngModelChange)="onFilterChange()"
-      placeholder="Search text..."
-      class="px-3 py-2 w-full rounded border border-gray-300 md:w-1/4 focus:outline-none focus:ring-2 focus:ring-blue-400"
-    />
-    <select
-      [(ngModel)]="stars"
-      (ngModelChange)="onFilterChange()"
-      class="px-3 py-2 rounded border border-gray-300"
-    >
-      <option [ngValue]="null">All Stars</option>
-      <option *ngFor="let s of [1,2,3,4,5]" [ngValue]="s">{{s}} Stars</option>
-    </select>
-    <select
-      [(ngModel)]="sentiment"
-      (ngModelChange)="onFilterChange()"
-      class="px-3 py-2 rounded border border-gray-300"
-    >
-      <option [ngValue]="null">All Sentiments</option>
-      <option value="Positive">Positive</option>
-      <option value="Negative">Negative</option>
-      <option value="Unknown">Neutral</option>
-    </select>
-    <input
-      type="date"
-      [(ngModel)]="createdAfter"
-      (ngModelChange)="onFilterChange()"
-      class="px-3 py-2 rounded border border-gray-300"
-      placeholder="Created After"
-    />
-    <input
-      type="date"
-      [(ngModel)]="createdBefore"
-      (ngModelChange)="onFilterChange()"
-      class="px-3 py-2 rounded border border-gray-300"
-      placeholder="Created Before"
-    />
-  </div>
+  <div class="px-6 py-8 sm:px-8">
+    <!-- Sentiment Statistics Cards -->
+    <div class="mb-8">
+      <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <!-- Positive Sentiment -->
+        <div class="relative p-6 overflow-hidden bg-white border shadow-sm rounded-2xl border-slate-200/60">
+          <div class="absolute inset-0 bg-gradient-to-br from-green-50/50 to-emerald-50/50"></div>
+          <div class="relative flex items-center justify-between">
+            <div class="flex-1">
+              <div class="flex items-center space-x-3">
+                <div class="flex items-center justify-center w-10 h-10 bg-green-100 rounded-xl">
+                  <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  </svg>
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-slate-600">Positive</p>
+                  <ng-container *ngIf="!loadingStats; else loadingStatsTpl">
+                    <p class="text-3xl font-bold text-green-700">{{ sentimentCounts.Positive ?? 0 }}</p>
+                  </ng-container>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
-  <!-- Reviews Table -->
-  <div class="overflow-x-auto">
-    <table class="min-w-full bg-white rounded shadow">
-      <thead>
-        <tr class="text-gray-700 bg-gray-100">
-          <th class="px-4 py-2 text-left">Comment</th>
-          <th class="px-4 py-2 text-left">Stars</th>
-          <th class="px-4 py-2 text-left">User Name</th>
-          <th class="px-4 py-2 text-left">Sentiment</th>
-          <th class="px-4 py-2 text-left">Created At</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngIf="loadingReviews">
-          <td colspan="5" class="py-4 text-center text-gray-400">Loading...</td>
-        </tr>
-        <tr *ngIf="errorReviews">
-          <td colspan="5" class="py-4 text-center text-red-600">
-            {{ errorReviews }}
-          </td>
-        </tr>
-        <tr
-          *ngFor="let review of filteredReviews"
-          class="border-b hover:bg-gray-50"
-        >
-          <td class="px-4 py-2">{{ review.comment }}</td>
-          <td class="px-4 py-2">
-            <span *ngFor="let star of [].constructor(review.stars)">
-              <svg
-                class="inline w-4 h-4 text-yellow-400"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.967a1 1 0 00.95.69h4.175c.969 0 1.371 1.24.588 1.81l-3.38 2.455a1 1 0 00-.364 1.118l1.287 3.966c.3.922-.755 1.688-1.54 1.118l-3.38-2.454a1 1 0 00-1.175 0l-3.38 2.454c-.784.57-1.838-.196-1.54-1.118l1.287-3.966a1 1 0 00-.364-1.118L2.05 9.394c-.783-.57-.38-1.81.588-1.81h4.175a1 1 0 00.95-.69l1.286-3.967z"
+        <!-- Negative Sentiment -->
+        <div class="relative p-6 overflow-hidden bg-white border shadow-sm rounded-2xl border-slate-200/60">
+          <div class="absolute inset-0 bg-gradient-to-br from-red-50/50 to-rose-50/50"></div>
+          <div class="relative flex items-center justify-between">
+            <div class="flex-1">
+              <div class="flex items-center space-x-3">
+                <div class="flex items-center justify-center w-10 h-10 bg-red-100 rounded-xl">
+                  <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  </svg>
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-slate-600">Negative</p>
+                  <ng-container *ngIf="!loadingStats; else loadingStatsTpl">
+                    <p class="text-3xl font-bold text-red-700">{{ sentimentCounts.Negative ?? 0 }}</p>
+                  </ng-container>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Unknown Sentiment -->
+        <div class="relative p-6 overflow-hidden bg-white border shadow-sm rounded-2xl border-slate-200/60">
+          <div class="absolute inset-0 bg-gradient-to-br from-yellow-50/50 to-amber-50/50"></div>
+          <div class="relative flex items-center justify-between">
+            <div class="flex-1">
+              <div class="flex items-center space-x-3">
+                <div class="flex items-center justify-center w-10 h-10 bg-yellow-100 rounded-xl">
+                  <svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  </svg>
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-slate-600">Unknown</p>
+                  <ng-container *ngIf="!loadingStats; else loadingStatsTpl">
+                    <p class="text-3xl font-bold text-yellow-700">{{ sentimentCounts.Unknown ?? 0 }}</p>
+                  </ng-container>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Neutral Sentiment -->
+        <div class="relative p-6 overflow-hidden bg-white border shadow-sm rounded-2xl border-slate-200/60">
+          <div class="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-indigo-50/50"></div>
+          <div class="relative flex items-center justify-between">
+            <div class="flex-1">
+              <div class="flex items-center space-x-3">
+                <div class="flex items-center justify-center w-10 h-10 bg-blue-100 rounded-xl">
+                  <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4"/>
+                  </svg>
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-slate-600">Neutral</p>
+                  <ng-container *ngIf="!loadingStats; else loadingStatsTpl">
+                    <p class="text-3xl font-bold text-blue-700">{{ sentimentCounts.Neutral ?? 0 }}</p>
+                  </ng-container>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <ng-template #loadingStatsTpl>
+        <div class="flex items-center space-x-2">
+          <div class="w-6 h-6 border-2 border-transparent rounded-full border-t-slate-400 animate-spin"></div>
+          <span class="text-2xl font-bold text-slate-400">...</span>
+        </div>
+      </ng-template>
+      
+      <div *ngIf="errorStats" class="p-4 mt-6 border border-red-200 rounded-lg bg-red-50">
+        <div class="flex items-center space-x-2">
+          <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          <p class="text-sm font-medium text-red-800">{{ errorStats }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Advanced Filters -->
+    <div class="mb-8">
+      <div class="p-6 bg-white border shadow-sm rounded-2xl border-slate-200/60 backdrop-blur-sm">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-lg font-semibold text-slate-900">Advanced Filters</h2>
+          <button
+            type="button"
+            class="text-sm transition-colors text-slate-500 hover:text-slate-700"
+            (click)="clearFilters()"
+          >
+            Clear All
+          </button>
+        </div>
+        
+        <form (ngSubmit)="onFilterChange()" autocomplete="off">
+          <div class="grid grid-cols-1 gap-4 mb-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+            <!-- Search Filter -->
+            <div class="space-y-2">
+              <label for="searchText" class="block text-sm font-medium text-slate-700">Search Text</label>
+              <div class="relative">
+                <svg class="absolute w-4 h-4 transform -translate-y-1/2 left-3 top-1/2 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+                <input
+                  id="searchText"
+                  type="text"
+                  placeholder="Search comments..."
+                  [(ngModel)]="filter"
+                  name="searchText"
+                  (ngModelChange)="onFilterChange()"
+                  class="w-full py-3 pl-10 pr-4 text-sm transition-all duration-200 border outline-none bg-slate-50/70 border-slate-200/60 rounded-xl focus:bg-white focus:border-blue-300 focus:ring-4 focus:ring-blue-100"
                 />
-              </svg>
-            </span>
-          </td>
-          <td class="px-4 py-2">{{ review.user?.username }}</td>
-          <td class="px-4 py-2">
-            <span
-              [ngClass]="{
-                'text-green-700': review.stars >= 4,
-                'text-yellow-700': review.stars === 3,
-                'text-red-700': review.stars <= 2
-              }"
+              </div>
+            </div>
+
+            <!-- Stars Filter -->
+            <div class="space-y-2">
+              <label for="stars" class="block text-sm font-medium text-slate-700">Stars</label>
+              <div class="relative">
+                <svg class="absolute w-4 h-4 transform -translate-y-1/2 left-3 top-1/2 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
+                </svg>
+                <select
+                  id="stars"
+                  [(ngModel)]="stars"
+                  name="stars"
+                  (ngModelChange)="onFilterChange()"
+                  class="w-full py-3 pl-10 pr-4 text-sm transition-all duration-200 border outline-none appearance-none cursor-pointer bg-slate-50/70 border-slate-200/60 rounded-xl focus:bg-white focus:border-blue-300 focus:ring-4 focus:ring-blue-100"
+                >
+                  <option [ngValue]="null">All Stars</option>
+                  <option *ngFor="let s of [1,2,3,4,5]" [ngValue]="s">{{s}} Stars</option>
+                </select>
+                <svg class="absolute w-4 h-4 transform -translate-y-1/2 pointer-events-none right-3 top-1/2 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </div>
+            </div>
+
+            <!-- Sentiment Filter -->
+            <div class="space-y-2">
+              <label for="sentiment" class="block text-sm font-medium text-slate-700">Sentiment</label>
+              <div class="relative">
+                <svg class="absolute w-4 h-4 transform -translate-y-1/2 left-3 top-1/2 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <select
+                  id="sentiment"
+                  [(ngModel)]="sentiment"
+                  name="sentiment"
+                  (ngModelChange)="onFilterChange()"
+                  class="w-full py-3 pl-10 pr-4 text-sm transition-all duration-200 border outline-none appearance-none cursor-pointer bg-slate-50/70 border-slate-200/60 rounded-xl focus:bg-white focus:border-blue-300 focus:ring-4 focus:ring-blue-100"
+                >
+                  <option [ngValue]="null">All Sentiments</option>
+                  <option value="positive">Positive</option>
+                  <option value="negative">Negative</option>
+                  <option value="unknown">Unknown</option>
+                  <option value="neutral">Neutral</option>
+                </select>
+                <svg class="absolute w-4 h-4 transform -translate-y-1/2 pointer-events-none right-3 top-1/2 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </div>
+            </div>
+
+            <!-- Date From Filter -->
+            <div class="space-y-2">
+              <label for="createdAfter" class="block text-sm font-medium text-slate-700">Date From</label>
+              <div class="relative">
+                <svg class="absolute w-4 h-4 transform -translate-y-1/2 left-3 top-1/2 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+                <input
+                  id="createdAfter"
+                  type="date"
+                  [(ngModel)]="createdAfter"
+                  name="createdAfter"
+                  (ngModelChange)="onFilterChange()"
+                  class="w-full py-3 pl-10 pr-4 text-sm transition-all duration-200 border outline-none bg-slate-50/70 border-slate-200/60 rounded-xl focus:bg-white focus:border-blue-300 focus:ring-4 focus:ring-blue-100"
+                />
+              </div>
+            </div>
+
+            <!-- Date To Filter -->
+            <div class="space-y-2">
+              <label for="createdBefore" class="block text-sm font-medium text-slate-700">Date To</label>
+              <div class="relative">
+                <svg class="absolute w-4 h-4 transform -translate-y-1/2 left-3 top-1/2 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+                <input
+                  id="createdBefore"
+                  type="date"
+                  [(ngModel)]="createdBefore"
+                  name="createdBefore"
+                  (ngModelChange)="onFilterChange()"
+                  class="w-full py-3 pl-10 pr-4 text-sm transition-all duration-200 border outline-none bg-slate-50/70 border-slate-200/60 rounded-xl focus:bg-white focus:border-blue-300 focus:ring-4 focus:ring-blue-100"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between">
+            <div class="text-sm text-slate-500">
+              Found <span class="font-semibold text-slate-700">{{ totalCount }}</span> reviews
+            </div>
+            <button
+              type="submit"
+              class="flex items-center px-6 py-3 space-x-2 font-semibold text-white transition-all duration-200 transform shadow-lg outline-none bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl hover:shadow-xl hover:scale-105 focus:ring-4 focus:ring-blue-200"
             >
-              {{ review.sentiment ? review.sentiment : 'Unknown' }}
-            </span>
-          </td>
-          <td class="px-4 py-2">{{ review.createdAt | date:'medium' }}</td>
-        </tr>
-        <tr
-          *ngIf="!loadingReviews && !errorReviews && filteredReviews.length === 0"
-        >
-          <td colspan="5" class="py-4 text-center text-gray-400">
-            No reviews found.
-          </td>
-        </tr>
-      </tbody>
-    </table>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+              </svg>
+              <span>Apply Filters</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Reviews Table -->
+    <div class="overflow-hidden bg-white border shadow-sm rounded-2xl border-slate-200/60">
+      <!-- Table Header -->
+      <div class="px-6 py-4 border-b border-slate-200/60 bg-slate-50/50">
+        <div class="flex items-center justify-between">
+          <h3 class="text-lg font-semibold text-slate-900">Customer Reviews</h3>
+          <div class="flex items-center space-x-2">
+            <div class="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
+            <span class="text-sm text-slate-500">Real-time updates</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Loading State -->
+      <div *ngIf="loadingReviews" class="flex items-center justify-center py-16">
+        <div class="flex flex-col items-center space-y-4">
+          <div class="relative">
+            <div class="w-12 h-12 border-4 rounded-full border-slate-200 animate-spin border-t-blue-500"></div>
+            <div class="absolute inset-0 w-12 h-12 border-4 border-transparent rounded-full animate-ping border-t-blue-300"></div>
+          </div>
+          <p class="font-medium text-slate-500">Loading reviews...</p>
+        </div>
+      </div>
+
+      <!-- Error State -->
+      <div *ngIf="errorReviews" class="flex flex-col items-center justify-center py-16">
+        <div class="flex items-center justify-center w-16 h-16 mb-4 bg-red-100 rounded-full">
+          <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+        </div>
+        <h3 class="mb-1 text-lg font-semibold text-slate-900">Error Loading Reviews</h3>
+        <p class="max-w-sm text-center text-slate-500">{{ errorReviews }}</p>
+      </div>
+
+      <!-- Empty State -->
+      <div *ngIf="!loadingReviews && !errorReviews && filteredReviews.length === 0" class="flex flex-col items-center justify-center py-16">
+        <div class="flex items-center justify-center w-16 h-16 mb-4 rounded-full bg-slate-100">
+          <svg class="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+          </svg>
+        </div>
+        <h3 class="mb-1 text-lg font-semibold text-slate-900">No Reviews Found</h3>
+        <p class="max-w-sm text-center text-slate-500">No customer reviews match your current filters. Try adjusting your search criteria.</p>
+      </div>
+
+      <!-- Reviews Table -->
+      <div *ngIf="!loadingReviews && !errorReviews && filteredReviews.length > 0" class="overflow-x-auto">
+        <table class="w-full">
+          <thead class="border-b bg-slate-50/80 border-slate-200/60">
+            <tr>
+              <th class="px-6 py-4 text-xs font-semibold tracking-wider text-left uppercase text-slate-600">Comment</th>
+              <th class="px-6 py-4 text-xs font-semibold tracking-wider text-left uppercase text-slate-600">Rating</th>
+              <th class="px-6 py-4 text-xs font-semibold tracking-wider text-left uppercase text-slate-600">User</th>
+              <th class="px-6 py-4 text-xs font-semibold tracking-wider text-left uppercase text-slate-600">Sentiment</th>
+              <th class="px-6 py-4 text-xs font-semibold tracking-wider text-left uppercase text-slate-600">Created</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            <tr *ngFor="let review of filteredReviews; let i = index" class="transition-colors duration-150 group hover:bg-slate-50/50">
+              <!-- Comment -->
+              <td class="px-6 py-4">
+                <div class="max-w-xs">
+                  <p class="text-sm text-slate-900 line-clamp-3" [title]="review.comment">
+                    {{ review.comment }}
+                  </p>
+                </div>
+              </td>
+
+              <!-- Rating with Stars -->
+              <td class="px-6 py-4">
+                <div class="flex items-center space-x-2">
+                  <ng-container *ngIf="review.stars > 0; else noRating">
+                    <div class="flex items-center space-x-1">
+                      <span *ngFor="let star of [].constructor(review.stars)" class="text-yellow-400">
+                        <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
+                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.967a1 1 0 00.95.69h4.175c.969 0 1.371 1.24.588 1.81l-3.38 2.455a1 1 0 00-.364 1.118l1.287 3.966c.3.922-.755 1.688-1.54 1.118l-3.38-2.454a1 1 0 00-1.175 0l-3.38 2.454c-.784.57-1.838-.196-1.54-1.118l1.287-3.966a1 1 0 00-.364-1.118L2.05 9.394c-.783-.57-.38-1.81.588-1.81h4.175a1 1 0 00.95-.69l1.286-3.967z"/>
+                        </svg>
+                      </span>
+                      <span *ngFor="let star of [].constructor(5 - review.stars)" class="text-slate-300">
+                        <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
+                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.967a1 1 0 00.95.69h4.175c.969 0 1.371 1.24.588 1.81l-3.38 2.455a1 1 0 00-.364 1.118l1.287 3.966c.3.922-.755 1.688-1.54 1.118l-3.38-2.454a1 1 0 00-1.175 0l-3.38 2.454c-.784.57-1.838-.196-1.54-1.118l1.287-3.966a1 1 0 00-.364-1.118L2.05 9.394c-.783-.57-.38-1.81.588-1.81h4.175a1 1 0 00.95-.69l1.286-3.967z"/>
+                        </svg>
+                      </span>
+                    </div>
+                    <span class="text-sm font-medium text-slate-700">{{ review.stars }}/5</span>
+                  </ng-container>
+                  <ng-template #noRating>
+                    <div class="flex items-center space-x-2">
+                      <div class="flex items-center justify-center w-6 h-6 rounded-full bg-slate-100">
+                        <svg class="w-3 h-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                      </div>
+                      <span class="text-sm font-medium text-slate-500">No Rating</span>
+                    </div>
+                  </ng-template>
+                </div>
+              </td>
+
+              <!-- User Info -->
+              <td class="px-6 py-4">
+                <div class="flex items-center space-x-3">
+                  <div class="flex items-center justify-center flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600">
+                    <span class="text-xs font-semibold text-white">
+                      {{ (review.user?.username || 'U').charAt(0).toUpperCase() }}
+                    </span>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium truncate text-slate-900">
+                      {{ review.user?.username || 'Unknown User' }}
+                    </p>
+                  </div>
+                </div>
+              </td>
+
+              <!-- Sentiment with Icon -->
+              <td class="px-6 py-4">
+                <div class="flex items-center space-x-2">
+                  <ng-container [ngSwitch]="(review.sentiment || 'unknown').toLowerCase()">
+                    <!-- Positive -->
+                    <div *ngSwitchCase="'positive'" class="flex items-center space-x-2">
+                      <div class="flex items-center justify-center w-6 h-6 bg-green-100 rounded-full">
+                        <svg class="w-3 h-3 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                      </div>
+                      <span class="text-sm font-medium text-green-700">{{ capitalizeSentiment(review.sentiment) }}</span>
+                    </div>
+                    <!-- Negative -->
+                    <div *ngSwitchCase="'negative'" class="flex items-center space-x-2">
+                      <div class="flex items-center justify-center w-6 h-6 bg-red-100 rounded-full">
+                        <svg class="w-3 h-3 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                      </div>
+                      <span class="text-sm font-medium text-red-700">{{ capitalizeSentiment(review.sentiment) }}</span>
+                    </div>
+                    <!-- Neutral -->
+                    <div *ngSwitchCase="'neutral'" class="flex items-center space-x-2">
+                      <div class="flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full">
+                        <svg class="w-3 h-3 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4"/>
+                        </svg>
+                      </div>
+                      <span class="text-sm font-medium text-blue-700">{{ capitalizeSentiment(review.sentiment) }}</span>
+                    </div>
+                    <!-- Unknown -->
+                    <div *ngSwitchDefault class="flex items-center space-x-2">
+                      <div class="flex items-center justify-center w-6 h-6 bg-yellow-100 rounded-full">
+                        <svg class="w-3 h-3 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                      </div>
+                      <span class="text-sm font-medium text-yellow-700">{{ capitalizeSentiment(review.sentiment) }}</span>
+                    </div>
+                  </ng-container>
+                </div>
+              </td>
+
+              <!-- Created At -->
+              <td class="px-6 py-4">
+                <div class="text-sm text-slate-900">
+                  {{ review.createdAt | date : "MMM d, y" }}
+                </div>
+                <div class="text-xs text-slate-500">
+                  {{ review.createdAt | date : "h:mm a" }}
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Modern Pagination -->
+    <div *ngIf="totalPages > 1" class="mt-8">
+      <div class="flex items-center justify-between">
+        <div class="text-sm text-slate-500">
+          Showing <span class="font-semibold text-slate-700">{{ getStartResult() }}</span>
+          to <span class="font-semibold text-slate-700">{{ getMaxResults() }}</span>
+          of <span class="font-semibold text-slate-700">{{ totalCount }}</span> results
+        </div>
+        
+        <div class="flex items-center space-x-2">
+          <button
+            class="flex items-center px-4 py-2 space-x-2 text-sm font-medium transition-all duration-200 bg-white border rounded-lg outline-none text-slate-600 border-slate-300 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed focus:ring-4 focus:ring-blue-100"
+            [disabled]="page === 1"
+            (click)="onPageChanged(page - 1)"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+            </svg>
+            <span>Previous</span>
+          </button>
+          
+          <div class="flex items-center space-x-1">
+            <ng-container *ngFor="let pageNum of getPaginationRange()">
+              <button
+                *ngIf="pageNum === page"
+                class="w-10 h-10 text-sm font-semibold text-white rounded-lg shadow-md bg-gradient-to-r from-blue-600 to-indigo-600"
+              >
+                {{ pageNum }}
+              </button>
+              <button
+                *ngIf="pageNum !== page"
+                class="w-10 h-10 text-sm font-medium transition-colors bg-white border rounded-lg text-slate-600 border-slate-300 hover:bg-slate-50"
+                (click)="onPageChanged(pageNum)"
+              >
+                {{ pageNum }}
+              </button>
+            </ng-container>
+          </div>
+          
+          <button
+            class="flex items-center px-4 py-2 space-x-2 text-sm font-medium transition-all duration-200 bg-white border rounded-lg outline-none text-slate-600 border-slate-300 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed focus:ring-4 focus:ring-blue-100"
+            [disabled]="page === totalPages"
+            (click)="onPageChanged(page + 1)"
+          >
+            <span>Next</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
-
-  <app-pagination-component (pageChanged)="onPageChanged($event)" [currentPage]="page" [TotalPages]="totalPages" ></app-pagination-component>
-
 </div>
