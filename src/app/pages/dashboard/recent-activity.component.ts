@@ -26,12 +26,43 @@ export class RecentActivityComponent implements OnInit {
 
   formatTime(detectedAt: string): string {
     const date = new Date(detectedAt);
-    const diff = Date.now() - date.getTime();
-    const hrs = Math.floor(diff / 3600_000);
-    if (hrs < 1) {
+    const now = new Date();
+    const diff = now.getTime() - date.getTime();
+    
+    // Less than 1 minute
+    if (diff < 60000) {
+      return 'Just now';
+    }
+    
+    // Less than 1 hour
+    if (diff < 3600000) {
       const mins = Math.floor(diff / 60000);
       return `${mins} minute${mins !== 1 ? 's' : ''} ago`;
     }
-    return `${hrs} hour${hrs !== 1 ? 's' : ''} ago`;
+    
+    // Less than 24 hours
+    if (diff < 86400000) {
+      const hrs = Math.floor(diff / 3600000);
+      return `${hrs} hour${hrs !== 1 ? 's' : ''} ago`;
+    }
+    
+    // Less than 7 days
+    if (diff < 604800000) {
+      const days = Math.floor(diff / 86400000);
+      return `${days} day${days !== 1 ? 's' : ''} ago`;
+    }
+    
+    // More than 7 days - show actual date
+    const isCurrentYear = date.getFullYear() === now.getFullYear();
+    const options: Intl.DateTimeFormatOptions = {
+      month: 'short',
+      day: 'numeric',
+      ...(isCurrentYear ? {} : { year: 'numeric' }),
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    };
+    
+    return date.toLocaleDateString('en-US', options);
   }
 }
