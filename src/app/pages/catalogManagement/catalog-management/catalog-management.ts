@@ -13,7 +13,6 @@ import { FormsModule } from '@angular/forms';
 export class CatalogManagement implements OnInit{
 
   viewToast=false;
-  newCategoryIconUrl=''
   newCategory={
     name:'',
     iconUrl:'/assets/images/image-gallery.png'
@@ -55,11 +54,14 @@ categories=[{
   removeCategory(categoryID:string){
     this.catalogService.removeCategory(categoryID).subscribe({
       next:data=>{
+        this.isEditShown=false;
         this.toastMessage='Category Removed Successfully';
         this.showToast();
+        
         this.getCategories();
       },
       error:err=>{
+        this.isEditShown=false;
         this.isToastSuccess=false;
         this.toastMessage='Failed to remove Category'
         this.showToast()
@@ -70,13 +72,14 @@ categories=[{
     this.isEditShown = false;
     this.subCategoryAddShow=false;
     this.isAddCategoryShow=false;
+    this.newCategoryName='';
+    this.newSubCategoryName='';
   }
   showEdit(index?:number){
     this.isEditShown=!this.isEditShown;
 
     if(index!=undefined){
       this.selectedCategory=this.categories[index];
-      console.log(this.selectedCategory);
     }
   }
   
@@ -107,26 +110,27 @@ categories=[{
         this.toastMessage='Subcategory Added Successfully';
         this.showToast();
         this.getSubcategory(this.selectedCategory.id);
+        this.newSubCategoryName=''
       },
       error:err=>{
         this.isToastSuccess=false;
         this.toastMessage='Add Subcategory Failed'
         this.showToast()
+        this.newSubCategoryName=''
       }
     })
     this.handelSubcategoryadd();
 
   }
   addCategory(){
-    this.catalogService.addNewCategory(this.newCategory.name,this.newCategoryIconUrl).subscribe({
+    if(this.newCategory.name && this.newCategory.iconUrl!='/assets/images/image-gallery.png' ){
+    this.catalogService.addNewCategory(this.newCategory.name,this.newCategory.iconUrl).subscribe({
       next:data=>{
         
         this.toastMessage='Category Added Successfully';
         this.showToast();
-        
         this.newCategory.iconUrl='/assets/images/image-gallery.png';
         this.newCategory.name='';
-        console.log(this.newCategoryIconUrl);
         this.handelAddCategory();
         this.getCategories();
       },
@@ -136,6 +140,12 @@ categories=[{
         this.showToast()
       }
     })
+  }
+  else{
+    this.isToastSuccess=false;
+    this.toastMessage='Failed please enter valid name and imag'
+    this.showToast()
+  }
   }
   UpdateCategory(categoryID:string){
     let url;
@@ -161,6 +171,7 @@ categories=[{
       error:err=>{
         this.isToastSuccess=false;
         this.toastMessage='Faled to update category'
+        this.isEditShown = false;
         this.showToast()
         console.log('icon url: ',url,' New name ',this.newCategoryName,'  id:',categoryID)
       }
@@ -171,12 +182,15 @@ categories=[{
     this.catalogService.removeSubcategory(id).subscribe({
       next:data=>{
         this.toastMessage='Subcategory Removed Successfully';
+        this.isEditShown = false;
         this.showToast();
+
         this.getSubcategory(this.selectedCategory.id);
       },
       error:err=>{
         this.isToastSuccess=false;
         this.toastMessage='Faled to remove Subcategory'
+        this.isEditShown = false;
         this.showToast()
       }
     })
@@ -206,11 +220,9 @@ categories=[{
     this.catalogService.uploadImage(file).subscribe({
     next: (res: any) => {
       console.log('Image uploaded successfully', res);
-      this.newCategoryIconUrl = res.url.startsWith('http') 
+      this.newCategory.iconUrl = res.url.startsWith('http') 
       ? res.url 
       : `https://apit.gitnasr.com/${res.url}`;
-
-      console.log(this.newCategoryIconUrl)
       this.toastMessage='Icon Changed Successfully';
       this.showToast();
     },
