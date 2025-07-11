@@ -109,6 +109,19 @@
         </tr>
       </thead>
       <tbody class="bg-white divide-y divide-gray-200">
+        @if (users.length === 0) {
+        <tr>
+          <td colspan="4" class="px-6 py-12 text-center">
+            <div class="flex flex-col items-center justify-center space-y-3">
+              <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+              </svg>
+              <p class="text-gray-500 text-lg font-medium">No users found</p>
+              <p class="text-gray-400 text-sm">Try adjusting your search criteria or filters</p>
+            </div>
+          </td>
+        </tr>
+        } @else {
         @for (user of users; track $index) {
         <tr class="hover:bg-gray-50 transition-colors duration-150">
           <!-- User Info -->
@@ -181,6 +194,7 @@
             </select>
           </td>
         </tr>
+        }
         }
       </tbody>
     </table>
