@@ -83,10 +83,7 @@ export class DashboardComponent implements OnInit {
         (card) => card.title === 'Average Post Price'
       );
       if (avgPostPriceCard)
-        avgPostPriceCard.value = `EGP ${post.averagePostPrice.toLocaleString(
-          undefined,
-          { maximumFractionDigits: 2 }
-        )}`;
+        avgPostPriceCard.value = `EGP ${sales.averagePostPrice.toLocaleString()}`;
       const totalRevenueCard = this.DashboardCards.find(
         (card) => card.title === 'Total Revenue'
       );
