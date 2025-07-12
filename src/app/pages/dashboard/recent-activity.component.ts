@@ -25,7 +25,15 @@ export class RecentActivityComponent implements OnInit {
   }
 
   formatTime(detectedAt: string): string {
+    // Parse the date string as local time (since it doesn't have timezone info)
     const date = new Date(detectedAt);
+    
+    // If invalid, return the original string
+    if (isNaN(date.getTime())) {
+      console.warn('Invalid date format:', detectedAt);
+      return detectedAt;
+    }
+    
     const now = new Date();
     const diff = now.getTime() - date.getTime();
     
