@@ -399,10 +399,13 @@
                 </div>
                 <div class="p-3 text-blue-900 border">
                   <p class="py-1 font-medium text-gray-400">Description:</p>
-                  <quill-view-html
-                    [content]="selectedPost.description"
-                    theme="snow"
-                  ></quill-view-html>
+                  <div class="max-w-full overflow-hidden">
+                    <quill-view-html
+                      [content]="selectedPost.description"
+                      theme="snow"
+                      class="max-w-full break-words overflow-wrap-anywhere"
+                    ></quill-view-html>
+                  </div>
                 </div>
                 <div class="flex border">
                   <p class="px-4 py-1 font-medium text-gray-400">
