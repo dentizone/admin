@@ -25,6 +25,7 @@ export class RecentActivityComponent implements OnInit {
   }
 
   formatTime(detectedAt: string): string {
+    console.log("🚀 ~ RecentActivityComponent ~ formatTime ~ detectedAt:", detectedAt)
     // Parse the date string as local time (since it doesn't have timezone info)
     const date = new Date(detectedAt);
     
@@ -71,6 +72,6 @@ export class RecentActivityComponent implements OnInit {
       hour12: true
     };
     
-    return date.toLocaleDateString('en-US', options);
+    return detectedAt;
   }
 }
