@@ -59,7 +59,7 @@ onkeydown=""
           {{ item?.postTitle }}
         </div>
         <div class="text-emerald-600 font-semibold">
-          {{ item?.price | currency }}
+          EGP {{ item?.price | number:'1.2-2' }}
         </div>
         <div class="text-xs text-gray-500">
           Pickup: {{ item?.pickupLocation }}

@@ -228,7 +228,7 @@
             {{post.createdAt | date}}
           </p>
           <p class="text-xl font-bold text-blue-900 lg:text-base">
-            EGP{{post.price}}
+            EGP {{ post.price | number:'1.2-2' }}
           </p>
           <div class="space-x-2">
             <div class="relative inline-block text-left dropdown-wrapper">
@@ -411,7 +411,7 @@
                   <p class="px-4 py-1 font-medium text-gray-400">
                     Price:
                     <span class="text-blue-900"
-                      >{{selectedPost.price}} EGP</span
+                      >EGP {{ selectedPost.price | number:'1.2-2' }}</span
                     >
                   </p>
                   <div class="border-s">

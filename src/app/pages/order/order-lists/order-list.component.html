@@ -113,9 +113,9 @@
             : "N/A"
         }}
       </span>
-      <span class="ml-auto text-lg font-bold text-blue-900">{{
-        order.totalAmount | currency
-      }}</span>
+      <span class="ml-auto text-lg font-bold text-blue-900">
+        EGP {{ order.totalAmount | number:'1.2-2' }}
+      </span>
     </div>
     <!-- Items -->
     <div class="flex items-center gap-2 mt-2">

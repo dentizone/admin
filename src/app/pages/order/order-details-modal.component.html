@@ -93,9 +93,9 @@
               <path d="M6 10h.01M18 10h.01" />
               <circle cx="12" cy="12" r="2" />
             </svg>
-            <span class="text-lg font-bold text-indigo-900">{{
-              order?.totalAmount | currency
-            }}</span>
+            <span class="text-lg font-bold text-indigo-900">
+              EGP {{ order?.totalAmount | number:'1.2-2' }}
+            </span>
           </div>
           <div
             class="flex gap-2 items-center text-gray-600"
@@ -275,9 +275,9 @@
                         <span class="text-lg font-bold text-indigo-900">{{
                           item?.postTitle
                         }}</span>
-                        <span class="text-lg font-semibold text-emerald-600">{{
-                          item?.price | currency
-                        }}</span>
+                        <span class="text-lg font-semibold text-emerald-600">
+                          EGP {{ item?.price | number:'1.2-2' }}
+                        </span>
                       </div>
                       <div
                         *ngIf="item?.pickupLocation"
