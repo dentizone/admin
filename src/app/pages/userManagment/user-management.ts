@@ -9,7 +9,7 @@ import { Observable } from 'rxjs';
 export class UserManagementService {
 
   token:string |null;
-  private readonly apiUrl = 'https://apit.gitnasr.com/api/Users';
+  private readonly apiUrl = 'https://api.dentizone.store/api/Users';
   constructor(private readonly http:HttpClient,authService:Login) {
     this.token=authService.getAccessToken();
    }
@@ -32,7 +32,7 @@ export class UserManagementService {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${this.token}`
     });
-    return this.http.get('https://apit.gitnasr.com/api/Users/stats',{headers})
+    return this.http.get('https://api.dentizone.store/api/Users/stats',{headers})
   }
   updateUserStatus(userId: string, status: number): Observable<any> {
     const url = `${this.apiUrl}/${userId}/state`;

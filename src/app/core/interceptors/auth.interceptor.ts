@@ -77,7 +77,7 @@ export const AuthInterceptor: HttpInterceptorFn = (
 
   function refreshAccessToken(refreshToken: string): Observable<string> {
     return new Observable<string>((observer) => {
-      fetch('https://apit.gitnasr.com/api/auth/refresh', {
+      fetch('https://api.dentizone.store/api/auth/refresh', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ refreshToken }),

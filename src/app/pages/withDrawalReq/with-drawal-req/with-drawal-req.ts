@@ -84,7 +84,7 @@ export class WithDrawalReq implements OnInit {
   fetchStats() {
     const token = 'YOUR_SECRET_TOKEN';
     this.http
-      .get<any>('https://apit.gitnasr.com/api/Wallet/stats', {
+      .get<any>('https://api.dentizone.store/api/Wallet/stats', {
         headers: { Authorization: `Bearer ${token}` },
       })
       .subscribe({
@@ -124,7 +124,7 @@ export class WithDrawalReq implements OnInit {
 
     this.http
       .get<WithdrawalRequestResponse>(
-        'https://apit.gitnasr.com/api/Wallet/all',
+        'https://api.dentizone.store/api/Wallet/all',
         {
           params,
           headers: { Authorization: `Bearer ${token}` },
@@ -175,8 +175,8 @@ export class WithDrawalReq implements OnInit {
     const note = this.modalComment;
     const url =
       this.modalAction === 'approve'
-        ? `https://apit.gitnasr.com/api/Wallet/withdrawal/${id}/approve`
-        : `https://apit.gitnasr.com/api/Wallet/withdrawal/${id}/reject`;
+        ? `https://api.dentizone.store/api/Wallet/withdrawal/${id}/approve`
+        : `https://api.dentizone.store/api/Wallet/withdrawal/${id}/reject`;
    
         
     const token = 'YOUR_SECRET_TOKEN';

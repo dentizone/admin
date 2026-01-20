@@ -20,7 +20,7 @@ export interface ActivityFilter {
 
 @Injectable({ providedIn: 'root' })
 export class ActivityService {
-  private readonly apiUrl = 'https://apit.gitnasr.com/api/Activity';
+  private readonly apiUrl = 'https://api.dentizone.store/api/Activity';
 
   constructor(private readonly http: HttpService) {}
 

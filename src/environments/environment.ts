@@ -1,5 +1,5 @@
 export const environment = {
   production: false,
-  analyticsUrl: 'https://apit.gitnasr.com/api/Analytics',
-  apiBaseUrl: 'https://apit.gitnasr.com/api',
+  analyticsUrl: 'https://api.dentizone.store/api/Analytics',
+  apiBaseUrl: 'https://api.dentizone.store/api',
 };

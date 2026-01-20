@@ -14,7 +14,7 @@ export class CatalogService {
 
   getAllCategories():Observable<any>{
 
-    const url='https://apit.gitnasr.com/api/Catalog/categories';
+    const url='https://api.dentizone.store/api/Catalog/categories';
      const headers = new HttpHeaders({
       'Authorization': `Bearer ${this.token}`
     });
@@ -23,7 +23,7 @@ export class CatalogService {
   }
 
   getSubCategories(id:string):Observable<any>{
-    const url=`https://apit.gitnasr.com/api/Catalog/categories/${id}/subcategories`;
+    const url=`https://api.dentizone.store/api/Catalog/categories/${id}/subcategories`;
      const headers = new HttpHeaders({
       'Authorization': `Bearer ${this.token}`
     });
@@ -32,7 +32,7 @@ export class CatalogService {
   }
 
   uploadImage(file:File):Observable<any>{
-    const url='https://apit.gitnasr.com/api/Upload/image';
+    const url='https://api.dentizone.store/api/Upload/image';
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${this.token}`
     });
@@ -42,7 +42,7 @@ export class CatalogService {
     return this.http.post(url, formData,{headers});
   }
   updateCategoryData(iconUrl:string,name:string,categoryID:string):Observable<any>{
-    const url=`https://apit.gitnasr.com/api/Catalog/categories/${categoryID}`;
+    const url=`https://api.dentizone.store/api/Catalog/categories/${categoryID}`;
     let body={
       name:name,
       iconUrl:iconUrl
@@ -53,7 +53,7 @@ export class CatalogService {
     return this.http.put(url,body,{headers});
   }
   addSubcategory(categoryID:string,newSubName:string):Observable<any>{
-    const url='https://apit.gitnasr.com/api/Catalog/subcategories';
+    const url='https://api.dentizone.store/api/Catalog/subcategories';
     let body={
       name: newSubName,
       categoryId: categoryID
@@ -66,7 +66,7 @@ export class CatalogService {
   }
 
   addNewCategory(name:string,iconUrl:string):Observable<any>{
-    const url='https://apit.gitnasr.com/api/Catalog/categories'
+    const url='https://api.dentizone.store/api/Catalog/categories'
 
     let body={
       name: name,
@@ -79,7 +79,7 @@ export class CatalogService {
     return this.http.post(url,body,{headers})
   }
   removeSubcategory(subID:string):Observable<any>{
-    const url=`https://apit.gitnasr.com/api/Catalog/subcategories/${subID}`;
+    const url=`https://api.dentizone.store/api/Catalog/subcategories/${subID}`;
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${this.token}`
     });
@@ -87,7 +87,7 @@ export class CatalogService {
   }
 
   removeCategory(categoryId:string):Observable<any>{
-    const url=`https://apit.gitnasr.com/api/Catalog/categories/${categoryId}`;
+    const url=`https://api.dentizone.store/api/Catalog/categories/${categoryId}`;
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${this.token}`
     });

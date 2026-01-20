@@ -76,7 +76,7 @@ export class LayoutComponent implements OnInit {
 
   fetchCurrentUser() {
     this.loadingUser = true;
-    this.http.get('https://apit.gitnasr.com/api/Users/me').subscribe({
+    this.http.get('https://api.dentizone.store/api/Users/me').subscribe({
       next: (user) => {
         this.user = user;
         this.loadingUser = false;

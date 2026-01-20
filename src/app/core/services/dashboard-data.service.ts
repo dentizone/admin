@@ -67,7 +67,7 @@ export class DashboardDataService {
   getRecentActivities(): Observable<Activity[]> {
     // Fetch top 5 activities from the Activity API
     return this.httpService
-      .get<ActivityApiResponse>('https://apit.gitnasr.com/api/Activity', {
+      .get<ActivityApiResponse>('https://api.dentizone.store/api/Activity', {
         pageNumber: '1',
         pageSize: '5',
       })

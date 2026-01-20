@@ -49,7 +49,7 @@ export class Login {
   }
 
   checkLogin(email: string, password: string): Observable<any> {
-    const url = 'https://apit.gitnasr.com/api/auth/login';
+    const url = 'https://api.dentizone.store/api/auth/login';
 
     const body = {
       email: email,

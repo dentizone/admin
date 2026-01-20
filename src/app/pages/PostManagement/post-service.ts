@@ -7,7 +7,7 @@ import { Login } from '../login/login';
   providedIn: 'root',
 })
 export class PostService {
-  api = 'https://apit.gitnasr.com/api/Posts';
+  api = 'https://api.dentizone.store/api/Posts';
   token: string | null;
   constructor(
     private readonly http: HttpClient,
@@ -38,7 +38,7 @@ export class PostService {
 
     params.push('SkipCache=true');
     const query = params.length ? '?' + params.join('&') : '';
-    const url = `https://apit.gitnasr.com/api/Posts/search${query}`;
+    const url = `https://api.dentizone.store/api/Posts/search${query}`;
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Authorization: `Bearer ${this.token}`,
@@ -64,7 +64,7 @@ export class PostService {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${this.token}`,
     });
-    return this.http.get('https://apit.gitnasr.com/api/Posts/stats', {
+    return this.http.get('https://api.dentizone.store/api/Posts/stats', {
       headers,
     });
   }
@@ -73,13 +73,13 @@ export class PostService {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${this.token}`,
     });
-    return this.http.get('https://apit.gitnasr.com/api/Posts/sidebar',{headers})
+    return this.http.get('https://api.dentizone.store/api/Posts/sidebar',{headers})
   }
   getSubcategories(id:string):Observable<any>{
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Authorization: `Bearer ${this.token}`,
     });
-    return this.http.get(`https://apit.gitnasr.com/api/Catalog/categories/${id}/subcategories`,{headers})
+    return this.http.get(`https://api.dentizone.store/api/Catalog/categories/${id}/subcategories`,{headers})
   }
 }

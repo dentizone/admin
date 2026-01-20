@@ -97,7 +97,7 @@ export class FeedbackPageComponent implements OnInit {
     this.loadingStats = true;
     this.errorStats = '';
     this.http
-      .get<ReviewStats>('https://apit.gitnasr.com/api/Review/stats')
+      .get<ReviewStats>('https://api.dentizone.store/api/Review/stats')
       .subscribe({
         next: (stats) => {
           // Handle both lowercase and uppercase sentiment keys from API
@@ -137,7 +137,7 @@ export class FeedbackPageComponent implements OnInit {
     if (this.filter) params = params.set('SearchText', this.filter);
 
     this.http
-      .get<ReviewResponse>('https://apit.gitnasr.com/api/Review/all', {
+      .get<ReviewResponse>('https://api.dentizone.store/api/Review/all', {
         params,
       })
       .subscribe({

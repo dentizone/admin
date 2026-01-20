@@ -5,7 +5,7 @@ import { University, CreateUniversityDto, UpdateUniversityDto, PagedResultDto } 
 
 @Injectable({ providedIn: 'root' })
 export class UniversityService {
-  private readonly baseUrl = 'https://apit.gitnasr.com/api/Universities';
+  private readonly baseUrl = 'https://api.dentizone.store/api/Universities';
 
   constructor(private readonly http: HttpClient) {}
 

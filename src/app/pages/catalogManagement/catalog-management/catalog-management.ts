@@ -222,7 +222,7 @@ categories=[{
       console.log('Image uploaded successfully', res);
       this.newCategory.iconUrl = res.url.startsWith('http') 
       ? res.url 
-      : `https://apit.gitnasr.com/${res.url}`;
+      : `https://api.dentizone.store/${res.url}`;
       this.toastMessage='Icon Changed Successfully';
       this.showToast();
     },
